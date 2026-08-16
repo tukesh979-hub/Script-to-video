@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Video Dashboard
 
-## Getting Started
+Project library / home base for the script-to-video system — lists projects, their render status, and thumbnails. Companion to the `remotion-engine` repo, which does the actual video generation.
 
-First, run the development server:
+**Scope note:** this is deliberately just the dashboard (list + status + a "New Video" launch point). The actual script → EDL → render pipeline, triggered from the browser, is a separate sub-project — designed and built next. The "New Video" button here is a placeholder until that exists.
+
+## Stack
+
+- Next.js 16 (App Router) + TypeScript + Tailwind v4
+- Drizzle ORM + SQLite for local dev (`local.db`, gitignored) — schema mirrors the Postgres conventions used elsewhere (TEXT not VARCHAR, no FK, soft delete via `deletedAt`, uuid primary keys), so moving to real Postgres later is a straight port, not a redesign
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run db:push    # create local.db from the schema
+npm run db:seed    # seed with the real projects from the remotion-engine session
+npm run dev         # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`npm run db:studio` opens Drizzle Studio to browse/edit the local database directly.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/
+│   ├── page.tsx              # Dashboard (project grid)
+│   └── projects/[id]/page.tsx  # Project detail
+├── components/
+│   ├── ProjectCard.tsx
+│   └── StatusBadge.tsx
+└── db/
+    ├── schema.ts              # projects table
+    ├── index.ts                # Drizzle client
+    └── seed.ts
+```
 
-## Learn More
+## Deploying
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Not yet connected to Vercel. Once pushed to a GitHub repo: vercel.com → Add New Project → pick the repo → it auto-detects Next.js. Will need a real Postgres connection string as an env var at that point (local SQLite won't work on Vercel's serverless runtime) — swap `src/db/index.ts`'s driver from `better-sqlite3` to `@vercel/postgres` or similar; the schema itself barely changes.
