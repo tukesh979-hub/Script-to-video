@@ -1,30 +1,88 @@
 @import "tailwindcss";
 
+/* Design tokens — from 03-brand-style.md. Exact values, do not deviate. */
 :root {
-  --background: #0b0b0d;
-  --panel: #16161a;
-  --panel-2: #1d1d22;
-  --border: #2a2a30;
-  --foreground: #f2f0ec;
-  --muted: #a3a1a0;
-  --accent: #c97b6e;
-  --accent-2: #ff5a36;
+  --bg: #0b0b0e;
+  --panel: #141318;
+  --panel-2: #1b1a20;
+  --line: #27262d;
+  --lime: #c6ff34;
+  --lime-dim: #9bcc1f;
+  --text: #f4f4f1;
+  --muted: #8e8d96;
+  --faint: #5c5b64;
+  --red: #ff8d70;
 }
 
 @theme inline {
-  --color-background: var(--background);
+  --color-background: var(--bg);
   --color-panel: var(--panel);
   --color-panel-2: var(--panel-2);
-  --color-border: var(--border);
-  --color-foreground: var(--foreground);
+  --color-border: var(--line);
+  --color-foreground: var(--text);
   --color-muted: var(--muted);
-  --color-accent: var(--accent);
-  --color-accent-2: var(--accent-2);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-faint: var(--faint);
+  --color-lime: var(--lime);
+  --color-lime-dim: var(--lime-dim);
+  --color-red: var(--red);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Sci-fi grid background — the one ambient texture. Two overlaid grids (fine
+   lime + coarser violet hairlines), radial-fade toward the edges, slow drift.
+   Fixed + behind everything; pages never add a second background effect. */
+.gridbg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(198, 255, 52, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(198, 255, 52, 0.055) 1px, transparent 1px),
+    linear-gradient(rgba(139, 92, 246, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 92, 246, 0.05) 1px, transparent 1px);
+  background-size:
+    28px 28px,
+    28px 28px,
+    140px 140px,
+    140px 140px;
+  mask-image: radial-gradient(ellipse 80% 65% at 50% 35%, black 40%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 65% at 50% 35%, black 40%, transparent 100%);
+  animation: gridDrift 24s linear infinite;
+}
+
+@keyframes gridDrift {
+  from {
+    background-position:
+      0 0,
+      0 0,
+      0 0,
+      0 0;
+  }
+  to {
+    background-position:
+      28px 28px,
+      28px 28px,
+      140px 140px,
+      140px 140px;
+  }
+}
+
+@keyframes pulseDot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.pulse-dot {
+  animation: pulseDot 1.6s ease-in-out infinite;
 }

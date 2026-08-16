@@ -1,29 +1,35 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Silkscreen, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import { GridBackground } from "@/components/GridBackground";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const silkscreen = Silkscreen({
+  variable: "--font-display",
+  weight: ["400", "700"],
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-body",
+  weight: ["400", "500", "700"],
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Video Dashboard",
-  description: "Project library for script-to-video generation",
+  title: "Idea to Video",
+  description: "Pipeline dashboard for turning a script into a produced video",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${silkscreen.variable} ${spaceGrotesk.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground">{children}</body>
+      <body className="min-h-full flex flex-col bg-background text-foreground font-body">
+        <GridBackground />
+        {children}
+      </body>
     </html>
   );
 }
