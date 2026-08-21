@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>All Pages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fustat:wght@400;500;600;700&family=Schibsted+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; background: #efeaff; }
+  body { font-family: 'Inter', sans-serif; color: #16181d; }
+  .note { max-width: 900px; margin: 24px auto 0; padding: 14px 20px; background: rgba(20,20,30,0.85); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; font-size: 13px; line-height: 1.6; color: #e6e6f0; }
+  .note b { color:#fff; }
+  .jump { max-width:900px; margin: 12px auto 0; display:flex; gap:8px; flex-wrap:wrap; }
+  .jump a { font-family:'Schibsted Grotesk',sans-serif; font-size:12px; font-weight:600; padding:6px 12px; border-radius:999px; background: rgba(255,255,255,0.1); color:#fff; text-decoration:none; border:1px solid rgba(255,255,255,0.15); }
+
+  .glass { background: rgba(255,255,255,0.32); border: 1px solid rgba(255,255,255,0.55); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.6); }
+  .glass-strong { background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.65); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 30px 70px rgba(60,30,90,0.12); }
+
+  .screen { position: relative; overflow: hidden; margin-top: 28px; }
+  .screen-label { position:absolute; top:20px; left:24px; font-family:'Schibsted Grotesk',sans-serif; font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color: rgba(20,23,28,0.4); z-index: 20; }
+
+  /* shared page background */
+  .bg-light {
+    background:
+      radial-gradient(55% 42% at 12% -4%, rgba(255,175,205,0.75), transparent 60%),
+      radial-gradient(48% 38% at 88% -2%, rgba(170,150,255,0.65), transparent 60%),
+      linear-gradient(180deg, #fdeef5 0%, #f6f2ff 55%, #efeaff 100%);
+  }
+
+  /* ---------- Auth ---------- */
+  .auth-screen { min-height: 96vh; display:flex; align-items:center; justify-content:center; padding:40px; }
+  .top-logo { position:absolute; top:28px; left:50%; transform:translateX(-50%); font-family:'Schibsted Grotesk',sans-serif; font-weight:600; font-size:18px; letter-spacing:-0.02em; z-index:5; }
+  .top-logo span { color:#c94fd6; }
+  .frag { position:absolute; border-radius: 14px; overflow:hidden; opacity:0.85; box-shadow: 0 16px 40px rgba(60,30,90,0.1); }
+  .frag img { width:100%; height:100%; object-fit:cover; display:block; }
+  .card { position:relative; z-index:10; width:100%; max-width: 420px; border-radius: 26px; padding: 40px 36px; }
+  .card h1 { font-family:'Fustat',sans-serif; font-weight:600; font-size:26px; letter-spacing:-0.01em; text-align:center; }
+  .card .sub { margin-top:8px; font-size:13.5px; color: rgba(20,23,28,0.5); text-align:center; }
+  .social { margin-top:26px; display:flex; flex-direction:column; gap:10px; }
+  .social button { font-family:'Schibsted Grotesk',sans-serif; font-size:13.5px; font-weight:500; padding:12px 16px; border-radius:12px; background: rgba(255,255,255,0.6); border:1px solid rgba(255,255,255,0.7); display:flex; align-items:center; justify-content:center; gap:8px; cursor:pointer; }
+  .divider { margin:22px 0; display:flex; align-items:center; gap:10px; font-family:'Schibsted Grotesk',sans-serif; font-size:11px; color: rgba(20,23,28,0.35); text-transform:uppercase; letter-spacing:0.06em; }
+  .divider::before, .divider::after { content:''; flex:1; height:1px; background: rgba(20,23,28,0.12); }
+  .field { margin-bottom: 14px; }
+  .field label { display:block; font-family:'Schibsted Grotesk',sans-serif; font-size:12px; font-weight:500; color: rgba(20,23,28,0.55); margin-bottom:6px; }
+  .field input { width:100%; padding:11px 14px; border-radius:10px; background: rgba(255,255,255,0.6); border:1px solid rgba(255,255,255,0.7); font-family:'Inter',sans-serif; font-size:14px; color:#16181d; outline:none; }
+  .field.row { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+  .forgot { font-family:'Schibsted Grotesk',sans-serif; font-size:12px; color:#7c6ff0; text-decoration:none; }
+  .submit { margin-top: 16px; width:100%; padding: 13px; border-radius: 12px; background: linear-gradient(135deg,#c94fd6,#7c6ff0); color:#fff; font-family:'Schibsted Grotesk',sans-serif; font-weight:600; font-size:14px; text-align:center; cursor:pointer; }
+  .switch { margin-top:22px; text-align:center; font-size:13px; color: rgba(20,23,28,0.5); }
+  .switch a { color:#7c6ff0; font-weight:600; text-decoration:none; }
+  .terms { margin-top:16px; text-align:center; font-size:11.5px; color: rgba(20,23,28,0.35); line-height:1.5; }
+
+  /* ---------- Hero (shared) ---------- */
+  .hero { padding: 28px 40px 90px; }
+  .nav { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-radius: 16px; }
+  .logo { font-family: 'Schibsted Grotesk', sans-serif; font-weight: 600; font-size: 18px; letter-spacing: -0.02em; }
+  .logo span { color: #c94fd6; }
+  .navlinks { display: flex; gap: 22px; font-family: 'Schibsted Grotesk', sans-serif; font-size: 14px; font-weight: 500; color: rgba(20,23,28,0.65); }
+  .navright { display:flex; align-items:center; gap:12px; }
+  .credits-pill { font-family:'Schibsted Grotesk',sans-serif; font-size:12px; font-weight:500; padding:6px 12px; border-radius:999px; background: rgba(255,255,255,0.5); border:1px solid rgba(255,255,255,0.6); }
+  .avatar { width: 34px; height: 34px; border-radius: 999px; background: linear-gradient(135deg,#c94fd6,#7c6ff0); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Schibsted Grotesk',sans-serif; font-weight:600; font-size:13px; flex-shrink:0; }
+  .hero-body { display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 56px; }
+  h1 { font-family: 'Fustat', sans-serif; font-weight: 600; font-size: 32px; letter-spacing: -0.01em; }
+  h1 .accent { background: linear-gradient(90deg,#c94fd6,#7c6ff0); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .subtitle { margin-top: 8px; font-size: 13.5px; color: rgba(20,23,28,0.5); }
+  .typebar { margin-top: 30px; width: 100%; max-width: 700px; border-radius: 22px; padding: 18px 22px; text-align: left; box-shadow: 0 30px 70px rgba(60,30,90,0.10); }
+  .tb-top { display: flex; justify-content: space-between; font-family: 'Schibsted Grotesk', sans-serif; font-size: 11.5px; font-weight: 500; color: rgba(20,23,28,0.45); }
+  .tb-textarea { margin-top: 14px; font-size: 16px; color: rgba(20,23,28,0.4); min-height: 44px; }
+  .tb-bottom { margin-top: 14px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.55); padding-top: 12px; }
+  .tb-pills { display: flex; gap: 8px; }
+  .tb-pill { font-family: 'Schibsted Grotesk', sans-serif; font-size: 11.5px; font-weight: 500; padding: 5px 11px; border-radius: 999px; background: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.5); color: rgba(20,23,28,0.6); }
+  .tb-submit { width: 36px; height: 36px; border-radius: 999px; background: linear-gradient(135deg,#c94fd6,#7c6ff0); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+
+  .body-section { max-width: 1100px; margin: 0 auto; padding: 0 40px 40px; }
+  .section-label { font-family:'Schibsted Grotesk',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color: rgba(20,23,28,0.4); margin-bottom:14px; }
+  .bento { display: grid; grid-template-columns: 1.5fr 1fr 1fr; grid-template-rows: auto auto; gap: 12px; }
+  .bento-main { grid-row: span 2; border-radius: 18px; padding: 20px; }
+  .bento-main .thumb { height: 160px; border-radius: 12px; background: linear-gradient(135deg, #1a1220, #2a1a30); display:flex; align-items:center; justify-content:center; color: rgba(255,255,255,0.6); font-size: 22px; margin-bottom: 14px; }
+  .bento-main .ptitle { font-family: 'Schibsted Grotesk', sans-serif; font-weight: 600; font-size: 15px; }
+  .bento-main .pmeta { font-family: 'Inter', sans-serif; font-size: 12px; color: rgba(20,23,28,0.45); margin-top: 4px; }
+  .bento-main .bar { margin-top: 14px; height: 4px; border-radius: 999px; background: rgba(20,23,28,0.1); overflow: hidden; }
+  .bento-main .bar i { display: block; height: 100%; width: 56%; background: linear-gradient(90deg,#c94fd6,#7c6ff0); }
+  .bento-main .cta { margin-top:16px; display:inline-block; font-family:'Schibsted Grotesk',sans-serif; font-size:12.5px; font-weight:600; padding:8px 16px; border-radius:999px; background:#14171c; color:#fff; }
+  .bento-cell { border-radius: 14px; padding: 14px; display: flex; flex-direction: column; justify-content: flex-end; min-height: 84px; }
+  .bento-cell .tag { font-family:'Schibsted Grotesk',sans-serif; font-size:10.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color: rgba(20,23,28,0.4); }
+  .bento-cell .val { margin-top:2px; font-family:'Schibsted Grotesk',sans-serif; font-weight:600; font-size:13px; }
+  .folders { margin-top: 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .folder { border-radius: 16px; overflow: hidden; }
+  .folder-thumb { height: 130px; background-size: cover; background-position: center; position:relative; }
+  .folder-badge { position:absolute; top:10px; left:10px; font-family:'Schibsted Grotesk',sans-serif; font-size:10px; font-weight:700; padding:4px 9px; border-radius:999px; background: rgba(255,255,255,0.85); }
+  .folder-body { padding: 14px 16px; }
+  .folder-title { font-family: 'Schibsted Grotesk', sans-serif; font-size: 13.5px; font-weight: 600; }
+  .folder-status { margin-top: 4px; font-family: 'Inter', sans-serif; font-size: 11.5px; color: rgba(20,23,28,0.45); }
+
+  /* ---------- Dashboard shell (one page = one shell, sized to its own content) ---------- */
+  .shell { display: flex; }
+  .sidebar { width: 240px; flex-shrink: 0; margin: 20px 0 20px 20px; border-radius: 22px; padding: 20px 16px; display:flex; flex-direction:column; align-self: stretch; }
+  .sidebar .logo { font-family:'Schibsted Grotesk',sans-serif; font-weight:600; font-size:16px; letter-spacing:-0.02em; padding: 4px 10px 20px; }
+  .sidebar .logo span { color:#c94fd6; }
+  .navgroup { display:flex; flex-direction:column; gap:2px; }
+  .navitem { display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:10px; font-family:'Schibsted Grotesk',sans-serif; font-size:13.5px; font-weight:500; color: rgba(20,23,28,0.6); }
+  .navitem.active { background: rgba(255,255,255,0.55); color:#16181d; }
+  .navdivider { height:1px; background: rgba(20,23,28,0.08); margin: 14px 6px; }
+  .sidebar-footer { margin-top:auto; display:flex; align-items:center; gap:10px; padding: 10px; }
+  .sidebar-footer .name { font-family:'Schibsted Grotesk',sans-serif; font-size:12.5px; font-weight:600; }
+  .sidebar-footer .email { font-size:11px; color: rgba(20,23,28,0.45); }
+  .main { flex:1; padding: 32px 40px 48px; }
+  .page-label { font-family:'Schibsted Grotesk',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color: rgba(20,23,28,0.4); margin-bottom: 6px; }
+  .page-title { font-family:'Fustat',sans-serif; font-weight:600; font-size:26px; letter-spacing:-0.01em; margin-bottom: 24px; }
+
+  .toolbar { display:flex; align-items:center; justify-content:space-between; margin-bottom: 20px; }
+  .filters { display:flex; gap:8px; }
+  .filter-pill { font-family:'Schibsted Grotesk',sans-serif; font-size:12px; font-weight:500; padding:7px 14px; border-radius:999px; background: rgba(255,255,255,0.4); border:1px solid rgba(255,255,255,0.5); color: rgba(20,23,28,0.6); }
+  .filter-pill.active { background: #14171c; color:#fff; border-color:#14171c; }
+  .new-btn { font-family:'Schibsted Grotesk',sans-serif; font-size:13px; font-weight:600; padding:9px 16px; border-radius:10px; background: linear-gradient(135deg,#c94fd6,#7c6ff0); color:#fff; }
+  .project-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .pcard { border-radius: 16px; overflow: hidden; }
+  .pcard-thumb { height: 140px; background-size:cover; background-position:center; position:relative; }
+  .pcard-badge { position:absolute; top:10px; left:10px; font-family:'Schibsted Grotesk',sans-serif; font-size:10px; font-weight:700; padding:4px 9px; border-radius:999px; background: rgba(255,255,255,0.85); }
+  .pcard-body { padding: 14px 16px; }
+  .pcard-title { font-family:'Schibsted Grotesk',sans-serif; font-weight:600; font-size:13.5px; }
+  .pcard-meta { margin-top:4px; font-size:11.5px; color: rgba(20,23,28,0.45); }
+  .pcard-bar { margin-top:10px; height:3px; border-radius:999px; background: rgba(20,23,28,0.08); overflow:hidden; }
+  .pcard-bar i { display:block; height:100%; background: linear-gradient(90deg,#c94fd6,#7c6ff0); }
+
+  .billing-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 16px; }
+  .balance-card { border-radius: 20px; padding: 24px; }
+  .balance-card .label { font-family:'Schibsted Grotesk',sans-serif; font-size:12px; font-weight:600; color: rgba(20,23,28,0.5); }
+  .balance-card .num { margin-top:10px; font-family:'Fustat',sans-serif; font-weight:700; font-size:40px; }
+  .balance-card .sub { margin-top:4px; font-size:12.5px; color: rgba(20,23,28,0.45); }
+  .balance-card .upgrade { margin-top:20px; display:inline-block; font-family:'Schibsted Grotesk',sans-serif; font-size:13px; font-weight:600; padding:10px 20px; border-radius:10px; background:#14171c; color:#fff; }
+  .ledger-card { border-radius: 20px; padding: 20px 24px; }
+  .ledger-card .label { font-family:'Schibsted Grotesk',sans-serif; font-size:12px; font-weight:600; color: rgba(20,23,28,0.5); margin-bottom:14px; }
+  .ledger-row { display:flex; justify-content:space-between; align-items:center; padding: 10px 0; border-bottom: 1px solid rgba(20,23,28,0.06); }
+  .ledger-row:last-child { border-bottom:none; }
+  .ledger-left .title { font-family:'Schibsted Grotesk',sans-serif; font-size:13px; font-weight:500; }
+  .ledger-left .date { font-size:11.5px; color: rgba(20,23,28,0.4); margin-top:2px; }
+  .ledger-delta { font-family:'Schibsted Grotesk',sans-serif; font-size:13px; font-weight:600; }
+  .ledger-delta.pos { color:#1a9c5b; }
+  .ledger-delta.neg { color:#c94fd6; }
+
+  /* Account / Notifications */
+  .settings-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 760px; }
+  .settings-card { border-radius: 18px; padding: 22px; }
+  .settings-card .stitle { font-family:'Schibsted Grotesk',sans-serif; font-weight:600; font-size:14px; margin-bottom:14px; }
+  .settings-row { display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid rgba(20,23,28,0.06); font-size:13px; }
+  .settings-row:last-child { border-bottom:none; }
+  .settings-row .k { color: rgba(20,23,28,0.5); }
+  .settings-row .v { font-weight:500; }
+  .notif-list { max-width: 600px; display:flex; flex-direction:column; gap:10px; }
+  .notif-item { border-radius: 14px; padding: 14px 16px; display:flex; gap:12px; align-items:flex-start; }
+  .notif-dot { width:8px; height:8px; border-radius:999px; background:#c94fd6; margin-top:5px; flex-shrink:0; }
+  .notif-item .ntitle { font-family:'Schibsted Grotesk',sans-serif; font-weight:600; font-size:13px; }
+  .notif-item .ntime { margin-top:2px; font-size:11.5px; color: rgba(20,23,28,0.4); }
+
+  /* ---------- Main (Signed Out) — scoped under #main-logout to avoid clashing
+     with the signed-in hero above, which reuses several of the same class names ---------- */
+  #main-logout .glass-dark { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); }
+  #main-logout .hero { position: relative; overflow: hidden; padding: 28px 40px 250px; background: radial-gradient(55% 42% at 12% -4%, rgba(255,175,205,0.75), transparent 60%), radial-gradient(48% 38% at 88% -2%, rgba(170,150,255,0.65), transparent 60%), radial-gradient(60% 50% at 50% 30%, rgba(255,200,225,0.35), transparent 65%), linear-gradient(180deg, #fdeef5 0%, #f6f2ff 55%, #efeaff 100%); margin-top: 0; }
+  #main-logout .nav { max-width: 1100px; margin: 0 auto; width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-radius: 16px; }
+  #main-logout .btn { font-family: 'Schibsted Grotesk', sans-serif; font-size: 13px; font-weight: 500; padding: 8px 16px; border-radius: 10px; }
+  #main-logout .btn-ghost { background: rgba(255,255,255,0.35); border: 1px solid rgba(255,255,255,0.5); color:#16181d; }
+  #main-logout .btn-dark { background: #14171c; color: #fff; }
+  #main-logout .hero-body { display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 90px; }
+  #main-logout h1 { font-family: 'Fustat', sans-serif; font-weight: 600; font-size: 34px; letter-spacing: -0.01em; color: rgba(20,23,28,0.85); }
+  #main-logout .subtitle { margin-top: 10px; font-size: 14px; color: rgba(20,23,28,0.5); }
+  #main-logout .typebar { margin-top: 36px; width: 100%; max-width: 700px; border-radius: 22px; padding: 20px 24px; text-align: left; box-shadow: 0 30px 70px rgba(60,30,90,0.10); }
+  #main-logout .tb-top { display: flex; justify-content: space-between; font-family: 'Schibsted Grotesk', sans-serif; font-size: 11.5px; font-weight: 500; color: rgba(20,23,28,0.45); }
+  #main-logout .tb-textarea { margin-top: 16px; font-size: 17px; color: rgba(20,23,28,0.4); min-height: 56px; }
+  #main-logout .tb-bottom { margin-top: 16px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.55); padding-top: 14px; }
+  #main-logout .tb-pills { display: flex; gap: 8px; }
+  #main-logout .tb-pill { font-family: 'Schibsted Grotesk', sans-serif; font-size: 11.5px; font-weight: 500; padding: 5px 11px; border-radius: 999px; background: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.5); color: rgba(20,23,28,0.6); }
+  #main-logout .tb-submit { width: 38px; height: 38px; border-radius: 999px; background: linear-gradient(135deg,#c94fd6,#7c6ff0); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+  #main-logout .reel-wrap { margin: 48px -40px 0; width: calc(100% + 80px); -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); }
+  #main-logout .reel-track { display: flex; gap: 18px; width: max-content; animation: reelscroll 46s linear infinite; }
+  #main-logout .reel-wrap:hover .reel-track { animation-play-state: paused; }
+  @keyframes reelscroll { from { transform: translateX(0);} to { transform: translateX(-50%);} }
+  #main-logout .reel-card { width: 280px; height: 498px; flex-shrink: 0; border-radius: 18px; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(60,30,90,0.12); background:#111; }
+  #main-logout .reel-card img.poster, #main-logout .reel-card video { position:absolute; inset:0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  #main-logout .reel-card .glow { position:absolute; inset:0; background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.45)); pointer-events:none; z-index:2; }
+  #main-logout .reel-card .play { position: absolute; bottom: 14px; left: 14px; color: #fff; font-size: 12.5px; font-family:'Schibsted Grotesk',sans-serif; z-index:3; display:flex; align-items:center; gap:5px; }
+  #main-logout .hiw { position: relative; padding: 130px 40px 150px; background: linear-gradient(180deg, #08080b 0%, #08080b 70%, #050308 100%); overflow: hidden; }
+  #main-logout .hiw::before { content:''; position:absolute; inset:0; z-index:0; background: radial-gradient(50% 40% at 50% 0%, rgba(147,51,234,0.28), transparent 65%), radial-gradient(40% 35% at 15% 60%, rgba(236,72,153,0.14), transparent 60%), radial-gradient(40% 35% at 85% 40%, rgba(139,92,246,0.16), transparent 60%), radial-gradient(55% 45% at 50% 100%, rgba(147,51,234,0.22), transparent 70%); }
+  #main-logout .hiw-head { position:relative; z-index:1; max-width: 640px; margin: 0 auto; text-align: center; }
+  #main-logout .hiw-eyebrow { font-family: 'Schibsted Grotesk', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: #b98bf0; }
+  #main-logout .hiw-head h2 { margin-top: 10px; font-family: 'Fustat', sans-serif; font-weight: 700; font-size: 34px; letter-spacing: -0.02em; color:#fff; }
+  #main-logout .hiw-head p { margin-top: 10px; font-size: 13.5px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+  #main-logout .timeline { position: relative; z-index:1; max-width: 900px; margin: 76px auto 0; }
+  #main-logout .timeline-line { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; transform: translateX(-50%); background: linear-gradient(180deg, #8b5cf6 0%, #c94fd6 55%, #ec4899 100%); opacity: 0.7; }
+  #main-logout .row { position: relative; display: flex; margin-bottom: 56px; opacity: 0; transition: opacity 0.7s ease, transform 0.7s ease; }
+  #main-logout .row:last-child { margin-bottom: 0; }
+  #main-logout .row.left { justify-content: flex-start; transform: translate(-24px, 16px); }
+  #main-logout .row.right { justify-content: flex-end; transform: translate(24px, 16px); }
+  #main-logout .row.visible { opacity: 1; transform: translate(0, 0); }
+  #main-logout .node { position: absolute; left: 50%; top: 34px; transform: translate(-50%,-50%); width: 30px; height: 30px; border-radius: 999px; background: radial-gradient(circle at 35% 30%, #d9a8ff, #9333ea); display: flex; align-items: center; justify-content: center; font-family: 'Schibsted Grotesk', sans-serif; font-size: 10px; font-weight: 700; box-shadow: 0 0 0 6px rgba(147,51,234,0.15); z-index: 3; }
+  #main-logout .step-card { width: 42%; border-radius: 16px; overflow: hidden; color:#fff; }
+  #main-logout .step-visual { height: 96px; display: flex; align-items: center; justify-content: center; font-size: 26px; background: radial-gradient(circle at 50% 30%, rgba(147,51,234,0.35), transparent 70%); border-bottom: 1px solid rgba(255,255,255,0.08); }
+  #main-logout .step-text { padding: 14px 16px 16px; }
+  #main-logout .step-text .tag { font-family: 'Schibsted Grotesk', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: rgba(255,255,255,0.35); }
+  #main-logout .step-text .title { margin-top: 4px; font-family: 'Schibsted Grotesk', sans-serif; font-weight: 600; font-size: 15px; }
+  #main-logout .step-text .desc { margin-top: 4px; font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.5; }
+  #main-logout .cta { position: relative; min-height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; background: radial-gradient(65% 40% at 50% 0%, rgba(147,51,234,0.20), transparent 60%), #030105; }
+  #main-logout .float-card { position: absolute; border-radius: 8px; overflow: hidden; will-change: transform; }
+  #main-logout .float-card img.poster, #main-logout .float-card video { position:absolute; inset:0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  #main-logout .float-card.behind { z-index: 1; filter: brightness(0.6); }
+  #main-logout .float-card.front { z-index: 3; }
+  #main-logout .cta-center { position: relative; z-index: 10; text-align: center; }
+  #main-logout .cta-center h2 { font-family: 'Fustat', sans-serif; font-weight: 600; font-size: 48px; letter-spacing: -0.02em; color: #fff; text-shadow: 0 4px 24px rgba(0,0,0,0.6); }
+  #main-logout .cta-btns { margin-top: 24px; display: flex; gap: 10px; justify-content: center; }
+  #main-logout .cta-btns .btn-primary { background: rgba(255,255,255,0.85); backdrop-filter: blur(10px); color:#000; padding: 12px 28px; border-radius: 999px; font-family:'Schibsted Grotesk',sans-serif; font-weight:600; font-size: 13.5px; }
+  #main-logout .cta-btns .btn-secondary { background: rgba(255,255,255,0.08); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.25); color:#fff; padding: 12px 28px; border-radius: 999px; font-family:'Schibsted Grotesk',sans-serif; font-weight:600; font-size: 13.5px; }
+</style>
+</head>
+<body>
+
+<div class="note">
+  Oceanic Design — full page set. Jump links below, or scroll top to bottom.
+</div>
+<div class="jump">
+  <a href="#main-logout">Main (Signed Out)</a><a href="#signin">Sign In</a><a href="#signup">Sign Up</a><a href="#signedin-home">Signed-In Home</a>
+  <a href="#projects">Projects</a><a href="#billing">Billing</a><a href="#account">Account</a><a href="#notifications">Notifications</a>
+</div>
+
+<!-- MAIN (SIGNED OUT) -->
+<div id="main-logout">
+  <div class="screen" style="margin-top:28px;">
+    <div class="screen-label" style="color: rgba(20,23,28,0.4);">Main — Signed Out</div>
+    <div class="hero">
+      <div class="nav glass">
+        <div class="logo">Script <span>to</span> Video</div>
+        <div class="navlinks"><span>Platform</span><span>Features ↓</span><span>Projects</span><span>Community</span></div>
+        <div class="navright"><div class="btn btn-ghost">Sign Up</div><div class="btn btn-dark">Log In</div></div>
+      </div>
+      <div class="hero-body">
+        <h1>What are we <span class="accent">making</span> today?</h1>
+        <p class="subtitle">One agent runs the whole pipeline — research, script, storyboard, film &amp; more</p>
+        <div class="typebar glass">
+          <div class="tb-top"><span>60/450 credits</span><span>✦ GPT-4o</span></div>
+          <div class="tb-textarea">Paste a full script, or just describe your idea…</div>
+          <div class="tb-bottom">
+            <div class="tb-pills"><span class="tb-pill">📎 Attach</span><span class="tb-pill">🎙 Voice</span></div>
+            <div class="tb-submit">▶</div>
+          </div>
+        </div>
+      </div>
+      <div class="reel-wrap"><div class="reel-track" id="logout-reel"></div></div>
+    </div>
+
+    <div class="hiw">
+      <div class="hiw-head">
+        <div class="hiw-eyebrow">HOW IT WORKS</div>
+        <h2>From script to final cut</h2>
+        <p>One pipeline, seven stages — every project walks the same road.</p>
+      </div>
+      <div class="timeline">
+        <div class="timeline-line"></div>
+        <div id="logout-rows"></div>
+      </div>
+    </div>
+
+    <div class="cta" id="logout-ctaCanvas">
+      <div class="cta-center">
+        <h2>Create your next project.</h2>
+        <div class="cta-btns"><div class="btn-primary">Sign Up</div><div class="btn-secondary">Log In</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SIGN IN -->
+<div id="signin" class="screen auth-screen bg-light">
+  <div class="screen-label">Sign In</div>
+  <div class="top-logo">Script <span>to</span> Video</div>
+  <div class="frag" style="top:8%; left:6%; width:110px; height:150px; transform:rotate(-6deg);"><img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=260&q=60"/></div>
+  <div class="frag" style="top:14%; right:8%; width:130px; height:90px; transform:rotate(5deg);"><img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=260&q=60"/></div>
+  <div class="frag" style="bottom:10%; left:9%; width:100px; height:140px; transform:rotate(4deg);"><img src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=260&q=60"/></div>
+  <div class="frag" style="bottom:12%; right:7%; width:120px; height:90px; transform:rotate(-5deg);"><img src="https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?w=260&q=60"/></div>
+  <div class="card glass-strong">
+    <h1>Welcome back</h1>
+    <p class="sub">Sign in to continue to Script to Video</p>
+    <div class="social"><button>🔵 Continue with Google</button></div>
+    <div class="divider">or</div>
+    <div class="field"><label>Email</label><input placeholder="you@example.com"/></div>
+    <div class="field row"><label style="margin:0">Password</label><a href="#" class="forgot">Forgot password?</a></div>
+    <input placeholder="••••••••" type="password" style="width:100%; padding:11px 14px; border-radius:10px; background:rgba(255,255,255,0.6); border:1px solid rgba(255,255,255,0.7); font-family:'Inter',sans-serif; font-size:14px;"/>
+    <div class="submit">Sign In</div>
+    <div class="switch">Don't have an account? <a href="#signup">Sign up</a></div>
+  </div>
+</div>
+
+<!-- SIGN UP -->
+<div id="signup" class="screen auth-screen bg-light">
+  <div class="screen-label">Sign Up</div>
+  <div class="top-logo">Script <span>to</span> Video</div>
+  <div class="frag" style="top:10%; left:7%; width:120px; height:90px; transform:rotate(5deg);"><img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=260&q=60"/></div>
+  <div class="frag" style="top:8%; right:6%; width:100px; height:140px; transform:rotate(-5deg);"><img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=260&q=60"/></div>
+  <div class="frag" style="bottom:9%; left:8%; width:110px; height:150px; transform:rotate(-4deg);"><img src="https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?w=260&q=60"/></div>
+  <div class="frag" style="bottom:11%; right:9%; width:130px; height:90px; transform:rotate(6deg);"><img src="https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=260&q=60"/></div>
+  <div class="card glass-strong">
+    <h1>Create your account</h1>
+    <p class="sub">Free to start — no card required</p>
+    <div class="social"><button>🔵 Continue with Google</button></div>
+    <div class="divider">or</div>
+    <div class="field"><label>Name</label><input placeholder="Your name"/></div>
+    <div class="field"><label>Email</label><input placeholder="you@example.com"/></div>
+    <div class="field"><label>Password</label><input placeholder="At least 8 characters" type="password"/></div>
+    <div class="submit">Create Account</div>
+    <div class="switch">Already have an account? <a href="#signin">Sign in</a></div>
+    <p class="terms">By continuing you agree to our Terms of Service and Privacy Policy.</p>
+  </div>
+</div>
+
+<!-- SIGNED-IN HOME -->
+<div id="signedin-home" class="screen">
+  <div class="screen-label" style="color: rgba(20,23,28,0.4);">Signed-In Home</div>
+  <div class="hero bg-light">
+    <div class="nav glass">
+      <div class="logo">Script <span>to</span> Video</div>
+      <div class="navlinks"><span>Platform</span><span>Features ↓</span><span>Projects</span><span>Community</span></div>
+      <div class="navright"><div class="credits-pill">60/450 credits</div><div class="avatar">TK</div></div>
+    </div>
+    <div class="hero-body">
+      <h1>What do we <span class="accent">create</span> today?</h1>
+      <p class="subtitle">Turn an idea into a complete production</p>
+      <div class="typebar glass">
+        <div class="tb-top"><span>60/450 credits</span><span>✦ GPT-4o</span></div>
+        <div class="tb-textarea">Paste a full script, or just describe your idea…</div>
+        <div class="tb-bottom">
+          <div class="tb-pills"><span class="tb-pill">📎 Attach</span><span class="tb-pill">🎙 Voice</span></div>
+          <div class="tb-submit">▶</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="body-section" style="background:#efeaff; padding-top:40px;">
+    <div class="section-label">Latest Project</div>
+    <div class="bento">
+      <div class="bento-main glass">
+        <div class="thumb">▶</div>
+        <div class="ptitle">Navneet / Porsche 911 Reel</div>
+        <div class="pmeta">Working on Animate · 56%</div>
+        <div class="bar"><i></i></div>
+        <div class="cta">Watch progress →</div>
+      </div>
+      <div class="bento-cell glass"><div class="tag">Script</div><div class="val">106 words · 0:42</div></div>
+      <div class="bento-cell glass"><div class="tag">Storyboard</div><div class="val">8 beats mapped</div></div>
+      <div class="bento-cell glass"><div class="tag">Assets</div><div class="val">14 collected</div></div>
+      <div class="bento-cell glass"><div class="tag">Final Output</div><div class="val">Pending render</div></div>
+    </div>
+    <div class="section-label" style="margin-top:40px;">Folders</div>
+    <div class="folders">
+      <div class="folder glass">
+        <div class="folder-thumb" style="background-image:url(https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&q=60)"><div class="folder-badge">✓ Shipped</div></div>
+        <div class="folder-body"><div class="folder-title">Porsche 911 Taste Test</div><div class="folder-status">6 stages · 1320 frames</div></div>
+      </div>
+      <div class="folder glass">
+        <div class="folder-thumb" style="background-image:url(https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=400&q=60)"><div class="folder-badge">✓ Shipped</div></div>
+        <div class="folder-body"><div class="folder-title">Testimonial Ad</div><div class="folder-status">5 stages · 900 frames</div></div>
+      </div>
+      <div class="folder glass">
+        <div class="folder-thumb" style="background-image:url(https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&q=60)"><div class="folder-badge" style="background:rgba(124,111,240,0.85); color:#fff;">In progress</div></div>
+        <div class="folder-body"><div class="folder-title">Cohort 26 Reveal</div><div class="folder-status">4/8 stages done</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECTS (own shell) -->
+<div id="projects" class="screen shell bg-light" style="min-height: 88vh;">
+  <div class="screen-label">Projects</div>
+  <div class="sidebar glass">
+    <div class="logo">Script <span>to</span> Video</div>
+    <div class="navgroup">
+      <div class="navitem">✦ Create</div>
+      <div class="navitem active">▦ Projects</div>
+      <div class="navitem">🖼 Assets</div>
+      <div class="navitem">🎬 Storyboards</div>
+      <div class="navitem">🎵 Beat Sheets</div>
+      <div class="navitem">✨ Animations</div>
+      <div class="navitem">🔊 Sound</div>
+      <div class="navitem">⬇ Exports</div>
+    </div>
+    <div class="navdivider"></div>
+    <div class="navgroup"><div class="navitem">▢ Templates</div><div class="navitem">◔ Community</div></div>
+    <div class="navdivider"></div>
+    <div class="navgroup"><div class="navitem">⚙ Settings</div><div class="navitem">◐ Profile</div></div>
+    <div class="sidebar-footer"><div class="avatar">TK</div><div><div class="name">Tukesh</div><div class="email">60 credits</div></div></div>
+  </div>
+  <div class="main">
+    <div class="page-label">Projects</div>
+    <div class="page-title">All Projects</div>
+    <div class="toolbar">
+      <div class="filters"><div class="filter-pill active">All</div><div class="filter-pill">In progress</div><div class="filter-pill">Completed</div></div>
+      <div class="new-btn">+ New Project</div>
+    </div>
+    <div class="project-grid">
+      <div class="pcard glass"><div class="pcard-thumb" style="background-image:url(https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&q=60)"><div class="pcard-badge">In progress</div></div><div class="pcard-body"><div class="pcard-title">Navneet / Porsche 911 Reel</div><div class="pcard-meta">Working on Animate · 56%</div><div class="pcard-bar"><i style="width:56%"></i></div></div></div>
+      <div class="pcard glass"><div class="pcard-thumb" style="background-image:url(https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=400&q=60)"><div class="pcard-badge" style="background:rgba(26,156,91,0.15); color:#1a9c5b;">✓ Shipped</div></div><div class="pcard-body"><div class="pcard-title">Testimonial Ad</div><div class="pcard-meta">5 stages · 900 frames</div><div class="pcard-bar"><i style="width:100%"></i></div></div></div>
+      <div class="pcard glass"><div class="pcard-thumb" style="background-image:url(https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&q=60)"><div class="pcard-badge" style="background:rgba(26,156,91,0.15); color:#1a9c5b;">✓ Shipped</div></div><div class="pcard-body"><div class="pcard-title">Porsche 911 Taste Test</div><div class="pcard-meta">6 stages · 1320 frames</div><div class="pcard-bar"><i style="width:100%"></i></div></div></div>
+      <div class="pcard glass"><div class="pcard-thumb" style="background-image:url(https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=400&q=60)"><div class="pcard-badge">In progress</div></div><div class="pcard-body"><div class="pcard-title">Cohort 26 Reveal</div><div class="pcard-meta">4/8 stages done</div><div class="pcard-bar"><i style="width:50%"></i></div></div></div>
+      <div class="pcard glass"><div class="pcard-thumb" style="background-image:url(https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&q=60)"><div class="pcard-badge">Needs review</div></div><div class="pcard-body"><div class="pcard-title">Product Launch Teaser</div><div class="pcard-meta">Review requested</div><div class="pcard-bar"><i style="width:80%"></i></div></div></div>
+      <div class="pcard glass"><div class="pcard-thumb" style="background-image:url(https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400&q=60)"><div class="pcard-badge" style="background:rgba(26,156,91,0.15); color:#1a9c5b;">✓ Shipped</div></div><div class="pcard-body"><div class="pcard-title">Founder Story</div><div class="pcard-meta">7 stages · 2100 frames</div><div class="pcard-bar"><i style="width:100%"></i></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- BILLING (own shell) -->
+<div id="billing" class="screen shell bg-light" style="min-height: 88vh;">
+  <div class="screen-label">Billing</div>
+  <div class="sidebar glass">
+    <div class="logo">Script <span>to</span> Video</div>
+    <div class="navgroup">
+      <div class="navitem">✦ Create</div><div class="navitem">▦ Projects</div><div class="navitem">🖼 Assets</div>
+      <div class="navitem">🎬 Storyboards</div><div class="navitem">🎵 Beat Sheets</div><div class="navitem">✨ Animations</div>
+      <div class="navitem">🔊 Sound</div><div class="navitem">⬇ Exports</div>
+    </div>
+    <div class="navdivider"></div>
+    <div class="navgroup"><div class="navitem">▢ Templates</div><div class="navitem">◔ Community</div></div>
+    <div class="navdivider"></div>
+    <div class="navgroup"><div class="navitem active">⚙ Settings</div><div class="navitem">◐ Profile</div></div>
+    <div class="sidebar-footer"><div class="avatar">TK</div><div><div class="name">Tukesh</div><div class="email">60 credits</div></div></div>
+  </div>
+  <div class="main">
+    <div class="page-label">Billing &amp; Usage</div>
+    <div class="page-title">Billing</div>
+    <div class="billing-grid">
+      <div class="balance-card glass"><div class="label">Credits balance</div><div class="num">60</div><div class="sub">of 450 this cycle</div><div class="upgrade">Buy more credits</div></div>
+      <div class="ledger-card glass">
+        <div class="label">Recent activity</div>
+        <div class="ledger-row"><div class="ledger-left"><div class="title">Signup grant</div><div class="date">Aug 16, 2026</div></div><div class="ledger-delta pos">+50</div></div>
+        <div class="ledger-row"><div class="ledger-left"><div class="title">Render — Porsche 911 Taste Test</div><div class="date">Aug 19, 2026</div></div><div class="ledger-delta neg">−5</div></div>
+        <div class="ledger-row"><div class="ledger-left"><div class="title">Render — Testimonial Ad</div><div class="date">Aug 19, 2026</div></div><div class="ledger-delta neg">−5</div></div>
+        <div class="ledger-row"><div class="ledger-left"><div class="title">Render refund — failed render</div><div class="date">Aug 20, 2026</div></div><div class="ledger-delta pos">+5</div></div>
+        <div class="ledger-row"><div class="ledger-left"><div class="title">Render — Navneet / Porsche 911 Reel</div><div class="date">Aug 21, 2026</div></div><div class="ledger-delta neg">−5</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ACCOUNT (own shell) -->
+<div id="account" class="screen shell bg-light" style="min-height: 80vh;">
+  <div class="screen-label">Account</div>
+  <div class="sidebar glass">
+    <div class="logo">Script <span>to</span> Video</div>
+    <div class="navgroup">
+      <div class="navitem">✦ Create</div><div class="navitem">▦ Projects</div><div class="navitem">🖼 Assets</div>
+      <div class="navitem">🎬 Storyboards</div><div class="navitem">🎵 Beat Sheets</div><div class="navitem">✨ Animations</div>
+      <div class="navitem">🔊 Sound</div><div class="navitem">⬇ Exports</div>
+    </div>
+    <div class="navdivider"></div>
+    <div class="navgroup"><div class="navitem">▢ Templates</div><div class="navitem">◔ Community</div></div>
+    <div class="navdivider"></div>
+    <div class="navgroup"><div class="navitem">⚙ Settings</div><div class="navitem active">◐ Profile</div></div>
+    <div class="sidebar-footer"><div class="avatar">TK</div><div><div class="name">Tukesh</div><div class="email">60 credits</div></div></div>
+  </div>
+  <div class="main">
+    <div class="page-label">Account</div>
+    <div class="page-title">Profile &amp; Settings</div>
+    <div class="settings-grid">
+      <div class="settings-card glass">
+        <div class="stitle">Profile</div>
+        <div class="settings-row"><span class="k">Name</span><span class="v">Tukesh</span></div>
+        <div class="settings-row"><span class="k">Email</span><span class="v">dtukeshwar979@···</span></div>
+        <div class="settings-row"><span class="k">Joined</span><span class="v">Aug 16, 2026</span></div>
+      </div>
+      <div class="settings-card glass">
+        <div class="stitle">Security</div>
+        <div class="settings-row"><span class="k">Password</span><span class="v">Change</span></div>
+        <div class="settings-row"><span class="k">Google account</span><span class="v">Connected</span></div>
+        <div class="settings-row"><span class="k">Sessions</span><span class="v">Manage</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS (own shell) -->
+<div id="notifications" class="screen shell bg-light" style="min-height: 80vh;">
+  <div class="screen-label">Notifications</div>
+  <div class="sidebar glass">
+    <div class="logo">Script <span>to</span> Video</div>
+    <div class="navgroup">
+      <div class="navitem">✦ Create</div><div class="navitem">▦ Projects</div><div class="navitem">🖼 Assets</div>
+      <div class="navitem">🎬 Storyboards</div><div class="navitem">🎵 Beat Sheets</div><div class="navitem">✨ Animations</div>
+      <div class="navitem">🔊 Sound</div><div class="navitem">⬇ Exports</div>
+    </div>
+    <div class="navdivider"></div>
+    <div class="navgroup"><div class="navitem">▢ Templates</div><div class="navitem">◔ Community</div></div>
+    <div class="navdivider"></div>
+    <div class="navgroup"><div class="navitem">⚙ Settings</div><div class="navitem">◐ Profile</div></div>
+    <div class="sidebar-footer"><div class="avatar">TK</div><div><div class="name">Tukesh</div><div class="email">60 credits</div></div></div>
+  </div>
+  <div class="main">
+    <div class="page-label">Notifications</div>
+    <div class="page-title">Notifications</div>
+    <div class="notif-list">
+      <div class="notif-item glass"><div class="notif-dot"></div><div><div class="ntitle">Porsche 911 Taste Test finished rendering</div><div class="ntime">Aug 19, 2026 · 2h ago</div></div></div>
+      <div class="notif-item glass"><div class="notif-dot" style="background:#c94fd6;"></div><div><div class="ntitle">Render failed — Navneet / Porsche 911 Reel</div><div class="ntime">Aug 20, 2026 · yesterday</div></div></div>
+      <div class="notif-item glass"><div class="notif-dot" style="opacity:0.3;"></div><div><div class="ntitle">Testimonial Ad shipped</div><div class="ntime">Aug 19, 2026</div></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const CLIPS = [
+    { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", poster: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=400&h=712&fit=crop&q=70" },
+    { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", poster: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&h=712&fit=crop&q=70" },
+    { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", poster: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&h=712&fit=crop&q=70" },
+    { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4", poster: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400&h=712&fit=crop&q=70" },
+    { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4", poster: "https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?w=400&h=712&fit=crop&q=70" },
+    { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", poster: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=712&fit=crop&q=70" },
+    { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4", poster: "https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?w=400&h=712&fit=crop&q=70" },
+    { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", poster: "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&h=712&fit=crop&q=70" },
+  ];
+  function mountMedia(container, clip) {
+    const img = document.createElement('img');
+    img.className = 'poster'; img.src = clip.poster;
+    const v = document.createElement('video');
+    v.className = 'video'; v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto';
+    v.addEventListener('playing', () => { img.style.opacity = '0'; img.style.transition = 'opacity 0.4s'; });
+    container.appendChild(img);
+    container.appendChild(v);
+    v.src = clip.video;
+    v.load();
+    const playPromise = v.play();
+    if (playPromise) playPromise.catch(() => {
+      const retry = () => { v.play().catch(() => {}); document.removeEventListener('click', retry); };
+      document.addEventListener('click', retry, { once: true });
+    });
+  }
+
+  const reel = document.getElementById('logout-reel');
+  for (let rep = 0; rep < 2; rep++) {
+    CLIPS.forEach(clip => {
+      const d = document.createElement('div');
+      d.className = 'reel-card';
+      reel.appendChild(d);
+      mountMedia(d, clip);
+      const glow = document.createElement('div'); glow.className = 'glow'; d.appendChild(glow);
+      const play = document.createElement('div'); play.className = 'play'; play.textContent = '▶ live'; d.appendChild(play);
+    });
+  }
+
+  const STEPS = [
+    ["01","📝","Script","The script is written first — everything else follows it."],
+    ["02","🎬","Storyboard","The script becomes a shot-by-shot storyboarding plan."],
+    ["03","🎵","Beat Sheet","The storyboard becomes a beat sheet — timing for every beat."],
+    ["04","🖼","Asset Library","Every asset needed for every beat, collected in one place."],
+    ["05","▶","Per-Beat Animation","Each beat is created one by one, beat by beat."],
+    ["06","🎧","Sound","Music, VO and SFX are mixed to the timeline."],
+    ["07","🎞","Final Delivery","Everything comes together as the final video."],
+  ];
+  const rows = document.getElementById('logout-rows');
+  STEPS.forEach(([num, icon, title, desc], i) => {
+    const side = i % 2 === 0 ? 'left' : 'right';
+    const row = document.createElement('div');
+    row.className = 'row ' + side;
+    row.innerHTML =
+      '<div class="node">' + num + '</div>' +
+      '<div class="step-card glass-dark">' +
+        '<div class="step-visual">' + icon + '</div>' +
+        '<div class="step-text"><div class="tag">STEP ' + num + '</div><div class="title">' + title + '</div><div class="desc">' + desc + '</div></div>' +
+      '</div>';
+    rows.appendChild(row);
+  });
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.25 });
+  document.querySelectorAll('#main-logout .row').forEach(r => io.observe(r));
+
+  const canvas = document.getElementById('logout-ctaCanvas');
+  const ringPositions = [
+    [3,3,175,311],[2,24,145,258],[4,90,170,302],
+    [35,1,155,275],[38,82,160,284],
+    [62,2,150,267],[60,84,165,293],
+    [74,20,140,249],[72,45,175,311],[76,68,150,267],[73,90,140,249],
+  ];
+  const nearPositions = [
+    [30,32,110,196],[26,60,100,178],[58,30,105,187],[56,62,100,178],[44,15,95,169],[46,80,95,169],
+  ];
+  const elements = [];
+  function addFloat(p, i, cls) {
+    const [top, left, w, h] = p;
+    const el = document.createElement('div');
+    el.className = 'float-card ' + cls;
+    el.style.top = top + '%'; el.style.left = left + '%';
+    el.style.width = w + 'px'; el.style.height = h + 'px';
+    canvas.appendChild(el);
+    mountMedia(el, CLIPS[i % CLIPS.length]);
+    const depth = 0.5 + (i % 6) * 0.7;
+    elements.push({ el, depth, current: { x: 0, y: 0 } });
+  }
+  ringPositions.forEach((p, i) => addFloat(p, i, 'front'));
+  nearPositions.forEach((p, i) => addFloat(p, i + 4, 'behind'));
+
+  const mouse = { x: 0, y: 0 };
+  function updateMouse(clientX, clientY) {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = clientX - rect.left;
+    mouse.y = clientY - rect.top;
+  }
+  window.addEventListener('mousemove', (e) => updateMouse(e.clientX, e.clientY));
+  window.addEventListener('touchmove', (e) => { const t = e.touches[0]; if (t) updateMouse(t.clientX, t.clientY); });
+
+  const SENSITIVITY = -1;
+  const EASING = 0.05;
+  function tick() {
+    elements.forEach(item => {
+      const strength = (item.depth * SENSITIVITY) / 20;
+      const targetX = mouse.x * strength;
+      const targetY = mouse.y * strength;
+      item.current.x += (targetX - item.current.x) * EASING;
+      item.current.y += (targetY - item.current.y) * EASING;
+      item.el.style.transform = 'translate3d(' + item.current.x + 'px,' + item.current.y + 'px,0)';
+    });
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

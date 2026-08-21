@@ -1,7 +1,7 @@
 # Oceanic/Glass Design System + Public Site — Design Spec
 
 Date: 2026-08-21
-Status: Approved (visual direction validated via brainstorming visual companion, see mockups in `.superpowers/brainstorm/526-1787308310/content/signedout-flow-v7.html` for the closest reference — not committed, local only)
+Status: Superseded — see [`design-systems/oceanic-design/`](../../../design-systems/oceanic-design/DESIGN-SYSTEM.md) for the current, expanded, committed version (covers auth, signed-in home, dashboard/projects/billing/account/notifications in addition to what's below, plus a working `preview/all-pages.html` and ready-to-use component source). This file is kept for history; don't implement from it directly.
 
 ## 1. Scope
 
