@@ -3,6 +3,9 @@
 # dependencies
 /node_modules
 /.pnp
+
+# Claude Code worktree sessions
+/.claude/worktrees
 .pnp.*
 .yarn/*
 !.yarn/patches
