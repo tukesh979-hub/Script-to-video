@@ -1,77 +1,153 @@
 @import "tailwindcss";
 
-/* Design tokens — from 03-brand-style.md. Exact values, do not deviate. */
+/* ── Camera Report ───────────────────────────────────────────────
+   Original design direction, not ported from anywhere. This is a real
+   production pipeline (raw footage, captions, SFX, beat sheet, scenes,
+   final assembly) -- the identity comes from that world, not the generic
+   "AI startup" glass/gradient look: paper instead of glass, hairlines
+   instead of blur, a circle-take red (the grease-pencil mark an editor
+   circles their preferred take with) instead of a purple gradient, tick
+   marks instead of a smooth progress bar. Flat surfaces, sharp corners,
+   stamped corner tabs for status instead of floating pill badges. */
 :root {
-  --bg: #0b0b0e;
-  --panel: #141318;
-  --panel-2: #1b1a20;
-  --line: #27262d;
-  --lime: #c6ff34;
-  --lime-dim: #9bcc1f;
-  --text: #f4f4f1;
-  --muted: #8e8d96;
-  --faint: #5c5b64;
-  --red: #ff8d70;
+  --bg: #f1efe8;
+  --paper: #fbfaf6;
+  --paper-2: #eae7dd;
+  --ink: #1b1917;
+  --muted: #635c52;
+  --faint: #948c7e;
+  --line: rgba(27, 25, 23, 0.14);
+  --line-strong: rgba(27, 25, 23, 0.28);
+  --accent: #c4222e;
+  --accent-ink: #8f1620;
+  --accent-soft: rgba(196, 34, 46, 0.12);
+  --stamp: #3b6e4f;
+  --stamp-soft: rgba(59, 110, 79, 0.12);
+  /* Distinct from --accent on purpose -- semantic "needs attention" (a
+     safety-light amber) shouldn't read as the same signal as the brand
+     accent, or a badge and a primary button become indistinguishable. */
+  --warn: #a4650f;
+  --warn-soft: rgba(164, 101, 15, 0.14);
+  --danger: #c4222e;
+  --danger-soft: rgba(196, 34, 46, 0.12);
+  /* Fixed, not theme-swapped: the accent red is dark enough in both themes
+     that light text on it always has good contrast. */
+  --on-accent: #fbfaf6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #171310;
+    --paper: #211d17;
+    --paper-2: #2a251d;
+    --ink: #ede8de;
+    --muted: #b3a998;
+    --faint: #7d7364;
+    --line: rgba(237, 232, 222, 0.14);
+    --line-strong: rgba(237, 232, 222, 0.28);
+    --accent: #e8394a;
+    --accent-ink: #ff8a92;
+    --accent-soft: rgba(232, 57, 74, 0.18);
+    --stamp: #5fa579;
+    --stamp-soft: rgba(95, 165, 121, 0.18);
+    --warn: #d99a3d;
+    --warn-soft: rgba(217, 154, 61, 0.18);
+    --danger: #e8394a;
+    --danger-soft: rgba(232, 57, 74, 0.18);
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #171310;
+  --paper: #211d17;
+  --paper-2: #2a251d;
+  --ink: #ede8de;
+  --muted: #b3a998;
+  --faint: #7d7364;
+  --line: rgba(237, 232, 222, 0.14);
+  --line-strong: rgba(237, 232, 222, 0.28);
+  --accent: #e8394a;
+  --accent-ink: #ff8a92;
+  --accent-soft: rgba(232, 57, 74, 0.18);
+  --stamp: #5fa579;
+  --stamp-soft: rgba(95, 165, 121, 0.18);
+  --warn: #d99a3d;
+  --warn-soft: rgba(217, 154, 61, 0.18);
+  --danger: #e8394a;
+  --danger-soft: rgba(232, 57, 74, 0.18);
 }
 
 @theme inline {
   --color-background: var(--bg);
-  --color-panel: var(--panel);
-  --color-panel-2: var(--panel-2);
+  --color-panel: var(--paper);
+  --color-panel-2: var(--paper-2);
+  --color-panel-strong: var(--paper);
   --color-border: var(--line);
-  --color-foreground: var(--text);
+  --color-border-glass: var(--line-strong);
+  --color-foreground: var(--ink);
   --color-muted: var(--muted);
   --color-faint: var(--faint);
-  --color-lime: var(--lime);
-  --color-lime-dim: var(--lime-dim);
-  --color-red: var(--red);
+  --color-lime: var(--accent);
+  --color-lime-dim: var(--accent-ink);
+  --color-lime-soft: var(--accent-soft);
+  --color-red: var(--danger);
+  --color-on-accent: var(--on-accent);
+  --color-stamp: var(--stamp);
+  --color-stamp-soft: var(--stamp-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
   --font-display: var(--font-display);
   --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   background: var(--bg);
-  color: var(--text);
+  color: var(--ink);
 }
 
-/* Sci-fi grid background — the one ambient texture. Two overlaid grids (fine
-   lime + coarser violet hairlines), radial-fade toward the edges, slow drift.
-   Fixed + behind everything; pages never add a second background effect. */
+::selection {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+/* One ambient texture, rendered once in the root layout: a faint lightbox
+   grid (the kind you'd review a contact sheet or film strip against), not
+   the previous theme's violet dot-grid. Deliberately understated -- the
+   flat card language shouldn't compete with it. */
 .gridbg {
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(198, 255, 52, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(198, 255, 52, 0.055) 1px, transparent 1px),
-    linear-gradient(rgba(139, 92, 246, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(139, 92, 246, 0.05) 1px, transparent 1px);
-  background-size:
-    28px 28px,
-    28px 28px,
-    140px 140px,
-    140px 140px;
-  mask-image: radial-gradient(ellipse 80% 65% at 50% 35%, black 40%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse 80% 65% at 50% 35%, black 40%, transparent 100%);
-  animation: gridDrift 24s linear infinite;
+    linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.35;
+  mask-image: radial-gradient(ellipse 80% 65% at 50% 20%, black 25%, transparent 85%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 65% at 50% 20%, black 25%, transparent 85%);
 }
 
-@keyframes gridDrift {
-  from {
-    background-position:
-      0 0,
-      0 0,
-      0 0,
-      0 0;
-  }
-  to {
-    background-position:
-      28px 28px,
-      28px 28px,
-      140px 140px,
-      140px 140px;
-  }
+/* A hand-circled "take" mark -- the grease-pencil ring an editor draws
+   around the take they want. Deliberately imperfect (mismatched border
+   radii, slight rotation), not a clean ellipse. */
+.circle-mark {
+  position: relative;
+  display: inline-block;
+  padding: 0 0.12em;
+}
+.circle-mark::after {
+  content: "";
+  position: absolute;
+  inset: -0.1em -0.16em -0.14em;
+  border: 3px solid var(--accent);
+  border-radius: 52% 48% 47% 53% / 56% 44% 58% 42%;
+  transform: rotate(-1.5deg);
+  pointer-events: none;
 }
 
 @keyframes pulseDot {
@@ -85,4 +161,10 @@ body {
 }
 .pulse-dot {
   animation: pulseDot 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-dot {
+    animation: none;
+  }
 }

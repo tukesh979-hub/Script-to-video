@@ -9,11 +9,31 @@ import { projects, projectStages, projectAssets } from "./schema";
  * from the actual remotion-engine build. The in_progress/needs_review/
  * cancelled rows are clearly-labeled examples added only so those dashboard
  * states can be seen and verified -- not claimed as real runs.
+ *
+ * Needs a real auth.users id to attach these to (RLS means unowned rows are
+ * invisible to everyone) -- sign up once first, then run:
+ *   SEED_USER_ID=<uuid from Supabase Auth users table> npm run db:seed
  */
 
-const navneetId = randomUUID();
-const porscheId = randomUUID();
-const testimonialId = randomUUID();
+const SEED_USER_ID = process.env.SEED_USER_ID;
+if (!SEED_USER_ID) {
+  throw new Error(
+    "SEED_USER_ID is not set. Sign up once, grab your user id from Supabase's Auth > Users table, then run: " +
+      "SEED_USER_ID=<uuid> npm run db:seed",
+  );
+}
+
+// tsx compiles this file as CJS (no "type": "module" in package.json, and
+// deliberately not adding one -- see the migration to postgres-js's own
+// note on why this project stays CJS everywhere else), which doesn't allow
+// top-level await. Everything that awaits lives inside main() instead.
+// Takes userId as a parameter (rather than closing over the outer
+// SEED_USER_ID) so its narrowed `string` type -- not `string | undefined` --
+// is what the function body actually sees.
+async function main(userId: string) {
+  const navneetId = randomUUID();
+  const porscheId = randomUUID();
+  const testimonialId = randomUUID();
 
 const SEED_PROJECTS = [
   {
@@ -74,9 +94,7 @@ const SEED_PROJECTS = [
 ];
 
 for (const p of SEED_PROJECTS) {
-  db.insert(projects)
-    .values(p)
-    .run();
+  await db.insert(projects).values({ ...p, userId });
 }
 
 // ---------------------------------------------------------------------------
@@ -338,17 +356,15 @@ const navneetStages: StageInput[] = [
 ];
 
 for (const s of navneetStages) {
-  db.insert(projectStages)
-    .values({
-      id: randomUUID(),
-      projectId: navneetId,
-      stageType: s.stageType,
-      stageOrder: s.stageOrder,
-      title: s.title,
-      summary: s.summary,
-      dataJson: JSON.stringify(s.data),
-    })
-    .run();
+  await db.insert(projectStages).values({
+    id: randomUUID(),
+    projectId: navneetId,
+    stageType: s.stageType,
+    stageOrder: s.stageOrder,
+    title: s.title,
+    summary: s.summary,
+    dataJson: JSON.stringify(s.data),
+  });
 }
 
 const navneetAssets: { name: string; assetType: "code_drawn" | "ai_generated" | "user_supplied"; usedInScenes: string; prompt?: string; sourcePath?: string }[] = [
@@ -369,9 +385,13 @@ const navneetAssets: { name: string; assetType: "code_drawn" | "ai_generated" | 
 ];
 
 for (const a of navneetAssets) {
-  db.insert(projectAssets)
-    .values({ id: randomUUID(), projectId: navneetId, ...a })
-    .run();
+  await db.insert(projectAssets).values({ id: randomUUID(), projectId: navneetId, ...a });
 }
 
 console.log(`Seeded ${SEED_PROJECTS.length} projects, ${navneetStages.length} stages, ${navneetAssets.length} assets.`);
+}
+
+main(SEED_USER_ID).catch((e) => {
+  console.error(e);
+  process.exit(1);
+});
