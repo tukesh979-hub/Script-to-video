@@ -25,7 +25,9 @@ const hasLiveCredentials = Boolean(url && serviceKey);
 test.describe("critical path: signup through project view", () => {
   test.skip(!hasLiveCredentials, "Needs NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY in the test environment.");
 
-  const email = `e2e-${Date.now()}@example.com`;
+  // example.com is on Supabase's rejected-domain list ("Email address is
+  // invalid") -- mailinator.com has real MX records and passes.
+  const email = `e2e-${Date.now()}@mailinator.com`;
   const password = "TestPassword123";
   const displayName = "E2E Test User";
   const projectName = `E2E Project ${Date.now()}`;
@@ -65,7 +67,10 @@ test.describe("critical path: signup through project view", () => {
 
     // 5. Onboarding complete -> dashboard
     await expect(page).toHaveURL(/\/dashboard/);
-    await expect(page.getByText(new RegExp(`Welcome back, ${displayName}`, "i"))).toBeVisible();
+    // getByRole, not getByText: Next.js's hidden route-announcer div
+    // duplicates the h1 text for screen readers, so a plain text match
+    // resolves to two elements.
+    await expect(page.getByRole("heading", { name: new RegExp(`Welcome back, ${displayName}`, "i") })).toBeVisible();
 
     // 6. Create a new project through the real form
     await page.goto("/dashboard/projects/new");
