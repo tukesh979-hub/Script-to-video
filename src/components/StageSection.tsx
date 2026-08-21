@@ -21,9 +21,7 @@ function Field({ label, value }: { label: string; value: string }) {
 }
 
 function Pill({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="rounded-full border border-border bg-panel-2 px-2.5 py-1 text-xs text-muted">{children}</span>
-  );
+  return <span className="border border-border bg-panel-2 px-2.5 py-1 font-mono text-xs text-muted">{children}</span>;
 }
 
 function StageBody({ stageType, data }: { stageType: string; data: unknown }) {
@@ -37,7 +35,7 @@ function StageBody({ stageType, data }: { stageType: string; data: unknown }) {
       return (
         <ul className="flex flex-col gap-2">
           {d.clips.map((c) => (
-            <li key={c.name} className="rounded-lg border border-border bg-panel-2 p-3">
+            <li key={c.name} className="border border-border bg-panel-2 p-3">
               <p className="font-mono text-xs text-lime-dim">{c.name}</p>
               <p className="mt-1 text-sm text-muted">Used in: {c.usedIn}</p>
               {c.note && <p className="mt-1 text-xs text-faint">{c.note}</p>}
@@ -68,7 +66,7 @@ function StageBody({ stageType, data }: { stageType: string; data: unknown }) {
       const d = data as SfxData;
       return (
         <div className="flex flex-col gap-3">
-          <div className="overflow-x-auto rounded-lg border border-border">
+          <div className="overflow-x-auto border border-border">
             <table className="w-full min-w-[520px] text-left text-sm">
               <thead>
                 <tr className="border-b border-border text-[10px] uppercase tracking-wide text-faint">
@@ -103,7 +101,7 @@ function StageBody({ stageType, data }: { stageType: string; data: unknown }) {
       return (
         <ol className="flex flex-col gap-2">
           {d.beats.map((b) => (
-            <li key={b.num} className="flex gap-3 rounded-lg border border-border bg-panel-2 p-3 text-sm">
+            <li key={b.num} className="flex gap-3 border border-border bg-panel-2 p-3 text-sm">
               <span className="shrink-0 font-display text-xs text-lime-dim">#{b.num}</span>
               <span className="shrink-0 font-mono text-xs text-faint">{b.time}</span>
               <span className="text-muted italic">&ldquo;{b.vo}&rdquo;</span>
@@ -153,7 +151,7 @@ function StageBody({ stageType, data }: { stageType: string; data: unknown }) {
           <Field label="Render pipeline" value={d.renderPipeline} />
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {(["music", "voice", "output"] as const).map((k) => (
-              <div key={k} className="rounded-lg border border-border bg-panel-2 p-3">
+              <div key={k} className="border border-border bg-panel-2 p-3">
                 <p className="font-display text-[10px] uppercase tracking-wide text-faint">{k}</p>
                 <dl className="mt-1.5 flex flex-col gap-1">
                   {Object.entries(d[k] ?? {}).map(([key, value]) => (
@@ -179,7 +177,7 @@ export function StageSection({ stage, defaultOpen = false }: { stage: ProjectSta
   return (
     <details
       open={defaultOpen}
-      className="group rounded-2xl border border-border bg-panel open:pb-4"
+      className="group border border-border bg-panel open:pb-4"
     >
       <summary className="flex cursor-pointer list-none items-center gap-3 px-4 py-3.5">
         <span aria-hidden className="font-display text-sm text-lime-dim">

@@ -3,6 +3,9 @@
 # dependencies
 /node_modules
 /.pnp
+
+# Claude Code worktree sessions
+/.claude/worktrees
 .pnp.*
 .yarn/*
 !.yarn/patches
@@ -12,6 +15,9 @@
 
 # testing
 /coverage
+/test-results
+/playwright-report
+/blob-report
 
 # next.js
 /.next/
@@ -32,6 +38,10 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# ...except the template -- this one has no real secrets and should be
+# committed so `cp .env.local.example .env.local` (see README) has something
+# to copy.
+!.env.local.example
 
 # vercel
 .vercel

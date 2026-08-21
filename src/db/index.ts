@@ -1,10 +1,18 @@
-import Database from "better-sqlite3";
-import { drizzle } from "drizzle-orm/better-sqlite3";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import * as schema from "./schema";
-import path from "node:path";
 
-const DB_PATH = path.join(process.cwd(), "local.db");
-const sqlite = new Database(DB_PATH);
-sqlite.pragma("journal_mode = WAL");
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  throw new Error(
+    "DATABASE_URL is not set. Copy .env.local.example to .env.local and fill in Supabase's " +
+      "pooled connection string (Project Settings -> Database -> Connection pooling, transaction mode).",
+  );
+}
 
-export const db = drizzle(sqlite, { schema });
+// Supabase's connection pooler (transaction mode, port 6543) doesn't support
+// prepared statements across pooled connections -- disable them here or
+// queries intermittently fail once traffic goes through the pooler.
+const client = postgres(connectionString, { prepare: false });
+
+export const db = drizzle(client, { schema });

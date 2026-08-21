@@ -6,9 +6,12 @@ const TYPE_LABEL: Record<string, string> = {
   user_supplied: "User-supplied",
 };
 
+// Distinct from the status-badge semantics -- code_drawn is the accent
+// (this codebase built it), ai_generated is warn (worth a second glance),
+// user_supplied is neutral.
 const TYPE_CLASS: Record<string, string> = {
   code_drawn: "text-lime-dim border-lime-dim/30",
-  ai_generated: "text-lime border-lime/30",
+  ai_generated: "text-warn border-warn/30",
   user_supplied: "text-muted border-border",
 };
 
@@ -18,14 +21,14 @@ const TYPE_CLASS: Record<string, string> = {
 export function AssetSheet({ assets }: { assets: ProjectAsset[] }) {
   if (assets.length === 0) return null;
   return (
-    <div className="overflow-x-auto rounded-2xl border border-border bg-panel">
+    <div className="overflow-x-auto border border-border bg-panel">
       <table className="w-full min-w-[640px] text-left text-sm">
         <thead>
-          <tr className="border-b border-border text-[10px] uppercase tracking-wide text-faint">
-            <th className="px-4 py-3 font-display font-normal">Asset</th>
-            <th className="px-4 py-3 font-display font-normal">Type</th>
-            <th className="px-4 py-3 font-display font-normal">Used in</th>
-            <th className="px-4 py-3 font-display font-normal">Prompt / source</th>
+          <tr className="border-b border-border font-mono text-[10px] tracking-wide text-faint uppercase">
+            <th className="px-4 py-3 font-normal">Asset</th>
+            <th className="px-4 py-3 font-normal">Type</th>
+            <th className="px-4 py-3 font-normal">Used in</th>
+            <th className="px-4 py-3 font-normal">Prompt / source</th>
           </tr>
         </thead>
         <tbody>
@@ -33,7 +36,9 @@ export function AssetSheet({ assets }: { assets: ProjectAsset[] }) {
             <tr key={a.id} className="border-b border-border/60 last:border-0">
               <td className="px-4 py-3 font-medium text-foreground">{a.name}</td>
               <td className="px-4 py-3">
-                <span className={`rounded-full border px-2 py-0.5 text-xs ${TYPE_CLASS[a.assetType] ?? "text-muted border-border"}`}>
+                <span
+                  className={`border px-2 py-0.5 font-mono text-xs uppercase ${TYPE_CLASS[a.assetType] ?? "text-muted border-border"}`}
+                >
                   {TYPE_LABEL[a.assetType] ?? a.assetType}
                 </span>
               </td>

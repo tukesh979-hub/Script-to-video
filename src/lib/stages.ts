@@ -62,3 +62,17 @@ export const STAGE_TYPE_LABEL: Record<StageType, string> = {
   scene: "Scene",
   assembly: "Final Assembly",
 };
+
+// Fixed canonical order for pipeline-progress visualizations (PointerBar,
+// ProjectSpotlight) -- every project is measured against the same 8
+// checkpoints regardless of which ones it actually used.
+export const PIPELINE_STAGE_ORDER: StageType[] = [
+  "raw_footage",
+  "captions",
+  "voiceover",
+  "sfx",
+  "storyboard",
+  "beat_sheet",
+  "scene",
+  "assembly",
+];
