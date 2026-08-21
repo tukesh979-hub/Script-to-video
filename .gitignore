@@ -46,6 +46,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# superpowers brainstorming companion mockups
+.superpowers/
+
 # local dev database
 local.db
 local.db-*
