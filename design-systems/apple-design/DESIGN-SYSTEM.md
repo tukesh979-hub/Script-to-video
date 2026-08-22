@@ -21,11 +21,11 @@ There are **two variants** — light and dark. They are not just a color swap of
 
 ### Dark variant — what's different and why
 
-Requested explicitly as a reframe, not a reskin: darker background, stronger/more visible glassmorphism, no square corners, and freedom to depart from both Oceanic's and the light Apple variant's page composition.
+Requested explicitly as a reframe, not a reskin: darker background, stronger/more visible glassmorphism, sharp pointed corners (not rounded), and freedom to depart from both Oceanic's and the light Apple variant's page composition.
 
 - **Background**: true black (`#000`) with large, vivid, colorful ambient blooms (systemBlue/systemPurple/systemPink at dark-mode saturation) positioned behind every glass surface — this is what makes the blur actually *read* as glass; the light variant's flatter background was the direct cause of the "where's the glassmorphism" feedback.
 - **Glass recipe strengthened**: `blur(42-46px) saturate(200-220%)` (up from 30px/180%), plus a bright top-edge inset highlight (`inset 0 1.5px 0 rgba(255,255,255,0.28)`) to sell the "light catching a glass edge" look Liquid Glass is known for.
-- **Corners**: every surface uses a large continuous radius (22–28px on cards/tiles, full 999px pill on every button/nav/dock element) — nothing square anywhere in the system.
+- **Corners**: sharp, `border-radius: 0`, on every panel/card/button/pill/nav/dock element — a deliberate departure from Apple's own actual HIG convention (which never uses sharp corners), per explicit user correction after an initial pass interpreted "pointed" as "rounded." The only exceptions are elements that are circles by function rather than cornered rectangles — avatar, status dots, the send button — which stay fully round (999px) since squaring those changes what they represent, not just their corner style.
 - **Composition reframed, not copied from Oceanic or the light variant**:
   - Nav is a small centered floating pill ("Dynamic Island"-style), not a full-width bar
   - Signed-in home and How It Works are **bento grids** (asymmetric tile spans) instead of a linear hero-then-section stack or a connector-line list
@@ -122,6 +122,6 @@ Same real mouse-parallax technique as Oceanic Design (ported from the user-suppl
 
 - **Neither variant has been reviewed by the user yet** — both the light and dark variants were built solo under full delegated authority while the user was away. Expect a revision round once they look at it, the same way Oceanic Design went through several rounds.
 - **The dark variant is not a token-swapped copy of the light one** — it reframes composition (bento grids, floating dock/pill-nav) per explicit instruction. If the user ends up preferring the light variant's layout with dark colors, that's a different, not-yet-built request — don't assume the dark file already covers it.
-- **"Pointed corners" interpretation flagged for confirmation.** The user asked to "keep the corners pointed, not square" — interpreted here as "rounded/continuous, never sharp square corners" (consistent with every other Apple-design instruction in the same message, and with HIG's actual corner-rounding convention), not literally sharp/angular corners. If this reading is wrong, the fix is a one-line radius change, not a rebuild — flag it back if so.
+- **"Pointed corners" — resolved.** An initial pass read "pointed, not square" as "rounded, not sharp." The user corrected this: they meant literally sharp/angular (`border-radius: 0`) corners, not rounded ones — the opposite of what real Apple HIG actually does. The dark variant now uses sharp corners throughout; this is an intentional stylistic departure from authentic HIG convention, not an error.
 - **Same scope boundary as Oceanic Design** — UI/visual layer only. No new data model, no `/app` routing, no project-workspace pages. See Oceanic Design's "Known Gaps" section for the full list; it applies equally here.
 - **Video playback**: same `commondatastorage.googleapis.com` sample clips as Oceanic Design, same DOM-attach-before-play fix applied preemptively (learned from that review) — but whether it actually plays in a real browser is still unconfirmed, same open question as Oceanic Design's unresolved video bug.
