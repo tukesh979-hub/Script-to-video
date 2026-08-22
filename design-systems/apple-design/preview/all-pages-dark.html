@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Apple Design — Dark (Liquid Glass)</title>
+<style>
+  :root {
+    --sf: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    --mono: ui-monospace, 'SF Mono', Menlo, monospace;
+    --blue: #0A84FF;
+    --purple: #BF5AF2;
+    --pink: #FF375F;
+    --green: #30D158;
+    --orange: #FF9F0A;
+    --red: #FF453A;
+    --label: #FFFFFF;
+    --label2: rgba(235,235,245,0.6);
+    --label3: rgba(235,235,245,0.32);
+    --bg: #000000;
+    --bg2: #1C1C1E;
+    --bg3: #2C2C2E;
+    --sep: rgba(255,255,255,0.14);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  html, body { width: 100%; background: #000; }
+  body { font-family: var(--sf); color: var(--label); }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: var(--sf); border: none; background: none; cursor: pointer; }
+
+  .note { max-width: 900px; margin: 24px auto 0; padding: 14px 20px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 18px; font-size: 13px; line-height: 1.6; color: #ddd; backdrop-filter: blur(20px); }
+  .note b { color:#fff; }
+  .jump { max-width:900px; margin: 12px auto 40px; display:flex; gap:8px; flex-wrap:wrap; }
+  .jump a { font-size:12px; font-weight:600; padding:6px 14px; border-radius:999px; background: rgba(255,255,255,0.08); color:#fff; border:1px solid rgba(255,255,255,0.14); }
+
+  /* ---------- Type scale ---------- */
+  .lt   { font-size: 40px; font-weight: 700; letter-spacing: -0.6px; line-height: 1.08; }
+  .t1   { font-size: 30px; font-weight: 700; letter-spacing: -0.4px; line-height: 1.15; }
+  .t2   { font-size: 22px; font-weight: 700; letter-spacing: -0.2px; line-height: 1.2; }
+  .t3   { font-size: 19px; font-weight: 600; letter-spacing: -0.1px; line-height: 1.25; }
+  .headline { font-size: 16px; font-weight: 600; line-height: 1.35; }
+  .body-t   { font-size: 17px; font-weight: 400; line-height: 1.5; color: var(--label2); }
+  .subhead  { font-size: 14px; font-weight: 400; color: var(--label2); line-height: 1.45; }
+  .footnote { font-size: 12.5px; font-weight: 400; color: var(--label2); line-height: 1.4; }
+  .caption1 { font-size: 11px; font-weight: 700; letter-spacing:0.06em; text-transform:uppercase; color: var(--label3); }
+
+  /* ---------- Liquid Glass — strong blur, saturation, light-catching edge ---------- */
+  .glass {
+    position: relative;
+    background: rgba(255,255,255,0.055);
+    backdrop-filter: blur(42px) saturate(200%);
+    -webkit-backdrop-filter: blur(42px) saturate(200%);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 28px;
+    box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.28), 0 24px 60px rgba(0,0,0,0.55);
+  }
+  .glass::before {
+    content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+    background: linear-gradient(180deg, rgba(255,255,255,0.10), transparent 42%);
+  }
+  .glass-hi {
+    background: rgba(255,255,255,0.09);
+    backdrop-filter: blur(46px) saturate(220%);
+    -webkit-backdrop-filter: blur(46px) saturate(220%);
+    border: 1px solid rgba(255,255,255,0.18);
+  }
+  .pill-glass {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(36px) saturate(200%);
+    -webkit-backdrop-filter: blur(36px) saturate(200%);
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 999px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 12px 32px rgba(0,0,0,0.4);
+  }
+
+  /* ---------- Buttons (44pt min tap target, fully rounded — never square) ---------- */
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:44px; padding:0 24px; border-radius:999px; font-size:16px; font-weight:600; white-space:nowrap; }
+  .btn-primary { background: var(--blue); color:#fff; box-shadow: 0 6px 20px rgba(10,132,255,0.4); }
+  .btn-glass { background: rgba(255,255,255,0.1); backdrop-filter: blur(30px); border: 1px solid rgba(255,255,255,0.16); color: #fff; }
+  .btn-sm { min-height:36px; padding:0 16px; font-size:14px; }
+  .icon { display:inline-flex; }
+  .icon svg { display:block; }
+
+  .screen { position: relative; overflow: hidden; margin-top: 20px; background: #000; }
+  .screen-label { position:absolute; top:18px; left:24px; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color: rgba(255,255,255,0.3); z-index: 40; }
+
+  /* ---------- Ambient color blooms — the "detail behind glass" the material needs ---------- */
+  .bloom-field { position:absolute; inset:0; z-index:0; overflow:hidden; }
+  .bloom { position:absolute; border-radius:50%; filter: blur(0px); }
+  .bloom-blue   { background: radial-gradient(circle, rgba(10,132,255,0.55), transparent 70%); }
+  .bloom-purple { background: radial-gradient(circle, rgba(191,90,242,0.45), transparent 70%); }
+  .bloom-pink   { background: radial-gradient(circle, rgba(255,55,95,0.35), transparent 70%); }
+
+  /* ---------- Floating pill nav (Dynamic-Island inspired, centered, not full-width) ---------- */
+  .island-nav { position: sticky; top: 18px; z-index: 50; max-width: 720px; margin: 18px auto 0; display:flex; align-items:center; justify-content:space-between; padding: 8px 8px 8px 20px; }
+  .logo { display:flex; align-items:center; gap:8px; font-size:15px; font-weight:700; letter-spacing:-0.1px; }
+  .logo .dot { width:8px; height:8px; border-radius:999px; background: var(--blue); box-shadow: 0 0 12px var(--blue); }
+  .navlinks { display:flex; align-items:center; gap:22px; font-size:13.5px; font-weight:500; color: var(--label2); }
+  .navright { display:flex; align-items:center; gap:6px; }
+  .credits-pill { display:flex; align-items:center; gap:6px; min-height:32px; padding:0 13px; border-radius:999px; background: rgba(10,132,255,0.18); color: #5eb1ff; font-size:12px; font-weight:700; }
+  .avatar { width: 32px; height: 32px; border-radius: 999px; background: linear-gradient(135deg, var(--blue), var(--purple)); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; }
+
+  /* ---------- Hero island ---------- */
+  .hero { position:relative; padding: 88px 24px 80px; z-index:1; }
+  .hero-body { max-width: 720px; margin: 0 auto; text-align:center; position:relative; z-index:2; }
+  .hero-body .subtitle { margin-top:12px; }
+
+  .typebar-island { margin: 36px auto 0; max-width: 640px; padding: 22px 24px; text-align:left; }
+  .tb-top { display:flex; justify-content:space-between; align-items:center; }
+  .tb-textarea { margin-top: 16px; font-size: 17px; color: rgba(255,255,255,0.35); min-height: 48px; }
+  .tb-bottom { margin-top: 16px; display:flex; align-items:center; justify-content:space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px; }
+  .tb-pills { display:flex; gap:8px; }
+  .tb-pill { display:flex; align-items:center; gap:5px; font-size:12.5px; font-weight:500; padding:6px 13px; border-radius:999px; background: rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); color: var(--label2); }
+  .tb-submit { width: 38px; height: 38px; border-radius: 999px; background: var(--blue); color: #fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow: 0 4px 16px rgba(10,132,255,0.5); }
+
+  /* Filmstrip reel — glass-framed, user-driven scroll */
+  .reel-wrap { position:relative; z-index:2; margin: 56px 0 0; padding: 0 max(24px, calc((100% - 1180px)/2)); }
+  .reel-track { display:flex; gap:14px; overflow-x:auto; scroll-snap-type: x proximity; padding: 10px 10px 16px; scrollbar-width: none; }
+  .reel-track::-webkit-scrollbar { display:none; }
+  .reel-card { scroll-snap-align:start; width: 210px; height: 374px; flex-shrink:0; border-radius: 26px; overflow:hidden; position:relative; background:#0a0a0c; }
+  .reel-card img.poster, .reel-card video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+  .reel-card .rim { position:absolute; inset:0; border-radius:inherit; border: 1px solid rgba(255,255,255,0.16); box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.3); pointer-events:none; }
+  .reel-card .glow { position:absolute; inset:0; background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.6)); pointer-events:none; }
+  .reel-card .caption { position:absolute; bottom:14px; left:14px; right:14px; color:#fff; }
+
+  /* ---------- Bento sections ---------- */
+  .body-section { position:relative; z-index:2; max-width: 1180px; margin: 0 auto; padding: 0 24px 56px; }
+  .section-head { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:16px; }
+
+  .bento { display:grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 92px; gap: 12px; }
+  .tile { padding: 20px; overflow:hidden; }
+  .tile.span-2c { grid-column: span 2; }
+  .tile.span-2r { grid-row: span 2; }
+  .tile.span-4c { grid-column: span 4; }
+  .tile-thumb { height: 120px; border-radius: 18px; background: linear-gradient(135deg, #0b0b10, #1a1622); display:flex; align-items:center; justify-content:center; color: rgba(255,255,255,0.7); margin-bottom: 14px; }
+  .tile .bar { margin-top: 12px; height: 4px; border-radius: 999px; background: rgba(255,255,255,0.1); overflow:hidden; }
+  .tile .bar i { display:block; height:100%; background: linear-gradient(90deg, var(--blue), var(--purple)); }
+
+  .folder-thumb { height: 140px; background-size:cover; background-position:center; position:relative; border-radius: 18px 18px 0 0; }
+  .folder-badge { position:absolute; top:10px; left:10px; font-size:10.5px; font-weight:700; padding:5px 11px; border-radius:999px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); color:#fff; border: 1px solid rgba(255,255,255,0.14); }
+  .folder-body { padding: 16px 18px; }
+
+  /* ---------- How It Works — bento, not a list ---------- */
+  .hiw { position:relative; padding: 100px 24px; z-index:1; }
+  .hiw-head { max-width: 640px; margin: 0 auto 56px; text-align:center; position:relative; z-index:2; }
+  .hiw-head .t1 { margin-top: 10px; }
+  .hiw-grid { position:relative; z-index:2; max-width: 1180px; margin: 0 auto; display:grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 190px; gap: 14px; }
+  .step-tile { padding: 22px; display:flex; flex-direction:column; justify-content:space-between; opacity:0; transform: translateY(20px) scale(0.98); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .step-tile.visible { opacity:1; transform: translateY(0) scale(1); }
+  .step-icon { width:44px; height:44px; border-radius:14px; background: rgba(10,132,255,0.16); color: #5eb1ff; display:flex; align-items:center; justify-content:center; }
+  .step-num { font-family: var(--mono); font-size:11px; font-weight:600; color: var(--label3); margin-top:14px; }
+  .step-title { margin-top:2px; }
+  .step-desc { margin-top:6px; }
+
+  /* ---------- CTA — island with restrained floats ---------- */
+  .cta { position: relative; min-height: 76vh; overflow:hidden; display:flex; align-items:center; justify-content:center; z-index:1; }
+  .cta-float { position:absolute; border-radius: 22px; overflow:hidden; will-change: transform; }
+  .cta-float img.poster, .cta-float video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+  .cta-center { position:relative; z-index:10; text-align:center; padding: 48px 56px; max-width: 560px; }
+  .cta-center .subtitle { color: rgba(255,255,255,0.55); margin-top:12px; }
+  .cta-btns { margin-top:28px; display:flex; gap:12px; justify-content:center; }
+
+  /* ---------- Auth ---------- */
+  .auth-screen { min-height: 96vh; display:flex; align-items:center; justify-content:center; padding:40px; position:relative; z-index:1; }
+  .top-logo { position:absolute; top:28px; left:50%; transform:translateX(-50%); font-size:15px; font-weight:700; display:flex; align-items:center; gap:8px; z-index:20; }
+  .top-logo .dot { width:8px; height:8px; border-radius:999px; background: var(--blue); box-shadow: 0 0 12px var(--blue); }
+  .auth-card { position:relative; z-index:10; width:100%; max-width: 400px; padding: 44px 36px; }
+  .auth-card .t2 { text-align:center; }
+  .auth-card .subtitle { margin-top:8px; text-align:center; }
+  .social-row { margin-top:26px; display:flex; flex-direction:column; gap:10px; }
+  .social-btn { display:flex; align-items:center; justify-content:center; gap:10px; min-height:44px; border-radius:16px; background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:#fff; font-size:14.5px; font-weight:600; }
+  .divider { margin:22px 0; display:flex; align-items:center; gap:10px; font-size:11px; font-weight:700; color: var(--label3); text-transform:uppercase; letter-spacing:0.08em; }
+  .divider::before, .divider::after { content:''; flex:1; height:1px; background: var(--sep); }
+  .field { margin-bottom: 14px; }
+  .field label { display:block; font-size:12.5px; font-weight:600; color: var(--label2); margin-bottom:6px; }
+  .field input { width:100%; height:46px; padding:0 16px; border-radius:16px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); font-family: var(--sf); font-size:16px; color: #fff; outline:none; }
+  .field input:focus { border-color: var(--blue); background: rgba(255,255,255,0.09); }
+  .field-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+  .forgot { font-size:12.5px; color: #5eb1ff; font-weight:600; }
+  .auth-submit { margin-top: 18px; width:100%; }
+  .switch { margin-top:22px; text-align:center; font-size:13.5px; color: var(--label2); }
+  .switch a { color: #5eb1ff; font-weight:600; }
+  .terms { margin-top:18px; text-align:center; }
+
+  /* ---------- Floating vertical dock (replaces sidebar) ---------- */
+  .shell { display:flex; position:relative; z-index:1; }
+  .dock { width: 220px; flex-shrink: 0; margin: 24px 0 24px 24px; padding: 18px 12px; display:flex; flex-direction:column; align-self:flex-start; position: sticky; top: 24px; }
+  .dock-logo { display:flex; align-items:center; gap:8px; font-size:14px; font-weight:700; padding: 6px 10px 18px; }
+  .dock-logo .dot { width:7px; height:7px; border-radius:999px; background: var(--blue); box-shadow: 0 0 10px var(--blue); }
+  .navgroup { display:flex; flex-direction:column; gap:2px; }
+  .navitem { display:flex; align-items:center; gap:11px; min-height:38px; padding:0 12px; border-radius:12px; font-size:13.5px; font-weight:500; color: var(--label2); }
+  .navitem .icon { color: var(--label2); }
+  .navitem.active { background: rgba(10,132,255,0.16); color: #5eb1ff; font-weight:600; }
+  .navitem.active .icon { color: #5eb1ff; }
+  .navdivider { height:1px; background: var(--sep); margin: 14px 10px; }
+  .dock-footer { margin-top: 20px; display:flex; align-items:center; gap:10px; padding: 10px; }
+  .dock-footer .name { font-size:12.5px; font-weight:600; }
+  .dock-footer .sub { font-size:10.5px; color: var(--label2); }
+
+  .main { flex:1; padding: 40px 40px 56px; max-width: 1220px; position: relative; z-index:1; }
+  .page-title { margin-top:6px; margin-bottom: 28px; }
+
+  .toolbar { display:flex; align-items:center; justify-content:space-between; margin-bottom: 22px; }
+  .filters { display:flex; gap:8px; }
+  .filter-pill { min-height:32px; padding:0 15px; border-radius:999px; font-size:12.5px; font-weight:600; background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color: var(--label2); display:flex; align-items:center; }
+  .filter-pill.active { background: var(--blue); color:#fff; border-color: var(--blue); }
+
+  .project-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .pcard { overflow:hidden; }
+  .pcard-thumb { height: 150px; background-size:cover; background-position:center; position:relative; border-radius: 22px 22px 0 0; }
+  .pcard-body { padding: 16px 18px; }
+  .pcard-bar { margin-top:10px; height:3px; border-radius:999px; background: rgba(255,255,255,0.08); overflow:hidden; }
+  .pcard-bar i { display:block; height:100%; }
+
+  .grouped { overflow:hidden; }
+  .grouped-title { padding: 16px 20px 8px; }
+  .grouped-row { display:flex; align-items:center; justify-content:space-between; min-height:48px; padding: 0 20px; border-top: 1px solid rgba(255,255,255,0.08); }
+  .grouped-row:first-of-type { border-top:none; }
+  .grouped-row .v { color: var(--label2); }
+  .grouped-row .v.link { color: #5eb1ff; font-weight:500; }
+  .grouped-row .v.pos { color: var(--green); font-weight:600; }
+  .grouped-row .v.neg { color: #ff7b93; font-weight:600; }
+
+  .billing-grid { display:grid; grid-template-columns: 1fr 1.7fr; gap: 16px; }
+  .balance-card { padding: 28px; }
+  .balance-num { font-size: 48px; font-weight: 700; letter-spacing:-0.5px; margin-top: 10px; color: #fff; }
+  .balance-card .btn { margin-top: 22px; }
+
+  .settings-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 800px; }
+
+  .notif-list { max-width: 640px; display:flex; flex-direction:column; gap:10px; }
+  .notif-item { display:flex; gap:14px; align-items:flex-start; padding: 16px 18px; }
+  .notif-dot { width:8px; height:8px; border-radius:999px; background: var(--blue); box-shadow: 0 0 8px var(--blue); margin-top:6px; flex-shrink:0; }
+</style>
+</head>
+<body>
+
+<div class="note">
+  <b>Apple Design — Dark (Liquid Glass)</b>. Reframed, not reskinned: floating Dynamic-Island-style pill nav
+  instead of a full-width bar, a bento-grid dashboard instead of hero+section stacking, a floating vertical
+  dock instead of an edge-anchored sidebar, How It Works as a spatial bento grid instead of a list. Glass is
+  much stronger this time — 42–46px blur + 200% saturation + a bright top-edge highlight, sitting over vivid
+  color blooms (blue/purple/pink) so the blur has real color to refract, not a flat wash. Every corner is a
+  large continuous radius (22–28px on cards, full pill on buttons/nav) — nothing square anywhere.
+</div>
+<div class="jump">
+  <a href="#main-logout">Main (Signed Out)</a><a href="#signin">Sign In</a><a href="#signup">Sign Up</a><a href="#signedin-home">Signed-In Home</a>
+  <a href="#projects">Projects</a><a href="#billing">Billing</a><a href="#account">Account</a><a href="#notifications">Notifications</a>
+</div>
+
+<!-- ============ MAIN (SIGNED OUT) ============ -->
+<div id="main-logout" class="screen">
+  <div class="screen-label">Main — Signed Out</div>
+
+  <div class="hero">
+    <div class="bloom-field" id="bloom-hero"></div>
+    <div class="island-nav pill-glass">
+      <div class="logo"><span class="dot"></span>Script to Video</div>
+      <div class="navlinks"><a href="#">Platform</a><a href="#">Projects</a><a href="#">Community</a></div>
+      <div class="navright"><a class="btn btn-glass btn-sm" href="#">Sign Up</a><a class="btn btn-primary btn-sm" href="#">Log In</a></div>
+    </div>
+
+    <div class="hero-body">
+      <div class="lt">What are we making today?</div>
+      <div class="subtitle body-t">One agent runs the whole pipeline — research, script, storyboard, film &amp; more.</div>
+      <div class="typebar-island glass glass-hi">
+        <div class="tb-top"><span class="caption1">60 / 450 credits</span><span class="caption1">GPT‑4o</span></div>
+        <div class="tb-textarea">Paste a full script, or just describe your idea…</div>
+        <div class="tb-bottom">
+          <div class="tb-pills"><span class="tb-pill">Attach</span><span class="tb-pill">Voice</span></div>
+          <div class="tb-submit" id="icon-send"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reel-wrap">
+      <div class="reel-track" id="logout-reel"></div>
+    </div>
+  </div>
+
+  <div class="hiw">
+    <div class="bloom-field" id="bloom-hiw"></div>
+    <div class="hiw-head">
+      <div class="caption1" style="color:#5eb1ff;">HOW IT WORKS</div>
+      <div class="t1">From script to final cut</div>
+      <div class="subtitle body-t">One pipeline, seven stages — every project walks the same road.</div>
+    </div>
+    <div class="hiw-grid" id="steps"></div>
+  </div>
+
+  <div class="cta">
+    <div class="bloom-field" id="bloom-cta"></div>
+    <div id="ctaFloats"></div>
+    <div class="cta-center glass glass-hi">
+      <div class="t1">Create your next project.</div>
+      <div class="subtitle">Free to start — no card required.</div>
+      <div class="cta-btns">
+        <a class="btn btn-primary" href="#">Sign Up</a>
+        <a class="btn btn-glass" href="#">Log In</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SIGN IN ============ -->
+<div id="signin" class="screen auth-screen">
+  <div class="screen-label">Sign In</div>
+  <div class="bloom-field" id="bloom-signin"></div>
+  <div class="top-logo"><span class="dot"></span>Script to Video</div>
+  <div class="auth-card glass glass-hi">
+    <div class="t2">Welcome back</div>
+    <div class="subtitle footnote">Sign in to continue to Script to Video</div>
+    <div class="social-row"><button class="social-btn">Continue with Google</button></div>
+    <div class="divider">or</div>
+    <div class="field"><label>Email</label><input placeholder="you@example.com"/></div>
+    <div class="field-row"><label style="margin:0">Password</label><a href="#" class="forgot">Forgot password?</a></div>
+    <input placeholder="••••••••" type="password" style="width:100%; height:46px; padding:0 16px; border-radius:16px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); font-family:var(--sf); font-size:16px; color:#fff;"/>
+    <button class="btn btn-primary auth-submit">Sign In</button>
+    <div class="switch">Don't have an account? <a href="#signup">Sign up</a></div>
+  </div>
+</div>
+
+<!-- ============ SIGN UP ============ -->
+<div id="signup" class="screen auth-screen">
+  <div class="screen-label">Sign Up</div>
+  <div class="bloom-field" id="bloom-signup"></div>
+  <div class="top-logo"><span class="dot"></span>Script to Video</div>
+  <div class="auth-card glass glass-hi">
+    <div class="t2">Create your account</div>
+    <div class="subtitle footnote">Free to start — no card required</div>
+    <div class="social-row"><button class="social-btn">Continue with Google</button></div>
+    <div class="divider">or</div>
+    <div class="field"><label>Name</label><input placeholder="Your name"/></div>
+    <div class="field"><label>Email</label><input placeholder="you@example.com"/></div>
+    <div class="field"><label>Password</label><input placeholder="At least 8 characters" type="password"/></div>
+    <button class="btn btn-primary auth-submit">Create Account</button>
+    <div class="switch">Already have an account? <a href="#signin">Sign in</a></div>
+    <p class="terms footnote">By continuing you agree to our Terms of Service and Privacy Policy.</p>
+  </div>
+</div>
+
+<!-- ============ SIGNED-IN HOME (bento command deck) ============ -->
+<div id="signedin-home" class="screen">
+  <div class="screen-label">Signed-In Home</div>
+  <div class="hero" style="padding-bottom:0;">
+    <div class="bloom-field" id="bloom-home"></div>
+    <div class="island-nav pill-glass">
+      <div class="logo"><span class="dot"></span>Script to Video</div>
+      <div class="navlinks"><a href="#">Platform</a><a href="#">Projects</a><a href="#">Community</a></div>
+      <div class="navright"><div class="credits-pill">60 / 450</div><div class="avatar">TK</div></div>
+    </div>
+    <div class="hero-body" style="padding-bottom:8px;">
+      <div class="lt">What do we create today?</div>
+      <div class="subtitle body-t">Turn an idea into a complete production.</div>
+      <div class="typebar-island glass glass-hi">
+        <div class="tb-top"><span class="caption1">60 / 450 credits</span><span class="caption1">GPT‑4o</span></div>
+        <div class="tb-textarea">Paste a full script, or just describe your idea…</div>
+        <div class="tb-bottom">
+          <div class="tb-pills"><span class="tb-pill">Attach</span><span class="tb-pill">Voice</span></div>
+          <div class="tb-submit" id="icon-send-2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="body-section" style="padding-top:16px;">
+    <div class="section-head"><div class="t3">Latest Project</div></div>
+    <div class="bento">
+      <div class="tile glass span-2c span-2r">
+        <div class="tile-thumb" id="icon-play-lg"></div>
+        <div class="headline">Navneet / Porsche 911 Reel</div>
+        <div class="footnote">Working on Animate · 56%</div>
+        <div class="bar"><i style="width:56%"></i></div>
+        <a class="btn btn-primary btn-sm" href="#" style="margin-top:16px;">Watch progress</a>
+      </div>
+      <div class="tile glass"><div class="caption1">Script</div><div class="headline" style="margin-top:6px;">106 words · 0:42</div></div>
+      <div class="tile glass"><div class="caption1">Storyboard</div><div class="headline" style="margin-top:6px;">8 beats mapped</div></div>
+      <div class="tile glass"><div class="caption1">Assets</div><div class="headline" style="margin-top:6px;">14 collected</div></div>
+      <div class="tile glass"><div class="caption1">Final Output</div><div class="headline" style="margin-top:6px;">Pending render</div></div>
+    </div>
+    <div class="section-head" style="margin-top:36px;"><div class="t3">Folders</div></div>
+    <div class="bento" style="grid-auto-rows: auto;">
+      <div class="tile glass span-2c" style="padding:0;">
+        <div class="folder-thumb" style="background-image:url(https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500&q=60)"><div class="folder-badge">Shipped</div></div>
+        <div class="folder-body"><div class="headline">Porsche 911 Taste Test</div><div class="footnote">6 stages · 1320 frames</div></div>
+      </div>
+      <div class="tile glass" style="padding:0;">
+        <div class="folder-thumb" style="background-image:url(https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=500&q=60)"><div class="folder-badge">Shipped</div></div>
+        <div class="folder-body"><div class="headline">Testimonial Ad</div><div class="footnote">5 stages · 900 frames</div></div>
+      </div>
+      <div class="tile glass" style="padding:0;">
+        <div class="folder-thumb" style="background-image:url(https://images.unsplash.com/photo-1519681393784-d120267933ba?w=500&q=60)"><div class="folder-badge" style="background:rgba(10,132,255,0.85);">In progress</div></div>
+        <div class="folder-body"><div class="headline">Cohort 26 Reveal</div><div class="footnote">4/8 stages done</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PROJECTS ============ -->
+<div id="projects" class="screen shell" style="min-height:88vh;">
+  <div class="screen-label">Projects</div>
+  <div class="bloom-field" id="bloom-projects"></div>
+  <div class="dock glass" id="dock-projects"></div>
+  <div class="main">
+    <div class="caption1" style="color:#5eb1ff;">PROJECTS</div>
+    <div class="t1 page-title">All Projects</div>
+    <div class="toolbar">
+      <div class="filters"><div class="filter-pill active">All</div><div class="filter-pill">In progress</div><div class="filter-pill">Completed</div></div>
+      <button class="btn btn-primary btn-sm" id="icon-new-btn">New Project</button>
+    </div>
+    <div class="project-grid">
+      <div class="pcard glass"><div class="pcard-thumb" style="background-image:url(https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&q=60)"><div class="folder-badge">In progress</div></div><div class="pcard-body"><div class="headline">Navneet / Porsche 911 Reel</div><div class="footnote">Working on Animate · 56%</div><div class="pcard-bar"><i style="width:56%; background:var(--blue);"></i></div></div></div>
+      <div class="pcard glass"><div class="pcard-thumb" style="background-image:url(https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=400&q=60)"><div class="folder-badge" style="color:#8affb3;">Shipped</div></div><div class="pcard-body"><div class="headline">Testimonial Ad</div><div class="footnote">5 stages · 900 frames</div><div class="pcard-bar"><i style="width:100%; background:var(--green);"></i></div></div></div>
+      <div class="pcard glass"><div class="pcard-thumb" style="background-image:url(https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&q=60)"><div class="folder-badge" style="color:#8affb3;">Shipped</div></div><div class="pcard-body"><div class="headline">Porsche 911 Taste Test</div><div class="footnote">6 stages · 1320 frames</div><div class="pcard-bar"><i style="width:100%; background:var(--green);"></i></div></div></div>
+      <div class="pcard glass"><div class="pcard-thumb" style="background-image:url(https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=400&q=60)"><div class="folder-badge">In progress</div></div><div class="pcard-body"><div class="headline">Cohort 26 Reveal</div><div class="footnote">4/8 stages done</div><div class="pcard-bar"><i style="width:50%; background:var(--blue);"></i></div></div></div>
+      <div class="pcard glass"><div class="pcard-thumb" style="background-image:url(https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&q=60)"><div class="folder-badge" style="color:#ffcc80;">Needs review</div></div><div class="pcard-body"><div class="headline">Product Launch Teaser</div><div class="footnote">Review requested</div><div class="pcard-bar"><i style="width:80%; background:var(--orange);"></i></div></div></div>
+      <div class="pcard glass"><div class="pcard-thumb" style="background-image:url(https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400&q=60)"><div class="folder-badge" style="color:#8affb3;">Shipped</div></div><div class="pcard-body"><div class="headline">Founder Story</div><div class="footnote">7 stages · 2100 frames</div><div class="pcard-bar"><i style="width:100%; background:var(--green);"></i></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ BILLING ============ -->
+<div id="billing" class="screen shell" style="min-height:88vh;">
+  <div class="screen-label">Billing</div>
+  <div class="bloom-field" id="bloom-billing"></div>
+  <div class="dock glass" id="dock-billing"></div>
+  <div class="main">
+    <div class="caption1" style="color:#5eb1ff;">BILLING &amp; USAGE</div>
+    <div class="t1 page-title">Billing</div>
+    <div class="billing-grid">
+      <div class="balance-card glass glass-hi">
+        <div class="footnote">CREDITS BALANCE</div>
+        <div class="balance-num">60</div>
+        <div class="footnote">of 450 this cycle</div>
+        <button class="btn btn-primary btn-sm">Buy more credits</button>
+      </div>
+      <div class="grouped glass">
+        <div class="grouped-title headline">Recent activity</div>
+        <div class="grouped-row"><span class="body-t">Signup grant</span><span class="v pos">+50</span></div>
+        <div class="grouped-row"><span class="body-t">Render — Porsche 911 Taste Test</span><span class="v neg">−5</span></div>
+        <div class="grouped-row"><span class="body-t">Render — Testimonial Ad</span><span class="v neg">−5</span></div>
+        <div class="grouped-row"><span class="body-t">Render refund — failed render</span><span class="v pos">+5</span></div>
+        <div class="grouped-row"><span class="body-t">Render — Navneet / Porsche 911 Reel</span><span class="v neg">−5</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ACCOUNT ============ -->
+<div id="account" class="screen shell" style="min-height:80vh;">
+  <div class="screen-label">Account</div>
+  <div class="bloom-field" id="bloom-account"></div>
+  <div class="dock glass" id="dock-account"></div>
+  <div class="main">
+    <div class="caption1" style="color:#5eb1ff;">ACCOUNT</div>
+    <div class="t1 page-title">Profile &amp; Settings</div>
+    <div class="settings-grid">
+      <div class="grouped glass">
+        <div class="grouped-title headline">Profile</div>
+        <div class="grouped-row"><span class="body-t">Name</span><span class="v">Tukesh</span></div>
+        <div class="grouped-row"><span class="body-t">Email</span><span class="v">dtukeshwar979@···</span></div>
+        <div class="grouped-row"><span class="body-t">Joined</span><span class="v">Aug 16, 2026</span></div>
+      </div>
+      <div class="grouped glass">
+        <div class="grouped-title headline">Security</div>
+        <div class="grouped-row"><span class="body-t">Password</span><span class="v link">Change</span></div>
+        <div class="grouped-row"><span class="body-t">Google account</span><span class="v">Connected</span></div>
+        <div class="grouped-row"><span class="body-t">Sessions</span><span class="v link">Manage</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ NOTIFICATIONS ============ -->
+<div id="notifications" class="screen shell" style="min-height:80vh;">
+  <div class="screen-label">Notifications</div>
+  <div class="bloom-field" id="bloom-notifications"></div>
+  <div class="dock glass" id="dock-notifications"></div>
+  <div class="main">
+    <div class="caption1" style="color:#5eb1ff;">NOTIFICATIONS</div>
+    <div class="t1 page-title">Notifications</div>
+    <div class="notif-list">
+      <div class="notif-item glass"><div class="notif-dot"></div><div><div class="headline">Porsche 911 Taste Test finished rendering</div><div class="footnote">Aug 19, 2026 · 2h ago</div></div></div>
+      <div class="notif-item glass"><div class="notif-dot" style="background:var(--red); box-shadow:0 0 8px var(--red);"></div><div><div class="headline">Render failed — Navneet / Porsche 911 Reel</div><div class="footnote">Aug 20, 2026 · yesterday</div></div></div>
+      <div class="notif-item glass"><div class="notif-dot" style="background:#48484A; box-shadow:none;"></div><div><div class="headline">Testimonial Ad shipped</div><div class="footnote">Aug 19, 2026</div></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- Ambient color blooms ---------- */
+function renderBlooms(id, specs) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  specs.forEach(([cls, top, left, size]) => {
+    const b = document.createElement('div');
+    b.className = 'bloom ' + cls;
+    b.style.top = top; b.style.left = left;
+    b.style.width = size; b.style.height = size;
+    el.appendChild(b);
+  });
+}
+renderBlooms('bloom-hero', [['bloom-blue','-10%','5%','520px'], ['bloom-purple','20%','70%','480px'], ['bloom-pink','75%','15%','420px']]);
+renderBlooms('bloom-hiw', [['bloom-purple','10%','75%','560px'], ['bloom-blue','70%','10%','480px']]);
+renderBlooms('bloom-cta', [['bloom-blue','20%','20%','600px'], ['bloom-purple','55%','65%','560px']]);
+renderBlooms('bloom-signin', [['bloom-blue','15%','15%','500px'], ['bloom-purple','65%','70%','460px']]);
+renderBlooms('bloom-signup', [['bloom-purple','15%','70%','500px'], ['bloom-pink','65%','15%','460px']]);
+renderBlooms('bloom-home', [['bloom-blue','-10%','10%','520px'], ['bloom-purple','25%','75%','460px']]);
+renderBlooms('bloom-projects', [['bloom-blue','-5%','80%','480px'], ['bloom-purple','60%','5%','420px']]);
+renderBlooms('bloom-billing', [['bloom-purple','-5%','75%','460px'], ['bloom-blue','65%','10%','420px']]);
+renderBlooms('bloom-account', [['bloom-blue','-5%','15%','440px'], ['bloom-purple','60%','80%','400px']]);
+renderBlooms('bloom-notifications', [['bloom-purple','-5%','70%','440px'], ['bloom-blue','60%','10%','400px']]);
+
+/* ---------- Monoline icon set ---------- */
+const ICONS = {
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  image: '<rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="10.5" r="1.4"/><path d="M21 15.5l-5-5-4 4-3-3-6 6"/>',
+  film: '<rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M7 4v16M17 4v16M3 9h4M17 9h4M3 15h4M17 15h4"/>',
+  music: '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+  sparkle: '<path d="M12 3l1.6 6L20 10.5l-6.4 1.5L12 18l-1.6-6L4 10.5 10.4 9z" stroke-linejoin="round"/>',
+  speaker: '<path d="M3 9v6h4l5 4V5L7 9H3z" stroke-linejoin="round"/><path d="M16.5 8a5 5 0 010 8"/>',
+  tray: '<path d="M12 3v11m0 0l-4-4m4 4l4-4M4 15v4a2 2 0 002 2h12a2 2 0 002-2v-4"/>',
+  grid: '<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>',
+  people: '<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9.5" r="2.4"/><path d="M15 20c0-2.2 1-4 3-4.8"/>',
+  gear: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.9l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.9-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.6 1.7 1.7 0 00-1.9.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.9 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.6-1 1.7 1.7 0 00-.3-1.9l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.9.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.9-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.9V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/>',
+  person: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><path d="M6.3 19a6 6 0 0111.4 0"/>',
+  play: '<path d="M8 5.5v13l11-6.5z" fill="currentColor" stroke="none" stroke-linejoin="round"/>',
+  send: '<path d="M4 12l16-8-6 16-3-6-7-2z" stroke-linejoin="round" fill="currentColor" stroke="none"/>',
+};
+function svgIcon(name, size, sw) {
+  size = size || 20; sw = sw === undefined ? 1.6 : sw;
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="'+sw+'" stroke-linecap="round" stroke-linejoin="round">'+ICONS[name]+'</svg>';
+}
+document.getElementById('icon-send').innerHTML = svgIcon('send', 15, 0);
+document.getElementById('icon-send-2').innerHTML = svgIcon('send', 15, 0);
+document.getElementById('icon-play-lg').innerHTML = svgIcon('play', 30, 0);
+document.getElementById('icon-new-btn').innerHTML = svgIcon('plus', 16, 2) + ' New Project';
+
+/* ---------- Floating dock (replaces sidebar) ---------- */
+function dockHTML(active) {
+  const items = [['sparkle','Create','create'], ['grid','Projects','projects'], ['image','Assets','assets'],
+    ['film','Storyboards','storyboards'], ['music','Beat Sheets','beats'], ['sparkle','Animations','animations'],
+    ['speaker','Sound','sound'], ['tray','Exports','exports']];
+  const items2 = [['grid','Templates','templates'], ['people','Community','community']];
+  const items3 = [['gear','Settings','account'], ['person','Profile','account']];
+  const row = (icon, label, key) => '<div class="navitem'+(key===active?' active':'')+'"><span class="icon">'+svgIcon(icon,17,1.6)+'</span>'+label+'</div>';
+  return (
+    '<div class="dock-logo"><span class="dot"></span>Script to Video</div>' +
+    '<div class="navgroup">' + items.map(([i,l,k]) => row(i,l,k)).join('') + '</div>' +
+    '<div class="navdivider"></div>' +
+    '<div class="navgroup">' + items2.map(([i,l,k]) => row(i,l,k)).join('') + '</div>' +
+    '<div class="navdivider"></div>' +
+    '<div class="navgroup">' + items3.map(([i,l,k]) => row(i,l,k)).join('') + '</div>' +
+    '<div class="dock-footer"><div class="avatar">TK</div><div><div class="name">Tukesh</div><div class="sub">60 credits</div></div></div>'
+  );
+}
+document.getElementById('dock-projects').innerHTML = dockHTML('projects');
+document.getElementById('dock-billing').innerHTML = dockHTML('account');
+document.getElementById('dock-account').innerHTML = dockHTML('account');
+document.getElementById('dock-notifications').innerHTML = dockHTML('account');
+
+/* ---------- Video mounting (DOM-attach before play — Oceanic-review fix, applied from the start) ---------- */
+const CLIPS = [
+  { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", poster: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=400&h=712&fit=crop&q=70", title: "Product Reveal" },
+  { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", poster: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&h=712&fit=crop&q=70", title: "Neon Palm" },
+  { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", poster: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&h=712&fit=crop&q=70", title: "Crowd Reel" },
+  { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4", poster: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400&h=712&fit=crop&q=70", title: "Crystal Water" },
+  { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4", poster: "https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?w=400&h=712&fit=crop&q=70", title: "Night Sky" },
+  { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", poster: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=712&fit=crop&q=70", title: "Flower Crown" },
+  { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4", poster: "https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?w=400&h=712&fit=crop&q=70", title: "City Blur" },
+  { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", poster: "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&h=712&fit=crop&q=70", title: "Steel Frame" },
+];
+function mountMedia(container, clip) {
+  const img = document.createElement('img');
+  img.className = 'poster'; img.src = clip.poster;
+  const v = document.createElement('video');
+  v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto';
+  v.addEventListener('playing', () => { img.style.opacity = '0'; img.style.transition = 'opacity 0.4s'; });
+  container.appendChild(img);
+  container.appendChild(v);
+  v.src = clip.video;
+  v.load();
+  const p = v.play();
+  if (p) p.catch(() => {
+    const retry = () => { v.play().catch(() => {}); document.removeEventListener('click', retry); };
+    document.addEventListener('click', retry, { once: true });
+  });
+}
+
+const reel = document.getElementById('logout-reel');
+CLIPS.forEach(clip => {
+  const d = document.createElement('div');
+  d.className = 'reel-card';
+  reel.appendChild(d);
+  mountMedia(d, clip);
+  const rim = document.createElement('div'); rim.className = 'rim'; d.appendChild(rim);
+  const glow = document.createElement('div'); glow.className = 'glow'; d.appendChild(glow);
+  const cap = document.createElement('div'); cap.className = 'caption';
+  cap.innerHTML = '<div class="headline">'+clip.title+'</div>';
+  d.appendChild(cap);
+});
+
+/* ---------- How It Works — bento tiles, scroll reveal ---------- */
+const STEPS = [
+  ["01","sparkle","Script","The script is written first — everything else follows it.", "span-2c"],
+  ["02","film","Storyboard","Shot-by-shot camera, action, transition plan.", ""],
+  ["03","music","Beat Sheet","Timing for every beat, VO and purpose.", ""],
+  ["04","image","Asset Library","Every asset per beat, collected in one place.", "span-2r"],
+  ["05","play","Per-Beat Animation","Each beat created one by one.", "span-2c"],
+  ["06","speaker","Sound","Music, VO and SFX mixed to the timeline.", ""],
+  ["07","tray","Final Delivery","Everything combined as the final video.", ""],
+];
+const stepsEl = document.getElementById('steps');
+STEPS.forEach(([num, icon, title, desc, span]) => {
+  const s = document.createElement('div');
+  s.className = 'step-tile glass ' + span;
+  s.innerHTML =
+    '<div class="step-icon">'+svgIcon(icon, 20, 1.6)+'</div>' +
+    '<div><div class="step-num">STEP '+num+'</div><div class="step-title headline">'+title+'</div><div class="step-desc footnote">'+desc+'</div></div>';
+  stepsEl.appendChild(s);
+});
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.25 });
+document.querySelectorAll('.step-tile').forEach(s => io.observe(s));
+
+/* ---------- CTA — restrained glass-framed floats + real mouse parallax ---------- */
+const ctaCanvas = document.getElementById('main-logout').querySelector('.cta');
+const ctaFloatsHost = document.getElementById('ctaFloats');
+const floatPositions = [
+  [10, 8, 190, 338, 1.2], [6, 76, 165, 293, 2.0],
+  [62, 5, 150, 267, 1.6], [58, 82, 175, 311, 0.9],
+];
+floatPositions.forEach((p, i) => {
+  const [top, left, w, h, depth] = p;
+  const el = document.createElement('div');
+  el.className = 'cta-float';
+  el.style.top = top + '%'; el.style.left = left + '%';
+  el.style.width = w + 'px'; el.style.height = h + 'px';
+  el.dataset.depth = depth;
+  ctaFloatsHost.appendChild(el);
+  mountMedia(el, CLIPS[i % CLIPS.length]);
+  const rim = document.createElement('div'); rim.className = 'rim'; el.appendChild(rim);
+});
+const floatEls = Array.from(ctaFloatsHost.querySelectorAll('.cta-float')).map(el => ({
+  el, depth: parseFloat(el.dataset.depth), current: { x: 0, y: 0 },
+}));
+const mouse = { x: 0, y: 0 };
+function updateMouse(clientX, clientY) {
+  const rect = ctaCanvas.getBoundingClientRect();
+  mouse.x = clientX - rect.left; mouse.y = clientY - rect.top;
+}
+window.addEventListener('mousemove', (e) => updateMouse(e.clientX, e.clientY));
+window.addEventListener('touchmove', (e) => { const t = e.touches[0]; if (t) updateMouse(t.clientX, t.clientY); });
+const SENSITIVITY = -1, EASING = 0.05;
+function tick() {
+  floatEls.forEach(item => {
+    const strength = (item.depth * SENSITIVITY) / 20;
+    const tx = mouse.x * strength, ty = mouse.y * strength;
+    item.current.x += (tx - item.current.x) * EASING;
+    item.current.y += (ty - item.current.y) * EASING;
+    item.el.style.transform = 'translate3d(' + item.current.x + 'px,' + item.current.y + 'px,0)';
+  });
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>

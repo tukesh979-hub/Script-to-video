@@ -12,9 +12,26 @@ Source references the user provided: [Apple Human Interface Guidelines](https://
 
 ## How to use this
 
-1. Open `preview/all-pages.html` in a browser — single source of visual truth, jump links at top.
-2. This is real system-font rendering, not a web-font approximation: on macOS/iOS it renders actual SF Pro via `-apple-system`/`BlinkMacSystemFont`; on other platforms it falls back to Inter/Helvetica/Arial, which is the correct, intended behavior (Apple doesn't license SF Pro for web embedding — designing "to the system font" is itself the HIG-correct approach, not a compromise).
-3. No component source folder this round — unlike Oceanic, the user didn't supply specific React component code for this system, so there's nothing pre-built to copy in. Implementation would build these as new components from the CSS recipes below.
+There are **two variants** — light and dark. They are not just a color swap of each other; the dark variant reframes the composition (see below).
+
+1. `preview/all-pages.html` — the original **light** variant, reviewed above.
+2. `preview/all-pages-dark.html` — a **dark** variant, built after feedback that the light version's glassmorphism read too subtle and asked for a properly dark, more distinctly-composed take. Open either directly in a browser — jump links at top.
+3. This is real system-font rendering, not a web-font approximation: on macOS/iOS it renders actual SF Pro via `-apple-system`/`BlinkMacSystemFont`; on other platforms it falls back to Inter/Helvetica/Arial, which is the correct, intended behavior (Apple doesn't license SF Pro for web embedding — designing "to the system font" is itself the HIG-correct approach, not a compromise).
+4. No component source folder this round — unlike Oceanic, the user didn't supply specific React component code for this system, so there's nothing pre-built to copy in. Implementation would build these as new components from the CSS recipes below.
+
+### Dark variant — what's different and why
+
+Requested explicitly as a reframe, not a reskin: darker background, stronger/more visible glassmorphism, no square corners, and freedom to depart from both Oceanic's and the light Apple variant's page composition.
+
+- **Background**: true black (`#000`) with large, vivid, colorful ambient blooms (systemBlue/systemPurple/systemPink at dark-mode saturation) positioned behind every glass surface — this is what makes the blur actually *read* as glass; the light variant's flatter background was the direct cause of the "where's the glassmorphism" feedback.
+- **Glass recipe strengthened**: `blur(42-46px) saturate(200-220%)` (up from 30px/180%), plus a bright top-edge inset highlight (`inset 0 1.5px 0 rgba(255,255,255,0.28)`) to sell the "light catching a glass edge" look Liquid Glass is known for.
+- **Corners**: every surface uses a large continuous radius (22–28px on cards/tiles, full 999px pill on every button/nav/dock element) — nothing square anywhere in the system.
+- **Composition reframed, not copied from Oceanic or the light variant**:
+  - Nav is a small centered floating pill ("Dynamic Island"-style), not a full-width bar
+  - Signed-in home and How It Works are **bento grids** (asymmetric tile spans) instead of a linear hero-then-section stack or a connector-line list
+  - The dashboard sidebar became a **floating vertical dock**, detached from the screen edge with margin on all sides, rather than an edge-anchored panel
+  - CTA floats are fewer (4) and larger, glass-framed with a visible rim highlight, rather than many small scattered thumbnails
+- Same underlying interaction logic as the light variant and Oceanic Design (real mouse-parallax on CTA floats, DOM-attach-before-play video fix, IntersectionObserver scroll reveals) — only the visual language and layout changed.
 
 ## Where this deliberately diverges from Oceanic Design's composition
 
@@ -103,7 +120,8 @@ Same real mouse-parallax technique as Oceanic Design (ported from the user-suppl
 
 ## 3. Known Gaps
 
-- **Not yet reviewed by the user** — this is a first pass built under full delegated authority while the user was away. Expect a revision round once they look at it, the same way Oceanic Design went through several rounds.
-- **Dark mode not built.** Apple's color system is fundamentally adaptive; this only implements the light-mode token set. A real dark-mode pass needs its own token swap, not just inverted hex values.
+- **Neither variant has been reviewed by the user yet** — both the light and dark variants were built solo under full delegated authority while the user was away. Expect a revision round once they look at it, the same way Oceanic Design went through several rounds.
+- **The dark variant is not a token-swapped copy of the light one** — it reframes composition (bento grids, floating dock/pill-nav) per explicit instruction. If the user ends up preferring the light variant's layout with dark colors, that's a different, not-yet-built request — don't assume the dark file already covers it.
+- **"Pointed corners" interpretation flagged for confirmation.** The user asked to "keep the corners pointed, not square" — interpreted here as "rounded/continuous, never sharp square corners" (consistent with every other Apple-design instruction in the same message, and with HIG's actual corner-rounding convention), not literally sharp/angular corners. If this reading is wrong, the fix is a one-line radius change, not a rebuild — flag it back if so.
 - **Same scope boundary as Oceanic Design** — UI/visual layer only. No new data model, no `/app` routing, no project-workspace pages. See Oceanic Design's "Known Gaps" section for the full list; it applies equally here.
 - **Video playback**: same `commondatastorage.googleapis.com` sample clips as Oceanic Design, same DOM-attach-before-play fix applied preemptively (learned from that review) — but whether it actually plays in a real browser is still unconfirmed, same open question as Oceanic Design's unresolved video bug.

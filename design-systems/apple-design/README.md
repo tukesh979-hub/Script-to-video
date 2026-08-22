@@ -7,7 +7,8 @@ An alternative design system for video-dashboard — SF Pro system typography, s
 ## Contents
 
 - **`DESIGN-SYSTEM.md`** — start here. Tokens, page-by-page spec, principles, and where this deliberately diverges from Oceanic's composition (and why).
-- **`preview/all-pages.html`** — open directly in any browser. Every page, working, jump links at top.
+- **`preview/all-pages.html`** — the **light** variant. Open directly in any browser, jump links at top.
+- **`preview/all-pages-dark.html`** — the **dark** variant, with stronger/more visible glassmorphism and a reframed composition (floating pill nav, bento-grid dashboard, floating dock instead of a sidebar). Not a color-swap of the light file — a genuinely different layout. See DESIGN-SYSTEM.md for the full list of what changed and why.
 
 ## Two design systems, both safe
 
