@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Fluent Design — All Pages</title>
+<style>
+  :root {
+    --font: 'Segoe UI Variable Text', 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --mono: 'Cascadia Code', ui-monospace, Consolas, monospace;
+
+    /* Brand ramp */
+    --brand: #0F6CBD;
+    --brand-hover: #115EA3;
+    --brand-pressed: #0C3B5E;
+    --brand-tint1: #EBF3FC;
+    --brand-tint2: #E0EDFA;
+    --brand-tint3: #C7E0F4;
+
+    /* Neutral foreground (text) */
+    --nf1: #242424;
+    --nf2: #424242;
+    --nf3: #616161;
+    --nf4: #8A8886;
+    --nf-onbrand: #FFFFFF;
+
+    /* Neutral background */
+    --nb1: #FFFFFF;
+    --nb2: #FAFAFA;
+    --nb3: #F5F5F5;
+    --nb4: #F0F0F0;
+
+    --stroke1: #D1D1D1;
+    --stroke2: #E0E0E0;
+    --stroke3: #EDEBE9;
+
+    --success: #0E7A0D;
+    --success-tint: #E6F4EA;
+    --danger: #C4314B;
+    --danger-tint: #FDF3F4;
+    --warning: #9D5D00;
+    --warning-tint: #FFF4CE;
+
+    /* Corner radius — Fluent's real scale, notably tighter than Apple HIG */
+    --r-sm: 2px; --r-md: 4px; --r-lg: 6px; --r-xl: 8px; --r-2xl: 12px; --r-3xl: 16px; --r-circular: 10000px;
+
+    /* Dual-layer elevation shadows (Fluent shadow tokens, not single soft blur) */
+    --shadow2: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+    --shadow4: 0 0 2px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.14);
+    --shadow8: 0 0 2px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.14);
+    --shadow16: 0 0 2px rgba(0,0,0,0.12), 0 8px 16px rgba(0,0,0,0.14);
+    --shadow28: 0 0 8px rgba(0,0,0,0.12), 0 14px 28px rgba(0,0,0,0.14);
+
+    /* Motion (confirmed values from Fluent UI source) */
+    --dur-fast: 150ms; --dur-normal: 200ms; --dur-slow: 300ms;
+    --curve-easy: cubic-bezier(.33,0,.67,1);
+    --curve-decel: cubic-bezier(.1,.9,.2,1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  html, body { width: 100%; background: var(--nb2); }
+  body { font-family: var(--font); color: var(--nf1); }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: var(--font); border: none; background: none; cursor: pointer; }
+
+  .note { max-width: 900px; margin: 24px auto 0; padding: 14px 20px; background: #1f1f1f; border-radius: var(--r-lg); font-size: 13px; line-height: 1.6; color: #ddd; }
+  .note b { color:#fff; }
+  .jump { max-width:900px; margin: 12px auto 40px; display:flex; gap:8px; flex-wrap:wrap; }
+  .jump a { font-size:12px; font-weight:600; padding:6px 12px; border-radius:var(--r-circular); background: rgba(255,255,255,0.1); color:#fff; }
+
+  /* ---------- Type ramp (confirmed sizes from Fluent 2 site) ---------- */
+  .display     { font-size: 56px; font-weight: 600; line-height: 1.1; letter-spacing: -0.5px; }
+  .large-title { font-size: 40px; font-weight: 600; line-height: 1.15; letter-spacing: -0.3px; }
+  .title1      { font-size: 32px; font-weight: 600; line-height: 1.2; }
+  .title2      { font-size: 28px; font-weight: 600; line-height: 1.25; }
+  .title3      { font-size: 24px; font-weight: 600; line-height: 1.3; }
+  .subtitle1   { font-size: 20px; font-weight: 600; line-height: 1.3; }
+  .subtitle2   { font-size: 16px; font-weight: 600; line-height: 1.35; }
+  .body1       { font-size: 14px; font-weight: 400; line-height: 1.45; color: var(--nf2); }
+  .body1-strong{ font-size: 14px; font-weight: 600; line-height: 1.45; }
+  .caption1    { font-size: 12px; font-weight: 400; line-height: 1.35; color: var(--nf3); }
+  .caption1-strong { font-size: 12px; font-weight: 600; line-height: 1.35; color: var(--nf3); letter-spacing: 0.02em; text-transform: uppercase; }
+  .caption2    { font-size: 10px; font-weight: 400; line-height: 1.3; color: var(--nf4); }
+
+  /* ---------- Materials: three distinct kinds, not one "glass" ---------- */
+  /* Card — the everyday content surface: solid, bordered, shadow4 */
+  .card { background: var(--nb1); border: 1px solid var(--stroke2); border-radius: var(--r-xl); box-shadow: var(--shadow4); }
+
+  /* Acrylic — translucent, blurred, noise-textured; for transient/floating surfaces */
+  .acrylic {
+    position: relative;
+    background: rgba(255,255,255,0.78);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid rgba(255,255,255,0.7);
+    border-radius: var(--r-xl);
+    box-shadow: var(--shadow8);
+  }
+  .acrylic::after {
+    content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none; opacity:0.045; mix-blend-mode:multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Mica — flat, subtly tinted; for persistent chrome (nav rail, command bar) */
+  .mica { background: linear-gradient(180deg, #FBFBFB, #F6F6F6); border-color: var(--stroke2); }
+
+  /* ---------- Buttons — Fluent sizing (32/40px, NOT 44pt) and radius (4-6px, NOT pill) ---------- */
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; height:32px; padding:0 16px; border-radius:var(--r-md); font-size:14px; font-weight:600; white-space:nowrap; transition: background var(--dur-fast) var(--curve-easy), border-color var(--dur-fast) var(--curve-easy); }
+  .btn-lg { height: 40px; padding: 0 20px; font-size:15px; }
+  .btn-primary { background: var(--brand); color:#fff; }
+  .btn-primary:hover { background: var(--brand-hover); }
+  .btn-outline { background: var(--nb1); border:1px solid var(--stroke1); color: var(--nf1); }
+  .btn-outline:hover { background: var(--nb3); border-color: var(--nf4); }
+  .btn-subtle { background: transparent; color: var(--nf1); }
+  .btn-subtle:hover { background: var(--nb4); }
+  .btn-icon { width:32px; height:32px; padding:0; border-radius: var(--r-circular); background: var(--brand); color:#fff; }
+
+  .badge { display:inline-flex; align-items:center; height:20px; padding:0 8px; border-radius:var(--r-circular); font-size:11px; font-weight:600; }
+  .icon { display:inline-flex; }
+  .icon svg { display:block; }
+
+  .screen { position: relative; overflow: hidden; margin-top: 20px; }
+  .screen-label { position:absolute; top:16px; left:24px; font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color: rgba(255,255,255,0.35); z-index: 40; }
+
+  /* ---------- Command bar (flat, Mica, thin bottom stroke — NOT a floating pill) ---------- */
+  .command-bar { display:flex; align-items:center; justify-content:space-between; padding: 0 32px; height: 56px; border-bottom: 1px solid var(--stroke2); }
+  .logo { display:flex; align-items:center; gap:8px; font-size:15px; font-weight:600; }
+  .logo .mark { width:22px; height:22px; border-radius:var(--r-sm); background: var(--brand); display:flex; align-items:center; justify-content:center; }
+  .navlinks { display:flex; align-items:center; gap:28px; font-size:14px; font-weight:400; color: var(--nf2); }
+  .navlinks a:hover { color: var(--nf1); }
+  .navright { display:flex; align-items:center; gap:10px; }
+  .credits-badge { display:flex; align-items:center; gap:6px; height:28px; padding:0 12px; border-radius:var(--r-circular); background: var(--brand-tint1); color: var(--brand); font-size:12px; font-weight:600; }
+  .avatar { width: 28px; height: 28px; border-radius: var(--r-circular); background: var(--brand); color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; flex-shrink:0; }
+
+  /* ---------- Hero ---------- */
+  .hero { padding: 72px 24px 64px; text-align:center; }
+  .hero .large-title, .hero .display { color: var(--nf1); max-width: 780px; margin: 0 auto; }
+  .hero .body1 { margin-top:12px; font-size:16px; max-width: 560px; margin-left:auto; margin-right:auto; }
+
+  .typebar { margin: 32px auto 0; max-width: 660px; padding: 18px 20px; text-align:left; }
+  .tb-top { display:flex; justify-content:space-between; align-items:center; }
+  .tb-textarea { margin-top: 14px; font-size: 15px; color: var(--nf4); min-height: 44px; }
+  .tb-bottom { margin-top: 14px; display:flex; align-items:center; justify-content:space-between; border-top: 1px solid var(--stroke3); padding-top: 12px; }
+  .tb-pills { display:flex; gap:8px; }
+  .tb-pill { display:flex; align-items:center; gap:5px; height:26px; padding:0 12px; border-radius:var(--r-circular); background: var(--nb3); color: var(--nf2); font-size:12px; font-weight:600; }
+
+  /* Reel — Card previews, user-driven scroll, Reveal-style hover border */
+  .reel-wrap { margin: 48px 0 0; padding: 0 max(24px, calc((100% - 1180px)/2)); }
+  .reel-track { display:flex; gap:14px; overflow-x:auto; scroll-snap-type: x proximity; padding: 4px 4px 14px; scrollbar-width: none; }
+  .reel-track::-webkit-scrollbar { display:none; }
+  .reel-card { scroll-snap-align:start; width: 200px; height: 356px; flex-shrink:0; border-radius: var(--r-xl); overflow:hidden; position:relative; background:#eee; box-shadow: var(--shadow4); border: 1px solid var(--stroke2); transition: box-shadow var(--dur-normal) var(--curve-easy), border-color var(--dur-normal) var(--curve-easy); }
+  .reel-card:hover { box-shadow: var(--shadow16); border-color: var(--brand); }
+  .reel-card img.poster, .reel-card video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+  .reel-card .glow { position:absolute; inset:0; background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.55)); pointer-events:none; }
+  .reel-card .caption { position:absolute; bottom:12px; left:12px; right:12px; color:#fff; }
+  .reel-card .caption .body1-strong { color:#fff; font-size:13px; }
+
+  /* ---------- How It Works — clean Fluent feature-card grid ---------- */
+  .hiw { background: var(--nb1); padding: 88px 24px; border-top: 1px solid var(--stroke3); }
+  .hiw-head { max-width: 620px; margin: 0 auto 48px; text-align:center; }
+  .hiw-head .caption1-strong { color: var(--brand); }
+  .hiw-head .title1 { margin-top:8px; }
+  .hiw-head .body1 { margin-top:10px; }
+  .feature-grid { max-width: 1180px; margin: 0 auto; display:grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .feature-card { padding: 24px; opacity:0; transform: translateY(14px); transition: opacity var(--dur-slow) var(--curve-decel), transform var(--dur-slow) var(--curve-decel); }
+  .feature-card.visible { opacity:1; transform: translateY(0); }
+  .feature-icon { width:40px; height:40px; border-radius:var(--r-lg); background: var(--brand-tint1); color: var(--brand); display:flex; align-items:center; justify-content:center; }
+  .feature-num { margin-top:14px; }
+  .feature-title { margin-top:4px; }
+  .feature-desc { margin-top:6px; }
+
+  /* ---------- CTA — calm, brand-tint, NOT dark/neon ---------- */
+  .cta { background: linear-gradient(180deg, var(--brand-tint1), var(--brand-tint2)); padding: 96px 24px; text-align:center; }
+  .cta .title1 { max-width: 560px; margin: 0 auto; }
+  .cta .body1 { margin-top:10px; }
+  .cta-btns { margin-top:26px; display:flex; gap:10px; justify-content:center; }
+
+  /* ---------- Auth ---------- */
+  .auth-screen { min-height: 94vh; display:flex; align-items:center; justify-content:center; padding:40px; background: var(--nb2); }
+  .top-logo { position:absolute; top:24px; left:32px; font-size:15px; font-weight:600; display:flex; align-items:center; gap:8px; z-index:5; }
+  .top-logo .mark { width:20px; height:20px; border-radius:var(--r-sm); background: var(--brand); }
+  .auth-card { width:100%; max-width: 380px; padding: 36px 32px; }
+  .auth-card .title2 { text-align:center; }
+  .auth-card .body1 { margin-top:8px; text-align:center; }
+  .social-row { margin-top:24px; }
+  .social-btn { width:100%; display:flex; align-items:center; justify-content:center; gap:10px; height:36px; border-radius:var(--r-md); border:1px solid var(--stroke1); background: var(--nb1); font-size:13.5px; font-weight:600; }
+  .divider { margin:20px 0; display:flex; align-items:center; gap:10px; font-size:11px; font-weight:600; color: var(--nf4); text-transform:uppercase; letter-spacing:0.06em; }
+  .divider::before, .divider::after { content:''; flex:1; height:1px; background: var(--stroke2); }
+  .field { margin-bottom: 14px; }
+  .field label { display:block; font-size:12px; font-weight:600; color: var(--nf2); margin-bottom:6px; }
+  .field input { width:100%; height:32px; padding:0 10px; border-radius:var(--r-md); background: var(--nb1); border: 1px solid var(--stroke1); font-family: var(--font); font-size:14px; color: var(--nf1); outline:none; transition: border-color var(--dur-fast) var(--curve-easy), box-shadow var(--dur-fast) var(--curve-easy); }
+  .field input:focus { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand); }
+  .field-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+  .forgot { font-size:12px; color: var(--brand); font-weight:600; }
+  .auth-submit { margin-top: 16px; width:100%; }
+  .switch { margin-top:20px; text-align:center; font-size:13px; color: var(--nf2); }
+  .switch a { color: var(--brand); font-weight:600; }
+  .terms { margin-top:16px; text-align:center; }
+
+  /* ---------- Nav rail — persistent, edge-anchored Mica, NOT a floating dock ---------- */
+  .shell { display:flex; }
+  .nav-rail { width: 240px; flex-shrink: 0; border-right: 1px solid var(--stroke2); padding: 16px 8px; display:flex; flex-direction:column; align-self:stretch; }
+  .rail-logo { display:flex; align-items:center; gap:8px; font-size:14px; font-weight:600; padding: 8px 12px 16px; }
+  .rail-logo .mark { width:20px; height:20px; border-radius:var(--r-sm); background: var(--brand); }
+  .navgroup { display:flex; flex-direction:column; gap:1px; position:relative; }
+  .navitem { position:relative; display:flex; align-items:center; gap:11px; height:36px; padding:0 12px; border-radius:var(--r-md); font-size:13.5px; font-weight:400; color: var(--nf2); overflow:hidden; }
+  .navitem .icon { color: var(--nf3); position:relative; z-index:2; }
+  .navitem span.label { position:relative; z-index:2; }
+  .navitem.active { background: var(--brand-tint1); color: var(--brand); font-weight:600; }
+  .navitem.active .icon { color: var(--brand); }
+  .navitem.active::before { content:''; position:absolute; left:0; top:6px; bottom:6px; width:3px; border-radius:2px; background: var(--brand); }
+  .navdivider { height:1px; background: var(--stroke3); margin: 12px 10px; }
+  .rail-footer { margin-top:auto; display:flex; align-items:center; gap:10px; padding: 10px 12px; }
+  .rail-footer .name { font-size:12.5px; font-weight:600; }
+  .rail-footer .sub { font-size:11px; color: var(--nf3); }
+
+  .main { flex:1; }
+  .page-command-bar { display:flex; align-items:center; justify-content:space-between; padding: 0 32px; height:56px; border-bottom: 1px solid var(--stroke2); }
+  .page-content { padding: 28px 32px 48px; max-width: 1200px; }
+
+  .toolbar { display:flex; align-items:center; justify-content:space-between; margin-bottom: 20px; }
+  .filters { display:flex; gap:6px; }
+  .filter-pill { height:28px; padding:0 13px; border-radius:var(--r-circular); font-size:12.5px; font-weight:600; background: var(--nb3); color: var(--nf2); display:flex; align-items:center; }
+  .filter-pill.active { background: var(--brand); color:#fff; }
+
+  .project-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .pcard { overflow:hidden; }
+  .pcard-thumb { height: 140px; background-size:cover; background-position:center; position:relative; }
+  .pcard-badge { position:absolute; top:10px; left:10px; height:22px; padding:0 9px; display:flex; align-items:center; font-size:11px; font-weight:600; border-radius:var(--r-circular); background: rgba(255,255,255,0.92); }
+  .pcard-body { padding: 14px 16px; }
+  .pcard-bar { margin-top:10px; height:4px; border-radius:var(--r-circular); background: var(--nb4); overflow:hidden; }
+  .pcard-bar i { display:block; height:100%; }
+
+  .billing-grid { display:grid; grid-template-columns: 1fr 1.7fr; gap: 16px; }
+  .balance-card { padding: 24px; }
+  .balance-num { font-size: 40px; font-weight: 700; margin-top: 8px; color: var(--nf1); }
+  .balance-card .btn { margin-top: 18px; }
+
+  .list-card { overflow:hidden; }
+  .list-title { padding: 14px 18px 8px; }
+  .list-row { display:flex; align-items:center; justify-content:space-between; height:44px; padding: 0 18px; border-top: 1px solid var(--stroke3); }
+  .list-row:first-of-type { border-top:none; }
+  .list-row .v.link { color: var(--brand); font-weight:600; }
+  .list-row .v.pos { color: var(--success); font-weight:600; }
+  .list-row .v.neg { color: var(--danger); font-weight:600; }
+
+  .settings-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 780px; }
+
+  .notif-list { max-width: 620px; display:flex; flex-direction:column; gap:8px; }
+  .notif-item { display:flex; gap:12px; align-items:flex-start; padding: 13px 16px; }
+  .notif-dot { width:8px; height:8px; border-radius:var(--r-circular); background: var(--brand); margin-top:5px; flex-shrink:0; }
+</style>
+</head>
+<body>
+
+<div class="note">
+  <b>Fluent Design</b> — Microsoft Fluent 2, built from research grounded in Fluent UI's actual GitHub tokens
+  (spacing, radius, motion durations/curves confirmed exact) plus documented Fluent 2 conventions (materials,
+  pillars, iconography). Deliberately different register from Oceanic/Apple: Segoe UI Variable, <b>Semibold</b>
+  headings (never bold), tight 4–8px radii on real UI (buttons are NOT pills), dual-layer elevation shadows
+  instead of glow, three distinct materials — flat bordered <b>Card</b> for content, blurred+noise-textured
+  <b>Acrylic</b> for transient surfaces, flat tinted <b>Mica</b> for persistent nav — and a calm brand-tint CTA
+  instead of a dark neon one. Same page set as Oceanic/Apple for direct comparison.
+</div>
+<div class="jump">
+  <a href="#main-logout">Main (Signed Out)</a><a href="#signin">Sign In</a><a href="#signup">Sign Up</a><a href="#signedin-home">Signed-In Home</a>
+  <a href="#projects">Projects</a><a href="#billing">Billing</a><a href="#account">Account</a><a href="#notifications">Notifications</a>
+</div>
+
+<!-- ============ MAIN (SIGNED OUT) ============ -->
+<div id="main-logout" class="screen" style="background:var(--nb1);">
+  <div class="screen-label" style="color: rgba(0,0,0,0.3);">Main — Signed Out</div>
+  <div class="command-bar mica">
+    <div class="logo"><span class="mark"></span>Script to Video</div>
+    <div class="navlinks"><a href="#">Platform</a><a href="#">Features</a><a href="#">Projects</a><a href="#">Community</a></div>
+    <div class="navright"><a class="btn btn-outline" href="#">Sign Up</a><a class="btn btn-primary" href="#">Log In</a></div>
+  </div>
+
+  <div class="hero">
+    <div class="display">What are we making today?</div>
+    <div class="body1">One agent runs the whole pipeline — research, script, storyboard, film &amp; more.</div>
+    <div class="typebar acrylic">
+      <div class="tb-top"><span class="caption1">60 / 450 credits</span><span class="caption1">GPT‑4o</span></div>
+      <div class="tb-textarea">Paste a full script, or just describe your idea…</div>
+      <div class="tb-bottom">
+        <div class="tb-pills"><span class="tb-pill">Attach</span><span class="tb-pill">Voice</span></div>
+        <div class="btn-icon icon" id="icon-send"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reel-wrap">
+    <div class="reel-track" id="logout-reel"></div>
+  </div>
+
+  <div class="hiw">
+    <div class="hiw-head">
+      <div class="caption1-strong">How it works</div>
+      <div class="title1">From script to final cut</div>
+      <div class="body1">One pipeline, seven stages — every project walks the same road.</div>
+    </div>
+    <div class="feature-grid" id="steps"></div>
+  </div>
+
+  <div class="cta">
+    <div class="title1">Create your next project.</div>
+    <div class="body1">Free to start — no card required.</div>
+    <div class="cta-btns">
+      <a class="btn btn-primary btn-lg" href="#">Sign Up</a>
+      <a class="btn btn-outline btn-lg" href="#">Log In</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SIGN IN ============ -->
+<div id="signin" class="screen auth-screen">
+  <div class="screen-label" style="color: rgba(0,0,0,0.3);">Sign In</div>
+  <div class="top-logo"><span class="mark"></span>Script to Video</div>
+  <div class="auth-card acrylic">
+    <div class="title2">Welcome back</div>
+    <div class="body1">Sign in to continue to Script to Video</div>
+    <div class="social-row"><button class="social-btn">Continue with Google</button></div>
+    <div class="divider">or</div>
+    <div class="field"><label>Email</label><input placeholder="you@example.com"/></div>
+    <div class="field-row"><label style="margin:0">Password</label><a href="#" class="forgot">Forgot password?</a></div>
+    <input placeholder="••••••••" type="password" style="width:100%; height:32px; padding:0 10px; border-radius:var(--r-md); background:var(--nb1); border:1px solid var(--stroke1); font-family:var(--font); font-size:14px;"/>
+    <button class="btn btn-primary auth-submit">Sign In</button>
+    <div class="switch">Don't have an account? <a href="#signup">Sign up</a></div>
+  </div>
+</div>
+
+<!-- ============ SIGN UP ============ -->
+<div id="signup" class="screen auth-screen">
+  <div class="screen-label" style="color: rgba(0,0,0,0.3);">Sign Up</div>
+  <div class="top-logo"><span class="mark"></span>Script to Video</div>
+  <div class="auth-card acrylic">
+    <div class="title2">Create your account</div>
+    <div class="body1">Free to start — no card required</div>
+    <div class="social-row"><button class="social-btn">Continue with Google</button></div>
+    <div class="divider">or</div>
+    <div class="field"><label>Name</label><input placeholder="Your name"/></div>
+    <div class="field"><label>Email</label><input placeholder="you@example.com"/></div>
+    <div class="field"><label>Password</label><input placeholder="At least 8 characters" type="password"/></div>
+    <button class="btn btn-primary auth-submit">Create Account</button>
+    <div class="switch">Already have an account? <a href="#signin">Sign in</a></div>
+    <p class="terms caption1">By continuing you agree to our Terms of Service and Privacy Policy.</p>
+  </div>
+</div>
+
+<!-- ============ SIGNED-IN HOME ============ -->
+<div id="signedin-home" class="screen" style="background:var(--nb1);">
+  <div class="screen-label" style="color: rgba(0,0,0,0.3);">Signed-In Home</div>
+  <div class="command-bar mica">
+    <div class="logo"><span class="mark"></span>Script to Video</div>
+    <div class="navlinks"><a href="#">Platform</a><a href="#">Features</a><a href="#">Projects</a><a href="#">Community</a></div>
+    <div class="navright"><div class="credits-badge">60 / 450 credits</div><div class="avatar">TK</div></div>
+  </div>
+  <div class="hero" style="padding-bottom:56px;">
+    <div class="large-title">What do we create today?</div>
+    <div class="body1">Turn an idea into a complete production.</div>
+    <div class="typebar acrylic">
+      <div class="tb-top"><span class="caption1">60 / 450 credits</span><span class="caption1">GPT‑4o</span></div>
+      <div class="tb-textarea">Paste a full script, or just describe your idea…</div>
+      <div class="tb-bottom">
+        <div class="tb-pills"><span class="tb-pill">Attach</span><span class="tb-pill">Voice</span></div>
+        <div class="btn-icon icon" id="icon-send-2"></div>
+      </div>
+    </div>
+  </div>
+  <div class="page-content" style="max-width:1180px; margin:0 auto;">
+    <div class="subtitle1" style="margin-bottom:16px;">Latest Project</div>
+    <div style="display:grid; grid-template-columns: 1.6fr 1fr 1fr; grid-template-rows: auto auto; gap:14px;">
+      <div class="card" style="grid-row:span 2; padding:20px;">
+        <div style="height:150px; border-radius:var(--r-lg); background:linear-gradient(135deg,#e8e8e8,#f2f2f2); display:flex; align-items:center; justify-content:center; color:var(--nf4); margin-bottom:14px;" id="icon-play-lg"></div>
+        <div class="body1-strong">Navneet / Porsche 911 Reel</div>
+        <div class="caption1">Working on Animate · 56%</div>
+        <div style="margin-top:12px; height:4px; border-radius:var(--r-circular); background:var(--nb4); overflow:hidden;"><i style="display:block; height:100%; width:56%; background:var(--brand);"></i></div>
+        <a class="btn btn-primary" href="#" style="margin-top:14px;">Watch progress</a>
+      </div>
+      <div class="card" style="padding:16px;"><div class="caption1-strong">Script</div><div class="body1-strong" style="margin-top:4px;">106 words · 0:42</div></div>
+      <div class="card" style="padding:16px;"><div class="caption1-strong">Storyboard</div><div class="body1-strong" style="margin-top:4px;">8 beats mapped</div></div>
+      <div class="card" style="padding:16px;"><div class="caption1-strong">Assets</div><div class="body1-strong" style="margin-top:4px;">14 collected</div></div>
+      <div class="card" style="padding:16px;"><div class="caption1-strong">Final Output</div><div class="body1-strong" style="margin-top:4px;">Pending render</div></div>
+    </div>
+    <div class="subtitle1" style="margin:32px 0 16px;">Folders</div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px;">
+      <div class="card" style="overflow:hidden;">
+        <div class="pcard-thumb" style="background-image:url(https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&q=60)"><div class="pcard-badge">Shipped</div></div>
+        <div class="pcard-body"><div class="body1-strong">Porsche 911 Taste Test</div><div class="caption1">6 stages · 1320 frames</div></div>
+      </div>
+      <div class="card" style="overflow:hidden;">
+        <div class="pcard-thumb" style="background-image:url(https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=400&q=60)"><div class="pcard-badge">Shipped</div></div>
+        <div class="pcard-body"><div class="body1-strong">Testimonial Ad</div><div class="caption1">5 stages · 900 frames</div></div>
+      </div>
+      <div class="card" style="overflow:hidden;">
+        <div class="pcard-thumb" style="background-image:url(https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&q=60)"><div class="pcard-badge" style="background:var(--brand); color:#fff;">In progress</div></div>
+        <div class="pcard-body"><div class="body1-strong">Cohort 26 Reveal</div><div class="caption1">4/8 stages done</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PROJECTS ============ -->
+<div id="projects" class="screen shell" style="min-height:88vh; background:var(--nb1);">
+  <div class="screen-label" style="color: rgba(0,0,0,0.3);">Projects</div>
+  <div class="nav-rail mica" id="rail-projects"></div>
+  <div class="main">
+    <div class="page-command-bar"><div class="subtitle1">All Projects</div><button class="btn btn-primary" id="icon-new-btn">New Project</button></div>
+    <div class="page-content">
+      <div class="toolbar"><div class="filters"><div class="filter-pill active">All</div><div class="filter-pill">In progress</div><div class="filter-pill">Completed</div></div></div>
+      <div class="project-grid">
+        <div class="card pcard"><div class="pcard-thumb" style="background-image:url(https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&q=60)"><div class="pcard-badge">In progress</div></div><div class="pcard-body"><div class="body1-strong">Navneet / Porsche 911 Reel</div><div class="caption1">Working on Animate · 56%</div><div class="pcard-bar"><i style="width:56%; background:var(--brand);"></i></div></div></div>
+        <div class="card pcard"><div class="pcard-thumb" style="background-image:url(https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=400&q=60)"><div class="pcard-badge" style="color:var(--success);">Shipped</div></div><div class="pcard-body"><div class="body1-strong">Testimonial Ad</div><div class="caption1">5 stages · 900 frames</div><div class="pcard-bar"><i style="width:100%; background:var(--success);"></i></div></div></div>
+        <div class="card pcard"><div class="pcard-thumb" style="background-image:url(https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&q=60)"><div class="pcard-badge" style="color:var(--success);">Shipped</div></div><div class="pcard-body"><div class="body1-strong">Porsche 911 Taste Test</div><div class="caption1">6 stages · 1320 frames</div><div class="pcard-bar"><i style="width:100%; background:var(--success);"></i></div></div></div>
+        <div class="card pcard"><div class="pcard-thumb" style="background-image:url(https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=400&q=60)"><div class="pcard-badge">In progress</div></div><div class="pcard-body"><div class="body1-strong">Cohort 26 Reveal</div><div class="caption1">4/8 stages done</div><div class="pcard-bar"><i style="width:50%; background:var(--brand);"></i></div></div></div>
+        <div class="card pcard"><div class="pcard-thumb" style="background-image:url(https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&q=60)"><div class="pcard-badge" style="color:var(--warning);">Needs review</div></div><div class="pcard-body"><div class="body1-strong">Product Launch Teaser</div><div class="caption1">Review requested</div><div class="pcard-bar"><i style="width:80%; background:var(--warning);"></i></div></div></div>
+        <div class="card pcard"><div class="pcard-thumb" style="background-image:url(https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400&q=60)"><div class="pcard-badge" style="color:var(--success);">Shipped</div></div><div class="pcard-body"><div class="body1-strong">Founder Story</div><div class="caption1">7 stages · 2100 frames</div><div class="pcard-bar"><i style="width:100%; background:var(--success);"></i></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ BILLING ============ -->
+<div id="billing" class="screen shell" style="min-height:88vh; background:var(--nb1);">
+  <div class="screen-label" style="color: rgba(0,0,0,0.3);">Billing</div>
+  <div class="nav-rail mica" id="rail-billing"></div>
+  <div class="main">
+    <div class="page-command-bar"><div class="subtitle1">Billing &amp; Usage</div></div>
+    <div class="page-content">
+      <div class="billing-grid">
+        <div class="card balance-card">
+          <div class="caption1-strong">Credits balance</div>
+          <div class="balance-num">60</div>
+          <div class="caption1">of 450 this cycle</div>
+          <button class="btn btn-primary">Buy more credits</button>
+        </div>
+        <div class="card list-card">
+          <div class="list-title body1-strong">Recent activity</div>
+          <div class="list-row"><span class="body1">Signup grant</span><span class="v pos">+50</span></div>
+          <div class="list-row"><span class="body1">Render — Porsche 911 Taste Test</span><span class="v neg">−5</span></div>
+          <div class="list-row"><span class="body1">Render — Testimonial Ad</span><span class="v neg">−5</span></div>
+          <div class="list-row"><span class="body1">Render refund — failed render</span><span class="v pos">+5</span></div>
+          <div class="list-row"><span class="body1">Render — Navneet / Porsche 911 Reel</span><span class="v neg">−5</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ACCOUNT ============ -->
+<div id="account" class="screen shell" style="min-height:80vh; background:var(--nb1);">
+  <div class="screen-label" style="color: rgba(0,0,0,0.3);">Account</div>
+  <div class="nav-rail mica" id="rail-account"></div>
+  <div class="main">
+    <div class="page-command-bar"><div class="subtitle1">Profile &amp; Settings</div></div>
+    <div class="page-content">
+      <div class="settings-grid">
+        <div class="card list-card">
+          <div class="list-title body1-strong">Profile</div>
+          <div class="list-row"><span class="body1">Name</span><span class="v">Tukesh</span></div>
+          <div class="list-row"><span class="body1">Email</span><span class="v">dtukeshwar979@···</span></div>
+          <div class="list-row"><span class="body1">Joined</span><span class="v">Aug 16, 2026</span></div>
+        </div>
+        <div class="card list-card">
+          <div class="list-title body1-strong">Security</div>
+          <div class="list-row"><span class="body1">Password</span><span class="v link">Change</span></div>
+          <div class="list-row"><span class="body1">Google account</span><span class="v">Connected</span></div>
+          <div class="list-row"><span class="body1">Sessions</span><span class="v link">Manage</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ NOTIFICATIONS ============ -->
+<div id="notifications" class="screen shell" style="min-height:80vh; background:var(--nb1);">
+  <div class="screen-label" style="color: rgba(0,0,0,0.3);">Notifications</div>
+  <div class="nav-rail mica" id="rail-notifications"></div>
+  <div class="main">
+    <div class="page-command-bar"><div class="subtitle1">Notifications</div></div>
+    <div class="page-content">
+      <div class="notif-list">
+        <div class="card notif-item"><div class="notif-dot"></div><div><div class="body1-strong">Porsche 911 Taste Test finished rendering</div><div class="caption1">Aug 19, 2026 · 2h ago</div></div></div>
+        <div class="card notif-item"><div class="notif-dot" style="background:var(--danger);"></div><div><div class="body1-strong">Render failed — Navneet / Porsche 911 Reel</div><div class="caption1">Aug 20, 2026 · yesterday</div></div></div>
+        <div class="card notif-item"><div class="notif-dot" style="background:var(--stroke1);"></div><div><div class="body1-strong">Testimonial Ad shipped</div><div class="caption1">Aug 19, 2026</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- Monoline icon set (Fluent-leaning: squarer geometry, 2px stroke) ---------- */
+const ICONS = {
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  image: '<rect x="3" y="5" width="18" height="14" rx="1.5"/><circle cx="8.5" cy="10.5" r="1.4"/><path d="M21 15.5l-5-5-4 4-3-3-6 6"/>',
+  film: '<rect x="3" y="4" width="18" height="16" rx="1.5"/><path d="M7 4v16M17 4v16M3 9h4M17 9h4M3 15h4M17 15h4"/>',
+  music: '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+  sparkle: '<path d="M12 3l1.6 6L20 10.5l-6.4 1.5L12 18l-1.6-6L4 10.5 10.4 9z"/>',
+  speaker: '<path d="M3 9v6h4l5 4V5L7 9H3z"/><path d="M16.5 8a5 5 0 010 8"/>',
+  tray: '<path d="M12 3v11m0 0l-4-4m4 4l4-4M4 15v4a2 2 0 002 2h12a2 2 0 002-2v-4"/>',
+  grid: '<rect x="3.5" y="3.5" width="7" height="7" rx="1"/><rect x="13.5" y="3.5" width="7" height="7" rx="1"/><rect x="3.5" y="13.5" width="7" height="7" rx="1"/><rect x="13.5" y="13.5" width="7" height="7" rx="1"/>',
+  people: '<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9.5" r="2.4"/><path d="M15 20c0-2.2 1-4 3-4.8"/>',
+  gear: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.9l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.9-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.6 1.7 1.7 0 00-1.9.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.9 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.6-1 1.7 1.7 0 00-.3-1.9l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.9.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.9-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.9V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/>',
+  person: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><path d="M6.3 19a6 6 0 0111.4 0"/>',
+  play: '<path d="M8 5.5v13l11-6.5z" fill="currentColor" stroke="none"/>',
+  send: '<path d="M4 12l16-8-6 16-3-6-7-2z" fill="currentColor" stroke="none"/>',
+};
+function svgIcon(name, size, sw) {
+  size = size || 18; sw = sw === undefined ? 1.7 : sw;
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="'+sw+'" stroke-linecap="round" stroke-linejoin="round">'+ICONS[name]+'</svg>';
+}
+document.getElementById('icon-send').innerHTML = svgIcon('send', 14, 0);
+document.getElementById('icon-send-2').innerHTML = svgIcon('send', 14, 0);
+document.getElementById('icon-play-lg').innerHTML = svgIcon('play', 28, 0);
+document.getElementById('icon-new-btn').innerHTML = svgIcon('plus', 15, 2) + ' New Project';
+
+/* ---------- Nav rail with Reveal-style hover highlight (Fluent's signature light effect) ---------- */
+function railHTML(active) {
+  const items = [['sparkle','Create','create'], ['grid','Projects','projects'], ['image','Assets','assets'],
+    ['film','Storyboards','storyboards'], ['music','Beat Sheets','beats'], ['sparkle','Animations','animations'],
+    ['speaker','Sound','sound'], ['tray','Exports','exports']];
+  const items2 = [['grid','Templates','templates'], ['people','Community','community']];
+  const items3 = [['gear','Settings','account'], ['person','Profile','account']];
+  const row = (icon, label, key) => '<div class="navitem'+(key===active?' active':'')+'"><span class="icon">'+svgIcon(icon,16,1.7)+'</span><span class="label">'+label+'</span></div>';
+  return (
+    '<div class="rail-logo"><span class="mark"></span>Script to Video</div>' +
+    '<div class="navgroup">' + items.map(([i,l,k]) => row(i,l,k)).join('') + '</div>' +
+    '<div class="navdivider"></div>' +
+    '<div class="navgroup">' + items2.map(([i,l,k]) => row(i,l,k)).join('') + '</div>' +
+    '<div class="navdivider"></div>' +
+    '<div class="navgroup">' + items3.map(([i,l,k]) => row(i,l,k)).join('') + '</div>' +
+    '<div class="rail-footer"><div class="avatar">TK</div><div><div class="name">Tukesh</div><div class="sub">60 credits</div></div></div>'
+  );
+}
+document.getElementById('rail-projects').innerHTML = railHTML('projects');
+document.getElementById('rail-billing').innerHTML = railHTML('account');
+document.getElementById('rail-account').innerHTML = railHTML('account');
+document.getElementById('rail-notifications').innerHTML = railHTML('account');
+
+/* Reveal: a soft radial spotlight follows the cursor within each nav-rail group,
+   only lighting the item under it — Fluent's "Light" pillar in miniature. */
+document.querySelectorAll('.navgroup').forEach(group => {
+  group.addEventListener('mousemove', (e) => {
+    const item = e.target.closest('.navitem');
+    group.querySelectorAll('.navitem').forEach(el => { if (el !== item) el.style.background = el.classList.contains('active') ? '' : ''; });
+    if (item && !item.classList.contains('active')) {
+      const rect = item.getBoundingClientRect();
+      const x = e.clientX - rect.left, y = e.clientY - rect.top;
+      item.style.background = 'radial-gradient(120px circle at ' + x + 'px ' + y + 'px, rgba(15,108,189,0.10), transparent 70%)';
+    }
+  });
+  group.addEventListener('mouseleave', () => {
+    group.querySelectorAll('.navitem:not(.active)').forEach(el => { el.style.background = ''; });
+  });
+});
+
+/* ---------- Video mounting (DOM-attach before play) ---------- */
+const CLIPS = [
+  { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", poster: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=400&h=712&fit=crop&q=70", title: "Product Reveal" },
+  { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", poster: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&h=712&fit=crop&q=70", title: "Neon Palm" },
+  { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", poster: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&h=712&fit=crop&q=70", title: "Crowd Reel" },
+  { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4", poster: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400&h=712&fit=crop&q=70", title: "Crystal Water" },
+  { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4", poster: "https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?w=400&h=712&fit=crop&q=70", title: "Night Sky" },
+  { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", poster: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=712&fit=crop&q=70", title: "Flower Crown" },
+  { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4", poster: "https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?w=400&h=712&fit=crop&q=70", title: "City Blur" },
+  { video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", poster: "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&h=712&fit=crop&q=70", title: "Steel Frame" },
+];
+function mountMedia(container, clip) {
+  const img = document.createElement('img');
+  img.className = 'poster'; img.src = clip.poster;
+  const v = document.createElement('video');
+  v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto';
+  v.addEventListener('playing', () => { img.style.opacity = '0'; img.style.transition = 'opacity 0.4s'; });
+  container.appendChild(img);
+  container.appendChild(v);
+  v.src = clip.video;
+  v.load();
+  const p = v.play();
+  if (p) p.catch(() => {
+    const retry = () => { v.play().catch(() => {}); document.removeEventListener('click', retry); };
+    document.addEventListener('click', retry, { once: true });
+  });
+}
+
+const reel = document.getElementById('logout-reel');
+CLIPS.forEach(clip => {
+  const d = document.createElement('div');
+  d.className = 'reel-card';
+  reel.appendChild(d);
+  mountMedia(d, clip);
+  const glow = document.createElement('div'); glow.className = 'glow'; d.appendChild(glow);
+  const cap = document.createElement('div'); cap.className = 'caption';
+  cap.innerHTML = '<div class="body1-strong">'+clip.title+'</div>';
+  d.appendChild(cap);
+});
+
+/* ---------- How It Works — feature card grid, scroll reveal ---------- */
+const STEPS = [
+  ["01","sparkle","Script","The script is written first — everything else follows it."],
+  ["02","film","Storyboard","Shot-by-shot camera, action, transition plan."],
+  ["03","music","Beat Sheet","Timing for every beat, VO and purpose."],
+  ["04","image","Asset Library","Every asset needed for every beat, in one place."],
+  ["05","play","Per-Beat Animation","Each beat is created one by one."],
+  ["06","speaker","Sound","Music, VO and SFX mixed to the timeline."],
+  ["07","tray","Final Delivery","Everything combined as the final video."],
+];
+const stepsEl = document.getElementById('steps');
+STEPS.forEach(([num, icon, title, desc], i) => {
+  const s = document.createElement('div');
+  s.className = 'feature-card card';
+  if (i === 6) s.style.gridColumn = 'span 4';
+  s.innerHTML =
+    '<div class="feature-icon">'+svgIcon(icon, 20, 1.7)+'</div>' +
+    '<div class="caption1-strong feature-num">STEP '+num+'</div>' +
+    '<div class="body1-strong feature-title">'+title+'</div>' +
+    '<div class="caption1 feature-desc">'+desc+'</div>';
+  stepsEl.appendChild(s);
+});
+const io = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 40); } });
+}, { threshold: 0.2 });
+document.querySelectorAll('.feature-card').forEach(s => io.observe(s));
+</script>
+</body>
+</html>
