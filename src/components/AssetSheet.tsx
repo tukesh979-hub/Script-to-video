@@ -10,9 +10,9 @@ const TYPE_LABEL: Record<string, string> = {
 // (this codebase built it), ai_generated is warn (worth a second glance),
 // user_supplied is neutral.
 const TYPE_CLASS: Record<string, string> = {
-  code_drawn: "text-lime-dim border-lime-dim/30",
-  ai_generated: "text-warn border-warn/30",
-  user_supplied: "text-muted border-border",
+  code_drawn: "text-[#7c6ff0] bg-[#7c6ff0]/10",
+  ai_generated: "text-[#a4650f] bg-[#a4650f]/10",
+  user_supplied: "text-[#16181d]/50 bg-[#16181d]/6",
 };
 
 /** First-class asset sheet — every asset used anywhere in the project, browsable
@@ -21,10 +21,10 @@ const TYPE_CLASS: Record<string, string> = {
 export function AssetSheet({ assets }: { assets: ProjectAsset[] }) {
   if (assets.length === 0) return null;
   return (
-    <div className="overflow-x-auto border border-border bg-panel">
+    <div className="glass overflow-x-auto rounded-2xl">
       <table className="w-full min-w-[640px] text-left text-sm">
         <thead>
-          <tr className="border-b border-border font-mono text-[10px] tracking-wide text-faint uppercase">
+          <tr className="border-b border-white/50 font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">
             <th className="px-4 py-3 font-normal">Asset</th>
             <th className="px-4 py-3 font-normal">Type</th>
             <th className="px-4 py-3 font-normal">Used in</th>
@@ -33,17 +33,17 @@ export function AssetSheet({ assets }: { assets: ProjectAsset[] }) {
         </thead>
         <tbody>
           {assets.map((a) => (
-            <tr key={a.id} className="border-b border-border/60 last:border-0">
-              <td className="px-4 py-3 font-medium text-foreground">{a.name}</td>
+            <tr key={a.id} className="border-b border-white/30 last:border-0">
+              <td className="px-4 py-3 font-medium text-[#16181d]">{a.name}</td>
               <td className="px-4 py-3">
                 <span
-                  className={`border px-2 py-0.5 font-mono text-xs uppercase ${TYPE_CLASS[a.assetType] ?? "text-muted border-border"}`}
+                  className={`rounded-full px-2 py-0.5 font-ui text-xs font-semibold uppercase ${TYPE_CLASS[a.assetType] ?? "text-[#16181d]/50 bg-[#16181d]/6"}`}
                 >
                   {TYPE_LABEL[a.assetType] ?? a.assetType}
                 </span>
               </td>
-              <td className="px-4 py-3 text-muted">{a.usedInScenes}</td>
-              <td className="px-4 py-3 font-mono text-xs text-faint">{a.prompt ?? a.sourcePath ?? "—"}</td>
+              <td className="px-4 py-3 text-[#16181d]/60">{a.usedInScenes}</td>
+              <td className="px-4 py-3 font-ui text-xs text-[#16181d]/40">{a.prompt ?? a.sourcePath ?? "—"}</td>
             </tr>
           ))}
         </tbody>

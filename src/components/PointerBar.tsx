@@ -16,22 +16,16 @@ export function PointerBar({
   const headline = finished ? "100% shipped" : currentLabel ? `${currentLabel} · ${pct}%` : `${pct}%`;
 
   return (
-    <div className="my-7">
+    <div className="glass my-7 rounded-2xl p-5">
       <div className="mb-3.5 flex items-center justify-between">
-        <span className="font-display text-[11px] font-bold tracking-wide text-muted uppercase">
+        <span className="font-ui text-[11px] font-bold tracking-[0.06em] text-[#16181d]/45 uppercase">
           Pipeline progress
         </span>
-        <span className="text-[13px] font-bold text-lime-dim">{headline}</span>
+        <span className="oceanic-accent-text text-[13px] font-bold">{headline}</span>
       </div>
-      <div
-        className="relative mx-1.5 mb-3.5 h-0.5"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(to right, var(--line-strong) 0, var(--line-strong) 3px, transparent 3px, transparent 8px)",
-        }}
-      >
+      <div className="relative mx-1.5 mb-3.5 h-1 overflow-visible rounded-full bg-[#16181d]/10">
         <div
-          className="absolute top-[-0.5px] left-0 h-[3px] bg-lime transition-[width] duration-500"
+          className="oceanic-accent-gradient absolute top-0 left-0 h-full rounded-full transition-[width] duration-500"
           style={{ width: `${pct}%` }}
         />
         {STAGE_ORDER.map((type, i) => {
@@ -41,15 +35,15 @@ export function PointerBar({
             <div
               key={type}
               title={STAGE_TYPE_LABEL[type]}
-              className={`absolute top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-[2.5px] ${
-                isDone ? "border-lime bg-lime" : "border-border bg-background"
+              className={`absolute top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white ${
+                isDone ? "oceanic-accent-gradient" : "bg-[#16181d]/20"
               }`}
               style={{ left: `${left}%` }}
             />
           );
         })}
       </div>
-      <div className="flex justify-between px-0.5 text-[10px] font-bold tracking-wide text-faint uppercase">
+      <div className="flex justify-between px-0.5 font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">
         <span>{STAGE_TYPE_LABEL[STAGE_ORDER[0]]}</span>
         <span>{STAGE_TYPE_LABEL[STAGE_ORDER[STAGE_ORDER.length - 1]]}</span>
       </div>

@@ -5,7 +5,7 @@ import { createProjectAction } from "./actions";
 import type { ActionState } from "@/app/(auth)/actions";
 import { FieldLabel, TextInput, PrimaryButton, FormMessage } from "@/components/auth/ui";
 
-export function NewProjectForm() {
+export function NewProjectForm({ initialDescription }: { initialDescription?: string }) {
   const [state, action, pending] = useActionState<ActionState, FormData>(createProjectAction, undefined);
 
   return (
@@ -21,8 +21,9 @@ export function NewProjectForm() {
           name="description"
           rows={3}
           disabled={pending}
+          defaultValue={initialDescription}
           placeholder="What's this video for?"
-          className="w-full resize-none border border-border bg-panel-2 px-3 py-2.5 text-sm text-foreground placeholder:text-faint outline-none transition-colors focus:border-lime disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full resize-none rounded-[10px] border border-white/70 bg-white/60 px-3.5 py-2.5 font-oceanic-body text-sm text-[#16181d] placeholder:text-[#16181d]/35 outline-none transition-colors focus:border-[#7c6ff0]/60 disabled:cursor-not-allowed disabled:opacity-50"
         />
       </div>
 

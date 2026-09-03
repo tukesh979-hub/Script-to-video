@@ -8,7 +8,7 @@ export function VideoReel() {
   const doubled = [...SHOWCASE_VIDEOS, ...SHOWCASE_VIDEOS];
 
   return (
-    <div className="oceanic-reel-wrap oceanic-reel-mask mt-12 -mx-10 w-[calc(100%+80px)]">
+    <div id="projects" className="oceanic-reel-wrap oceanic-reel-mask mt-12 -mx-10 w-[calc(100%+80px)] scroll-mt-24">
       <div className="oceanic-reel-track flex w-max gap-4.5">
         {doubled.map((clip, i) => (
           <div

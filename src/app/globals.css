@@ -120,23 +120,6 @@ body {
   color: var(--ink);
 }
 
-/* One ambient texture, rendered once in the root layout: a faint lightbox
-   grid (the kind you'd review a contact sheet or film strip against), not
-   the previous theme's violet dot-grid. Deliberately understated -- the
-   flat card language shouldn't compete with it. */
-.gridbg {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background-image:
-    linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
-  background-size: 28px 28px;
-  opacity: 0.35;
-  mask-image: radial-gradient(ellipse 80% 65% at 50% 20%, black 25%, transparent 85%);
-  -webkit-mask-image: radial-gradient(ellipse 80% 65% at 50% 20%, black 25%, transparent 85%);
-}
-
 /* A hand-circled "take" mark -- the grease-pencil ring an editor draws
    around the take they want. Deliberately imperfect (mismatched border
    radii, slight rotation), not a clean ellipse. */
@@ -296,30 +279,3 @@ body {
   }
 }
 
-/* The project workspace pages nested inside the Oceanic shell (project
-   detail, new-project form) weren't restyled -- they still read --ink/
-   --paper/etc, which flip to a dark palette under prefers-color-scheme:
-   dark. Sitting on the shell's always-light oceanic-wash background, that
-   flip makes their text unreadable (dark-mode ink is near-white). Pin
-   these tokens to their light values for that subtree so it's at least
-   legible, independent of the visitor's OS theme, until it's redesigned. */
-.oceanic-camera-light {
-  --bg: #f1efe8;
-  --paper: #fbfaf6;
-  --paper-2: #eae7dd;
-  --ink: #1b1917;
-  --muted: #635c52;
-  --faint: #948c7e;
-  --line: rgba(27, 25, 23, 0.14);
-  --line-strong: rgba(27, 25, 23, 0.28);
-  --accent: #c4222e;
-  --accent-ink: #8f1620;
-  --accent-soft: rgba(196, 34, 46, 0.12);
-  --stamp: #3b6e4f;
-  --stamp-soft: rgba(59, 110, 79, 0.12);
-  --warn: #a4650f;
-  --warn-soft: rgba(164, 101, 15, 0.14);
-  --danger: #c4222e;
-  --danger-soft: rgba(196, 34, 46, 0.12);
-  --on-accent: #fbfaf6;
-}

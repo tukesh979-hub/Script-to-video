@@ -16,7 +16,7 @@ export default async function DashboardShellLayout({ children }: { children: Rea
   const displayName = profile?.displayName ?? user.email?.split("@")[0] ?? "there";
 
   return (
-    <div className="oceanic-wash oceanic-camera-light flex min-h-screen w-full items-start">
+    <div className="oceanic-wash flex min-h-screen w-full items-start">
       <DashboardSidebar displayName={displayName} email={user.email ?? ""} creditsBalance={profile?.creditsBalance ?? 0} />
       <main className="min-w-0 flex-1 px-10 py-8 pb-12">{children}</main>
     </div>

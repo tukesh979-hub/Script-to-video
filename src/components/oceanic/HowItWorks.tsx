@@ -57,7 +57,7 @@ function StepRow({ step, index }: { step: (typeof STEPS)[number]; index: number 
  * 0.25), per DESIGN-SYSTEM.md §1/§2. */
 export function HowItWorks() {
   return (
-    <section className="oceanic-hiw-bg relative overflow-hidden px-10 py-32.5 sm:py-37.5">
+    <section id="features" className="oceanic-hiw-bg relative overflow-hidden px-10 py-32.5 sm:py-37.5">
       <div className="relative z-10 mx-auto max-w-160 text-center">
         <p className="font-ui text-[11px] font-bold tracking-[0.12em] text-[#b98bf0]">HOW IT WORKS</p>
         <h2 className="mt-2.5 font-heading text-[28px] font-bold tracking-tight text-white sm:text-[34px]">

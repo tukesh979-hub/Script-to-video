@@ -1,6 +1,14 @@
 import Link from "next/link";
 
-const LINKS = ["Platform", "Features ↓", "Projects", "Community"];
+// "Platform" and "Community" have no destination anywhere in the app
+// (Community is explicitly out of scope per DESIGN-SYSTEM.md §4; "Platform"
+// doesn't correspond to any section or page) -- kept as static labels rather
+// than dead links. "Features ↓" and "Projects" DO have real content behind
+// them (HowItWorks and VideoReel, both on the landing page), so those are
+// real anchor links to "/#features"/"/#projects" -- absolute path, not a
+// bare hash, since this nav also renders on the Signed-In Home which has
+// neither section, and needs to navigate back to the landing page first.
+const STATIC_LINKS = ["Platform", "Community"];
 
 type Props =
   | { variant: "signed-out" }
@@ -8,12 +16,7 @@ type Props =
 
 /** Shared glass nav for the hero-shell pages (signed-out marketing home and
  * the Signed-In Home) -- same logo/link structure, only the right side
- * swaps between Sign Up/Log In and a credits pill + avatar. Per
- * DESIGN-SYSTEM.md §2, "Platform"/"Features ↓"/"Projects"/"Community" have
- * no destination designed yet (Community is explicitly out of scope, the
- * rest are marketing-site sections that don't exist as real routes) -- kept
- * as static labels rather than dead links, matching the mockup's own plain
- * `<span>` markup for these. */
+ * swaps between Sign Up/Log In and a credits pill + avatar. */
 export function OceanicNav(props: Props) {
   return (
     <div className="glass mx-auto flex w-full max-w-275 items-center justify-between rounded-2xl px-5 py-3">
@@ -21,9 +24,14 @@ export function OceanicNav(props: Props) {
         Script <span className="text-[#c94fd6]">to</span> Video
       </Link>
       <div className="hidden items-center gap-5.5 font-ui text-sm font-medium text-[#16181d]/65 md:flex">
-        {LINKS.map((l) => (
-          <span key={l}>{l}</span>
-        ))}
+        <span>{STATIC_LINKS[0]}</span>
+        <Link href="/#features" className="transition-colors hover:text-[#16181d]">
+          Features ↓
+        </Link>
+        <Link href="/#projects" className="transition-colors hover:text-[#16181d]">
+          Projects
+        </Link>
+        <span>{STATIC_LINKS[1]}</span>
       </div>
       {props.variant === "signed-out" ? (
         <div className="flex items-center gap-3">

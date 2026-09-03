@@ -37,7 +37,7 @@ export function PasswordForm() {
           required
           disabled={pending}
         />
-        <p className="mt-1.5 text-xs text-faint">At least 8 characters, with a letter and a number.</p>
+        <p className="mt-1.5 text-xs text-[#16181d]/40">At least 8 characters, with a letter and a number.</p>
       </div>
       <FormMessage error={state?.error} success={state?.success} />
       <PrimaryButton type="submit" disabled={pending}>
