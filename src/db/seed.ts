@@ -4,9 +4,13 @@ import { projects, projectStages, projectAssets } from "./schema";
 
 /**
  * Seeds with the real projects built this session, so the Dashboard shows
- * something true rather than lorem-ipsum placeholders. The three "completed"
- * projects and all of Navneet's stage/asset detail are real, pulled directly
- * from the actual remotion-engine build. The in_progress/needs_review/
+ * something true rather than lorem-ipsum placeholders. All six "completed"
+ * projects are real: Navneet/Porsche 911, Porsche Taste Test, and Testimonial
+ * Ad are pulled directly from the actual remotion-engine build (Navneet also
+ * has full stage/asset detail seeded below); the three Save AI Credits
+ * entries are the three parallel creative directions built from the same
+ * real footage/VO in the remocn-library project (see that project's
+ * src/save-ai-credits/style-systems/). The in_progress/needs_review/
  * cancelled rows are clearly-labeled examples added only so those dashboard
  * states can be seen and verified -- not claimed as real runs.
  *
@@ -69,6 +73,42 @@ const SEED_PROJECTS = [
     stageCount: 5,
     frameCount: 900,
     voTakes: 1,
+  },
+  {
+    id: randomUUID(),
+    name: "Save AI Credits — Editorial Warm",
+    description:
+      "3 ways to cut AI video-gen credit spend, explained. Warm editorial direction: serif display type, custom-drawn transparent icons composited onto the real footage, hairline rules, quiet premium restraint. One of 3 parallel creative directions built from the same real VO/footage.",
+    status: "completed" as const,
+    thumbnailUrl: "/thumbnails/save-ai-credits-editorial-warm.jpg",
+    durationSeconds: 57,
+    stageCount: 6,
+    frameCount: 1718,
+    voTakes: 0, // real spoken narration, sped 1.15x with pitch preserved
+  },
+  {
+    id: randomUUID(),
+    name: "Save AI Credits — Kinetic Minimal",
+    description:
+      "Same script, clean kinetic-minimal direction: sharp line-draw reveals, bracket framing, tight modern type, a persistent 01/02/03 method tracker synced exactly to when each method is spoken.",
+    status: "completed" as const,
+    thumbnailUrl: "/thumbnails/save-ai-credits-kinetic-minimal.jpg",
+    durationSeconds: 57,
+    stageCount: 6,
+    frameCount: 1718,
+    voTakes: 0,
+  },
+  {
+    id: randomUUID(),
+    name: "Save AI Credits — Paper Cutout",
+    description:
+      "Same script again, paper-craft direction: kraft background, torn-edge cards, tape, hand-drawn doodle icons — the playful third option in the same 3-direction set.",
+    status: "completed" as const,
+    thumbnailUrl: "/thumbnails/save-ai-credits-paper-cutout.jpg",
+    durationSeconds: 57,
+    stageCount: 6,
+    frameCount: 1718,
+    voTakes: 0,
   },
   {
     id: randomUUID(),
