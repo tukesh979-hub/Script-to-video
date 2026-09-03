@@ -22,8 +22,8 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-display text-2xl text-foreground">Sign in</h1>
-        <p className="mt-2 text-base text-foreground/70">Welcome back to your project library.</p>
+        <h1 className="text-center font-heading text-[26px] font-semibold tracking-tight text-[#16181d]">Welcome back</h1>
+        <p className="mt-2 text-center text-[13.5px] text-[#16181d]/50">Sign in to continue to Script to Video</p>
       </div>
 
       <form action={signInWithGoogleAction}>
@@ -39,13 +39,13 @@ export default function LoginPage() {
         <OAuthError />
       </Suspense>
 
-      <div className="flex items-center gap-3 text-xs text-faint">
-        <div className="h-px flex-1 bg-border" />
+      <div className="flex items-center gap-2.5 font-ui text-[11px] tracking-[0.06em] text-[#16181d]/35 uppercase">
+        <div className="h-px flex-1 bg-[#16181d]/12" />
         or
-        <div className="h-px flex-1 bg-border" />
+        <div className="h-px flex-1 bg-[#16181d]/12" />
       </div>
 
-      <form action={action} className="flex flex-col gap-4">
+      <form action={action} className="flex flex-col gap-3.5">
         <div>
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <TextInput id="email" name="email" type="email" autoComplete="email" required disabled={pending} />
@@ -53,8 +53,8 @@ export default function LoginPage() {
         <div>
           <div className="mb-1.5 flex items-center justify-between">
             <FieldLabel htmlFor="password">Password</FieldLabel>
-            <Link href="/reset-password" className="text-sm text-foreground/60 hover:text-foreground">
-              Forgot?
+            <Link href="/reset-password" className="font-ui text-xs font-medium text-[#7c6ff0] hover:underline">
+              Forgot password?
             </Link>
           </div>
           <TextInput
@@ -70,14 +70,14 @@ export default function LoginPage() {
         <FormMessage error={state?.error} success={state?.success} />
 
         <PrimaryButton type="submit" disabled={pending}>
-          {pending ? "Signing in…" : "Sign in"}
+          {pending ? "Signing in…" : "Sign In"}
         </PrimaryButton>
       </form>
 
-      <p className="text-center text-sm text-foreground/70">
-        No account?{" "}
-        <Link href="/register" className="text-lime-dim hover:underline">
-          Create one
+      <p className="text-center text-sm text-[#16181d]/50">
+        Don&apos;t have an account?{" "}
+        <Link href="/register" className="font-semibold text-[#7c6ff0] hover:underline">
+          Sign up
         </Link>
       </p>
     </div>

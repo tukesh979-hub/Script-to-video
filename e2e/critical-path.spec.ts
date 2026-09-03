@@ -69,8 +69,13 @@ test.describe("critical path: signup through project view", () => {
     await expect(page).toHaveURL(/\/dashboard/);
     // getByRole, not getByText: Next.js's hidden route-announcer div
     // duplicates the h1 text for screen readers, so a plain text match
-    // resolves to two elements.
-    await expect(page.getByRole("heading", { name: new RegExp(`Welcome back, ${displayName}`, "i") })).toBeVisible();
+    // resolves to two elements. The Oceanic Design "Signed-In Home" (see
+    // design-systems/oceanic-design/) replaced the old per-user "Welcome
+    // back, {name}" heading with the mockup's fixed "What do we create
+    // today?" headline -- this page no longer renders the display name as
+    // text at all (just initials in the nav avatar), so the assertion now
+    // verifies the redesigned heading instead.
+    await expect(page.getByRole("heading", { name: /what do we create today/i })).toBeVisible();
 
     // 6. Create a new project through the real form
     await page.goto("/dashboard/projects/new");

@@ -11,14 +11,14 @@ export default function ResetPasswordPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-display text-2xl text-foreground">Reset password</h1>
-        <p className="mt-2 text-base text-foreground/70">We&apos;ll email you a link to set a new one.</p>
+        <h1 className="text-center font-heading text-[26px] font-semibold tracking-tight text-[#16181d]">Reset password</h1>
+        <p className="mt-2 text-center text-[13.5px] text-[#16181d]/50">We&apos;ll email you a link to set a new one.</p>
       </div>
 
       {state?.success ? (
         <FormMessage success={state.success} />
       ) : (
-        <form action={action} className="flex flex-col gap-4">
+        <form action={action} className="flex flex-col gap-3.5">
           <div>
             <FieldLabel htmlFor="email">Email</FieldLabel>
             <TextInput id="email" name="email" type="email" autoComplete="email" required disabled={pending} />
@@ -32,8 +32,8 @@ export default function ResetPasswordPage() {
         </form>
       )}
 
-      <p className="text-center text-sm text-foreground/70">
-        <Link href="/login" className="text-lime-dim hover:underline">
+      <p className="text-center text-sm text-[#16181d]/50">
+        <Link href="/login" className="font-semibold text-[#7c6ff0] hover:underline">
           Back to sign in
         </Link>
       </p>

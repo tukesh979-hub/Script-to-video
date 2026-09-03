@@ -11,24 +11,26 @@ export default function RegisterPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-display text-2xl text-foreground">Create an account</h1>
-        <p className="mt-2 text-base text-foreground/70">Start turning scripts into video.</p>
+        <h1 className="text-center font-heading text-[26px] font-semibold tracking-tight text-[#16181d]">
+          Create your account
+        </h1>
+        <p className="mt-2 text-center text-[13.5px] text-[#16181d]/50">Free to start — no card required</p>
       </div>
 
       <form action={signInWithGoogleAction}>
         <SecondaryButton type="submit">Continue with Google</SecondaryButton>
       </form>
 
-      <div className="flex items-center gap-3 text-xs text-faint">
-        <div className="h-px flex-1 bg-border" />
+      <div className="flex items-center gap-2.5 font-ui text-[11px] tracking-[0.06em] text-[#16181d]/35 uppercase">
+        <div className="h-px flex-1 bg-[#16181d]/12" />
         or
-        <div className="h-px flex-1 bg-border" />
+        <div className="h-px flex-1 bg-[#16181d]/12" />
       </div>
 
       {state?.success ? (
         <FormMessage success={state.success} />
       ) : (
-        <form action={action} className="flex flex-col gap-4">
+        <form action={action} className="flex flex-col gap-3.5">
           <div>
             <FieldLabel htmlFor="email">Email</FieldLabel>
             <TextInput id="email" name="email" type="email" autoComplete="email" required disabled={pending} />
@@ -43,22 +45,26 @@ export default function RegisterPage() {
               required
               disabled={pending}
             />
-            <p className="mt-2 text-sm text-foreground/60">At least 8 characters, with a letter and a number.</p>
+            <p className="mt-1.5 text-xs text-[#16181d]/40">At least 8 characters, with a letter and a number.</p>
           </div>
 
           <FormMessage error={state?.error} />
 
           <PrimaryButton type="submit" disabled={pending}>
-            {pending ? "Creating account…" : "Create account"}
+            {pending ? "Creating account…" : "Create Account"}
           </PrimaryButton>
         </form>
       )}
 
-      <p className="text-center text-sm text-foreground/70">
+      <p className="text-center text-sm text-[#16181d]/50">
         Already have an account?{" "}
-        <Link href="/login" className="text-lime-dim hover:underline">
+        <Link href="/login" className="font-semibold text-[#7c6ff0] hover:underline">
           Sign in
         </Link>
+      </p>
+
+      <p className="text-center text-[11.5px] leading-relaxed text-[#16181d]/35">
+        By continuing you agree to our Terms of Service and Privacy Policy.
       </p>
     </div>
   );

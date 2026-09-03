@@ -99,6 +99,11 @@
   --font-display: var(--font-display);
   --font-body: var(--font-body);
   --font-mono: var(--font-mono);
+  /* Oceanic Design fonts -- additive, alongside Camera Report's own three
+     above. See "Oceanic Design" section below for where these are used. */
+  --font-heading: var(--font-oceanic-heading);
+  --font-ui: var(--font-oceanic-ui);
+  --font-oceanic-body: var(--font-oceanic-body);
 }
 
 * {
@@ -165,6 +170,128 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .pulse-dot {
+    animation: none;
+  }
+}
+
+/* ── Oceanic Design ──────────────────────────────────────────────
+   Scoped, additive identity for the marketing/auth/signed-in-home pages and
+   the dashboard shell (Projects/Billing/Account/Notifications) -- light
+   pink/lavender glassmorphism, per design-systems/oceanic-design/. Does not
+   replace "Camera Report" above: the untouched project-workspace pages
+   (project detail, new-project form, onboarding) keep using --font-display/
+   --font-body/--font-mono and the --bg/--paper/... tokens as before. Values
+   here are copied verbatim from design-systems/oceanic-design/DESIGN-SYSTEM.md
+   and preview/all-pages.html -- don't simplify the gradients/blur, see that
+   doc's "Critical rule" on why flat glass reads as broken. */
+
+.oceanic-wash {
+  background:
+    radial-gradient(55% 42% at 12% -4%, rgba(255, 175, 205, 0.75), transparent 60%),
+    radial-gradient(48% 38% at 88% -2%, rgba(170, 150, 255, 0.65), transparent 60%),
+    linear-gradient(180deg, #fdeef5 0%, #f6f2ff 55%, #efeaff 100%);
+}
+
+/* Signed-out hero gets one extra mid-canvas glow the shared wash doesn't --
+   matches #main-logout .hero in the mockup exactly. */
+.oceanic-hero-wash {
+  background:
+    radial-gradient(55% 42% at 12% -4%, rgba(255, 175, 205, 0.75), transparent 60%),
+    radial-gradient(48% 38% at 88% -2%, rgba(170, 150, 255, 0.65), transparent 60%),
+    radial-gradient(60% 50% at 50% 30%, rgba(255, 200, 225, 0.35), transparent 65%),
+    linear-gradient(180deg, #fdeef5 0%, #f6f2ff 55%, #efeaff 100%);
+}
+
+.oceanic-accent-text {
+  background: linear-gradient(90deg, #c94fd6, #7c6ff0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.oceanic-accent-gradient {
+  background: linear-gradient(135deg, #c94fd6, #7c6ff0);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.glass-strong {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 30px 70px rgba(60, 30, 90, 0.12);
+}
+
+.glass-dark {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* How It Works section background (dark register) */
+.oceanic-hiw-bg {
+  background: linear-gradient(180deg, #08080b 0%, #08080b 70%, #050308 100%);
+}
+.oceanic-hiw-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(50% 40% at 50% 0%, rgba(147, 51, 234, 0.28), transparent 65%),
+    radial-gradient(40% 35% at 15% 60%, rgba(236, 72, 153, 0.14), transparent 60%),
+    radial-gradient(40% 35% at 85% 40%, rgba(139, 92, 246, 0.16), transparent 60%),
+    radial-gradient(55% 45% at 50% 100%, rgba(147, 51, 234, 0.22), transparent 70%);
+}
+
+.oceanic-timeline-line {
+  background: linear-gradient(180deg, #8b5cf6 0%, #c94fd6 55%, #ec4899 100%);
+}
+
+.oceanic-node {
+  background: radial-gradient(circle at 35% 30%, #d9a8ff, #9333ea);
+  box-shadow: 0 0 0 6px rgba(147, 51, 234, 0.15);
+}
+
+/* Parallax CTA background (dark register) -- deliberately not flat #000,
+   see DESIGN-SYSTEM.md's note: two adjacent flat blacks read as one void. */
+.oceanic-cta-bg {
+  background: radial-gradient(65% 40% at 50% 0%, rgba(147, 51, 234, 0.2), transparent 60%), #030105;
+}
+
+/* Full-bleed auto-scrolling video reel (signed-out hero only) */
+.oceanic-reel-mask {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+}
+.oceanic-reel-track {
+  animation: oceanic-reelscroll 46s linear infinite;
+}
+.oceanic-reel-wrap:hover .oceanic-reel-track {
+  animation-play-state: paused;
+}
+@keyframes oceanic-reelscroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oceanic-reel-track {
     animation: none;
   }
 }

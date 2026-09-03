@@ -26,17 +26,15 @@ export default async function NotificationsPage() {
 
   return (
     <div>
-      <header className="mb-8">
-        <h1 className="font-display text-3xl tracking-tight text-foreground sm:text-4xl">Notifications</h1>
-        <p className="mt-2 text-base text-foreground/70">Render outcomes you haven&apos;t seen yet.</p>
-      </header>
+      <p className="mb-1.5 font-ui text-xs font-bold tracking-[0.08em] text-[#16181d]/40 uppercase">Notifications</p>
+      <h1 className="mb-6 font-heading text-[26px] font-semibold tracking-tight text-[#16181d]">Notifications</h1>
 
       {renders.length === 0 ? (
-        <div className="flex flex-col items-center justify-center border border-dashed border-border bg-panel py-24 text-center">
-          <p className="text-base text-foreground/70">You&apos;re all caught up.</p>
+        <div className="glass flex max-w-xl flex-col items-center justify-center rounded-[18px] py-24 text-center">
+          <p className="font-oceanic-body text-sm text-[#16181d]/60">You&apos;re all caught up.</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
+        <div className="flex max-w-xl flex-col gap-2.5">
           {renders.map((render) => (
             <NotificationItem key={render.id} render={render} projectName={nameById.get(render.projectId) ?? "Untitled project"} />
           ))}
