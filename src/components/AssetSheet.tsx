@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { ProjectAsset } from "@/db/schema";
 
 const TYPE_LABEL: Record<string, string> = {
@@ -6,71 +7,66 @@ const TYPE_LABEL: Record<string, string> = {
   user_supplied: "User-supplied",
 };
 
-// Distinct from the status-badge semantics -- code_drawn is the accent
-// (this codebase built it), ai_generated is warn (worth a second glance),
-// user_supplied is neutral.
-const TYPE_CLASS: Record<string, string> = {
-  code_drawn: "text-[#7c6ff0] bg-[#7c6ff0]/10",
-  ai_generated: "text-[#a4650f] bg-[#a4650f]/10",
-  user_supplied: "text-[#16181d]/50 bg-[#16181d]/6",
+// A real preview photo, by exact asset name, only where a real file for it
+// actually exists on disk (copied from the source remotion-engine project or
+// re-using a frame already extracted from the real footage elsewhere in this
+// app) -- see the final report for provenance of each. No thumbnailUrl
+// column exists on project_assets (see schema.ts), so this is a lightweight,
+// name-keyed lookup rather than a schema migration; assets without a real
+// file fall back to a plain type label, never a fabricated photo.
+const PREVIEW_IMAGE: Record<string, string> = {
+  "Porsche 911 hero card art": "/asset-previews/porsche-911-hero-card-art.png",
+  "Ferrari / Rolls-Royce / Tesla card art": "/asset-previews/ferrari-rolls-tesla-card-art.png",
+  "navneet-car-reel.mp4": "/thumbnails/navneet-porsche-reel.jpg",
 };
 
-// No thumbnailUrl on project_assets (see schema.ts) -- there's no real image
-// to show per asset, so each group gets a tinted icon tile instead of
-// fabricating a preview image. Mirrors the reference reel breakdown's
-// grouped-thumbnail-grid structure without inventing content the schema
-// doesn't produce.
-const TYPE_GLYPH: Record<string, string> = {
-  code_drawn: "</>",
-  ai_generated: "✨",
-  user_supplied: "📁",
-};
-
-const TYPE_ORDER = ["code_drawn", "ai_generated", "user_supplied"];
+function AssetPreview({ asset }: { asset: ProjectAsset }) {
+  const src = PREVIEW_IMAGE[asset.name];
+  if (src) {
+    return (
+      <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-[#16181d]/10">
+        <Image src={src} alt={asset.name} fill sizes="48px" className="object-cover" />
+      </div>
+    );
+  }
+  return (
+    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-dashed border-[#16181d]/15 font-ui text-[9.5px] font-medium text-[#16181d]/35 uppercase">
+      {TYPE_LABEL[asset.assetType]?.split("-")[0] ?? asset.assetType}
+    </div>
+  );
+}
 
 /** First-class asset sheet — every asset used anywhere in the project, browsable
- * as one grouped grid (per 01-pipeline-transparency-prompt.md §4), not just
- * referenced inline per scene. */
+ * as one plain table (per 01-pipeline-transparency-prompt.md §4), not just
+ * referenced inline per scene. A real preview photo where one genuinely
+ * exists; otherwise a plain type label -- never the raw source-code path,
+ * which read as "code", not as an asset. */
 export function AssetSheet({ assets }: { assets: ProjectAsset[] }) {
   if (assets.length === 0) return null;
-
-  const groups = TYPE_ORDER.map((type) => ({ type, items: assets.filter((a) => a.assetType === type) })).filter(
-    (g) => g.items.length > 0,
-  );
-  const otherTypes = [...new Set(assets.map((a) => a.assetType))].filter((t) => !TYPE_ORDER.includes(t));
-  for (const type of otherTypes) {
-    groups.push({ type, items: assets.filter((a) => a.assetType === type) });
-  }
-
   return (
-    <div className="flex flex-col gap-7">
-      {groups.map((group) => (
-        <div key={group.type}>
-          <p className="mb-3 font-ui text-[11px] font-bold tracking-[0.08em] text-[#16181d]/40 uppercase">
-            {TYPE_LABEL[group.type] ?? group.type} · {group.items.length}
-          </p>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {group.items.map((a) => (
-              <div key={a.id} className="glass flex flex-col gap-2.5 rounded-2xl p-4">
-                <div className="flex items-start justify-between gap-2">
-                  <span
-                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] font-ui text-xs font-bold ${TYPE_CLASS[a.assetType] ?? "text-[#16181d]/50 bg-[#16181d]/6"}`}
-                  >
-                    {TYPE_GLYPH[a.assetType] ?? "•"}
-                  </span>
-                  <span className="truncate font-ui text-[10px] font-medium text-[#16181d]/40">{a.usedInScenes}</span>
-                </div>
-                <p className="truncate text-sm font-semibold text-[#16181d]" title={a.name}>
-                  {a.name}
-                </p>
-                <p className="line-clamp-2 font-ui text-xs text-[#16181d]/45" title={a.prompt ?? a.sourcePath ?? undefined}>
-                  {a.prompt ?? a.sourcePath ?? "—"}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
+    <div className="overflow-x-auto border-t border-[#16181d]/8">
+      <table className="w-full min-w-[640px] text-left text-sm">
+        <thead>
+          <tr className="border-b border-[#16181d]/8 font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">
+            <th className="py-3 pr-4 font-normal">Preview</th>
+            <th className="py-3 pr-4 font-normal">Asset</th>
+            <th className="py-3 pr-4 font-normal">Type</th>
+            <th className="py-3 pr-4 font-normal">Used in</th>
+          </tr>
+        </thead>
+        <tbody>
+          {assets.map((a) => (
+            <tr key={a.id} className="border-b border-[#16181d]/8 last:border-0">
+              <td className="py-3 pr-4">
+                <AssetPreview asset={a} />
+              </td>
+              <td className="py-3 pr-4 font-medium text-[#16181d]">{a.name}</td>
+              <td className="py-3 pr-4 text-[#16181d]/55">{TYPE_LABEL[a.assetType] ?? a.assetType}</td>
+              <td className="py-3 pr-4 text-[#16181d]/55">{a.usedInScenes}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

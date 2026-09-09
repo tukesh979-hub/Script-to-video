@@ -16,7 +16,7 @@ export function PointerBar({
   const headline = finished ? "100% shipped" : currentLabel ? `${currentLabel} · ${pct}%` : `${pct}%`;
 
   return (
-    <div className="glass my-7 rounded-2xl p-5">
+    <div className="my-7 border-y border-[#16181d]/8 py-5">
       <div className="mb-3.5 flex items-center justify-between">
         <span className="font-ui text-[11px] font-bold tracking-[0.06em] text-[#16181d]/45 uppercase">
           Pipeline progress

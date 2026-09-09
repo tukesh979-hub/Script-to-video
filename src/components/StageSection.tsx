@@ -179,13 +179,19 @@ function StageBody({ stageType, data }: { stageType: string; data: unknown }) {
 /**
  * Each stage gets a big numbered phase badge (01, 02, 03...) as the primary
  * visual identifier -- borrowed from how the Netflix Vox reference reel
- * breakdown presents its numbered scene phases, adapted to the Oceanic
- * gradient/glass language instead of that reference's dark editorial one.
+ * breakdown presents its numbered scene phases. Unlike that first pass,
+ * stages are NOT individual floating cards: they flow directly on the
+ * page's own background, one after another, separated by a hairline
+ * divider -- a single continuous page, not a stack of boxed widgets. Every
+ * stage is expanded by default (defaultOpen defaults to true) since this
+ * is meant to read like a document, not a stack of accordions you have to
+ * open one by one -- the native <details> disclosure still lets you
+ * collapse an individual one if you want.
  */
 export function StageSection({
   stage,
   index,
-  defaultOpen = false,
+  defaultOpen = true,
 }: {
   stage: ProjectStage;
   index: number;
@@ -194,12 +200,9 @@ export function StageSection({
   const data = parseStageData(stage.stageType, stage.dataJson);
   const num = String(index + 1).padStart(2, "0");
   return (
-    <details open={defaultOpen} className="group glass overflow-hidden rounded-2xl open:pb-4">
-      <summary className="flex cursor-pointer list-none items-center gap-3.5 px-4 py-3.5">
-        <span
-          aria-hidden
-          className="oceanic-accent-gradient flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-ui text-[13px] font-bold text-white"
-        >
+    <details open={defaultOpen} className="group border-b border-[#16181d]/8 py-5 first:pt-0 last:border-b-0">
+      <summary className="flex cursor-pointer list-none items-center gap-3.5">
+        <span aria-hidden className="oceanic-accent-text shrink-0 font-heading text-3xl font-bold">
           {num}
         </span>
         <div className="min-w-0 flex-1">
@@ -207,15 +210,14 @@ export function StageSection({
             <span aria-hidden>{STAGE_GLYPH[stage.stageType] ?? "▶"}</span>
             {STAGE_TYPE_LABEL[stage.stageType as keyof typeof STAGE_TYPE_LABEL] ?? stage.stageType}
           </p>
-          <p className="truncate text-sm font-semibold text-[#16181d]">{stage.title}</p>
+          <p className="truncate font-heading text-lg font-semibold text-[#16181d]">{stage.title}</p>
         </div>
-        <span className="hidden max-w-70 truncate text-xs text-[#16181d]/50 sm:block">{stage.summary}</span>
-        <span aria-hidden className="text-[#16181d]/40 transition-transform group-open:rotate-90">
+        <span aria-hidden className="shrink-0 text-[#16181d]/40 transition-transform group-open:rotate-90">
           ›
         </span>
       </summary>
-      <div className="border-t border-white/40 px-4 pt-4 pl-16.5">
-        <p className="mb-3 text-sm text-[#16181d]/50 sm:hidden">{stage.summary}</p>
+      <div className="mt-3 pl-[3.25rem]">
+        <p className="mb-3 text-sm text-[#16181d]/55">{stage.summary}</p>
         <StageBody stageType={stage.stageType} data={data} />
       </div>
     </details>

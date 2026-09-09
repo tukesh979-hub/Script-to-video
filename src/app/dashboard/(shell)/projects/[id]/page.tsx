@@ -40,8 +40,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         ← Projects
       </Link>
 
-      <div className="mt-6 flex flex-col gap-8 sm:flex-row">
-        <div className="glass relative aspect-9/16 w-full max-w-70 shrink-0 overflow-hidden rounded-2xl">
+      <div className="mt-6 flex flex-col gap-8 border-b border-[#16181d]/8 pb-8 sm:flex-row">
+        <div className="relative aspect-9/16 w-full max-w-70 shrink-0 overflow-hidden rounded-xl border border-[#16181d]/10">
           {project.thumbnailUrl ? (
             <Image src={project.thumbnailUrl} alt={project.name} fill sizes="280px" className="object-cover" />
           ) : (
@@ -59,7 +59,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           </div>
 
           {isLive ? (
-            <div className="glass flex flex-col gap-2 rounded-2xl p-5 sm:max-w-sm">
+            <div className="flex max-w-sm flex-col gap-2 border-t border-[#16181d]/8 pt-4">
               <p className="font-ui text-xs font-bold tracking-[0.06em] text-[#7c6ff0] uppercase">
                 {project.currentStage ?? "Working"}
               </p>
@@ -72,7 +72,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
               <p className="text-sm text-[#16181d]/60">{project.progressPercent ?? 0}% complete</p>
             </div>
           ) : (
-            <dl className="glass grid grid-cols-2 gap-4 rounded-2xl p-5 text-base sm:max-w-sm">
+            <dl className="grid max-w-sm grid-cols-2 gap-4 border-t border-[#16181d]/8 pt-4 text-base">
               <div>
                 <dt className="font-ui text-xs font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">Created</dt>
                 <dd className="mt-1 text-[#16181d]">{project.createdAt.toLocaleDateString()}</dd>
@@ -85,7 +85,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           )}
 
           {project.status === "needs_review" && project.reviewNote && (
-            <p className="rounded-xl bg-[#a4650f]/10 px-3 py-2 text-sm text-[#a4650f]">{project.reviewNote}</p>
+            <p className="border-l-2 border-[#a4650f]/50 pl-3 text-sm text-[#a4650f]">{project.reviewNote}</p>
           )}
         </div>
       </div>
@@ -97,14 +97,18 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           live status widget. */}
       <PointerBar stages={stages} status={project.status} currentLabel={isLive ? project.currentStage : null} />
 
-      {/* Pipeline history — real production order, one collapsible section per
-          stage that actually happened (01-pipeline-transparency-prompt.md §3).
-          An in-progress project only shows what's already finished; nothing
-          here is presented as final while still rendering. */}
+      {/* Pipeline history — real production order, one section per stage that
+          actually happened (01-pipeline-transparency-prompt.md §3), flowing
+          directly on the page as one continuous read rather than separate
+          floating cards -- every stage is expanded by default (the native
+          <details> disclosure still lets you collapse one if you want, it
+          just doesn't start that way). An in-progress project only shows
+          what's already finished; nothing here is presented as final while
+          still rendering. */}
       {stages.length > 0 && (
         <section className="mt-12">
-          <h2 className="mb-4 font-heading text-xl font-semibold tracking-tight text-[#16181d]">Production Pipeline</h2>
-          <div className="flex flex-col gap-3">
+          <h2 className="mb-2 font-heading text-xl font-semibold tracking-tight text-[#16181d]">Production Pipeline</h2>
+          <div className="flex flex-col">
             {stages.map((stage, i) => (
               <StageSection key={stage.id} stage={stage} index={i} />
             ))}
@@ -113,14 +117,14 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       )}
 
       {assets.length > 0 && (
-        <section className="mt-10">
+        <section className="mt-12">
           <h2 className="mb-4 font-heading text-xl font-semibold tracking-tight text-[#16181d]">Asset Sheet</h2>
           <AssetSheet assets={assets} />
         </section>
       )}
 
       {stages.length === 0 && (
-        <div className="glass mt-12 rounded-2xl p-5 text-base text-[#16181d]/60">
+        <div className="mt-12 border-t border-[#16181d]/8 pt-6 text-base text-[#16181d]/60">
           No pipeline history recorded for this project yet.
         </div>
       )}
