@@ -41,10 +41,10 @@ function AssetPreview({ asset }: { asset: ProjectAsset }) {
  * referenced inline per scene. A real preview photo where one genuinely
  * exists; otherwise a plain type label -- never the raw source-code path,
  * which read as "code", not as an asset. */
-export function AssetSheet({ assets }: { assets: ProjectAsset[] }) {
+export function AssetSheet({ assets, bare = false }: { assets: ProjectAsset[]; bare?: boolean }) {
   if (assets.length === 0) return null;
   return (
-    <div className="overflow-x-auto border-t border-[#16181d]/8">
+    <div className={`overflow-x-auto ${bare ? "" : "border-t border-[#16181d]/8"}`}>
       <table className="w-full min-w-[640px] text-left text-sm">
         <thead>
           <tr className="border-b border-[#16181d]/8 font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">

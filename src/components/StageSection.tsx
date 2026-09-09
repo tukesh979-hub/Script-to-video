@@ -28,7 +28,16 @@ function Pill({ children }: { children: React.ReactNode }) {
   );
 }
 
-function StageBody({ stageType, data }: { stageType: string; data: unknown }) {
+// A real isolated preview render, by exact stage title, only where one
+// actually exists on disk (copied from the source remotion-engine project's
+// generation-output/ -- most beats were only ever rendered as part of the
+// full concat, not in isolation, so this stays partial rather than faking
+// coverage for beats that were never rendered alone).
+const SCENE_VIDEO: Record<string, string> = {
+  "Beat 5 — HUD Card Stack": "/asset-previews/beat5-preview.mp4",
+};
+
+function StageBody({ stageType, stageTitle, data }: { stageType: string; stageTitle: string; data: unknown }) {
   if (!data || typeof data !== "object") {
     return <p className="text-sm text-[#16181d]/40">No detail recorded for this stage.</p>;
   }
@@ -100,24 +109,45 @@ function StageBody({ stageType, data }: { stageType: string; data: unknown }) {
         </div>
       );
     }
+    case "storyboard":
     case "beat_sheet": {
       const d = data as BeatSheetData;
       return (
-        <ol className="flex flex-col gap-2">
-          {d.beats.map((b) => (
-            <li key={b.num} className="flex gap-3 rounded-xl bg-white/40 p-3 text-sm">
-              <span className="shrink-0 font-ui text-xs font-bold text-[#7c6ff0]">#{b.num}</span>
-              <span className="shrink-0 font-ui text-xs text-[#16181d]/40">{b.time}</span>
-              <span className="text-[#16181d]/60 italic">&ldquo;{b.vo}&rdquo;</span>
-            </li>
-          ))}
-        </ol>
+        <table className="w-full text-left text-sm">
+          <thead>
+            <tr className="border-b border-[#16181d]/10 font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">
+              <th className="w-12 py-2 pr-3 font-normal">#</th>
+              <th className="w-20 py-2 pr-3 font-normal">Time</th>
+              <th className="py-2 font-normal">Line</th>
+            </tr>
+          </thead>
+          <tbody>
+            {d.beats.map((b) => (
+              <tr key={b.num} className="border-b border-[#16181d]/8 last:border-0">
+                <td className="py-2 pr-3 font-ui text-xs font-bold text-[#7c6ff0]">{b.num}</td>
+                <td className="py-2 pr-3 font-ui text-xs text-[#16181d]/40">{b.time}</td>
+                <td className="py-2 text-[#16181d]/70 italic">&ldquo;{b.vo}&rdquo;</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       );
     }
     case "scene": {
       const d = data as SceneData;
+      const video = SCENE_VIDEO[stageTitle];
       return (
         <div className="flex flex-col gap-3">
+          {video && (
+            <video
+              src={video}
+              controls
+              loop
+              muted
+              playsInline
+              className="aspect-9/16 w-full max-w-50 rounded-xl border border-[#16181d]/10"
+            />
+          )}
           <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Field label="Technique" value={d.technique} />
             <Field label="Transition in" value={d.transitionIn} />
@@ -179,14 +209,14 @@ function StageBody({ stageType, data }: { stageType: string; data: unknown }) {
 /**
  * Each stage gets a big numbered phase badge (01, 02, 03...) as the primary
  * visual identifier -- borrowed from how the Netflix Vox reference reel
- * breakdown presents its numbered scene phases. Unlike that first pass,
- * stages are NOT individual floating cards: they flow directly on the
- * page's own background, one after another, separated by a hairline
- * divider -- a single continuous page, not a stack of boxed widgets. Every
- * stage is expanded by default (defaultOpen defaults to true) since this
- * is meant to read like a document, not a stack of accordions you have to
- * open one by one -- the native <details> disclosure still lets you
- * collapse an individual one if you want.
+ * breakdown presents its numbered scene phases. Stages are NOT individual
+ * floating cards: they're segments inside one larger glass surface (the
+ * project detail page's "complete project" box), separated from each other
+ * only by a hairline divider. Every stage is expanded by default
+ * (defaultOpen defaults to true) since this is meant to read like a
+ * document, not a stack of accordions you have to open one by one -- the
+ * native <details> disclosure still lets you collapse an individual one if
+ * you want.
  */
 export function StageSection({
   stage,
@@ -200,7 +230,7 @@ export function StageSection({
   const data = parseStageData(stage.stageType, stage.dataJson);
   const num = String(index + 1).padStart(2, "0");
   return (
-    <details open={defaultOpen} className="group border-b border-[#16181d]/8 py-5 first:pt-0 last:border-b-0">
+    <details open={defaultOpen} className="group border-b border-[#16181d]/8 py-5 last:border-b-0">
       <summary className="flex cursor-pointer list-none items-center gap-3.5">
         <span aria-hidden className="oceanic-accent-text shrink-0 font-heading text-3xl font-bold">
           {num}
@@ -218,7 +248,7 @@ export function StageSection({
       </summary>
       <div className="mt-3 pl-[3.25rem]">
         <p className="mb-3 text-sm text-[#16181d]/55">{stage.summary}</p>
-        <StageBody stageType={stage.stageType} data={data} />
+        <StageBody stageType={stage.stageType} stageTitle={stage.title} data={data} />
       </div>
     </details>
   );

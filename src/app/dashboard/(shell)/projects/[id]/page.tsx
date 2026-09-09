@@ -34,14 +34,28 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
   const isLive = project.status === "in_progress";
 
+  // Asset Sheet sits right after the storyboard/beat-sheet stage and before
+  // the individual scene-by-scene stages -- the same document order the
+  // reference reel breakdown uses (storyboard -> asset sheet -> Scene 1,
+  // Scene 2, ...), not tacked on at the very end after everything else.
+  const splitIndex = stages.reduce(
+    (found, stage, i) => (stage.stageType === "storyboard" || stage.stageType === "beat_sheet" ? i : found),
+    -1,
+  );
+  const stagesBeforeAssets = splitIndex >= 0 ? stages.slice(0, splitIndex + 1) : stages;
+  const stagesAfterAssets = splitIndex >= 0 ? stages.slice(splitIndex + 1) : [];
+
   return (
     <div className="mx-auto w-full max-w-4xl flex-1">
       <Link href="/dashboard/projects" className="font-ui text-sm text-[#16181d]/60 transition-colors hover:text-[#7c6ff0]">
         ← Projects
       </Link>
 
-      <div className="mt-6 flex flex-col gap-8 border-b border-[#16181d]/8 pb-8 sm:flex-row">
-        <div className="relative aspect-9/16 w-full max-w-70 shrink-0 overflow-hidden rounded-xl border border-[#16181d]/10">
+      {/* One glass surface for the whole project header -- thumbnail, title,
+          status, and stats/progress all inside it, separated only by a
+          hairline divider, not stacked as separate floating panels. */}
+      <div className="glass mt-6 flex flex-col gap-8 rounded-[22px] p-6 sm:flex-row">
+        <div className="relative aspect-9/16 w-full max-w-70 shrink-0 overflow-hidden rounded-xl">
           {project.thumbnailUrl ? (
             <Image src={project.thumbnailUrl} alt={project.name} fill sizes="280px" className="object-cover" />
           ) : (
@@ -59,7 +73,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           </div>
 
           {isLive ? (
-            <div className="flex max-w-sm flex-col gap-2 border-t border-[#16181d]/8 pt-4">
+            <div className="flex max-w-sm flex-col gap-2 border-t border-[#16181d]/10 pt-4">
               <p className="font-ui text-xs font-bold tracking-[0.06em] text-[#7c6ff0] uppercase">
                 {project.currentStage ?? "Working"}
               </p>
@@ -72,7 +86,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
               <p className="text-sm text-[#16181d]/60">{project.progressPercent ?? 0}% complete</p>
             </div>
           ) : (
-            <dl className="grid max-w-sm grid-cols-2 gap-4 border-t border-[#16181d]/8 pt-4 text-base">
+            <dl className="grid max-w-sm grid-cols-2 gap-4 border-t border-[#16181d]/10 pt-4 text-base">
               <div>
                 <dt className="font-ui text-xs font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">Created</dt>
                 <dd className="mt-1 text-[#16181d]">{project.createdAt.toLocaleDateString()}</dd>
@@ -90,41 +104,40 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         </div>
       </div>
 
-      {/* Full pipeline timeline -- dotted road ahead, solid gradient fill for
-          what's actually done, one dot per canonical stage. Ported from the
-          reference site's .pointer-track; shown regardless of status so a
-          finished project's page still reads as a build history, not just a
-          live status widget. */}
-      <PointerBar stages={stages} status={project.status} currentLabel={isLive ? project.currentStage : null} />
-
-      {/* Pipeline history — real production order, one section per stage that
-          actually happened (01-pipeline-transparency-prompt.md §3), flowing
-          directly on the page as one continuous read rather than separate
-          floating cards -- every stage is expanded by default (the native
+      {/* One glass surface for the complete project build: pipeline progress,
+          every stage in production order, and the Asset Sheet interleaved
+          right after the storyboard/beat-sheet stage -- all one continuous
+          surface, segments separated only by hairline dividers, not by
+          separate boxes. Every stage is expanded by default (the native
           <details> disclosure still lets you collapse one if you want, it
           just doesn't start that way). An in-progress project only shows
           what's already finished; nothing here is presented as final while
           still rendering. */}
-      {stages.length > 0 && (
-        <section className="mt-12">
-          <h2 className="mb-2 font-heading text-xl font-semibold tracking-tight text-[#16181d]">Production Pipeline</h2>
+      {stages.length > 0 ? (
+        <div className="glass mt-8 rounded-[22px] p-6">
+          <h2 className="mb-4 font-heading text-xl font-semibold tracking-tight text-[#16181d]">Production Pipeline</h2>
+          <PointerBar stages={stages} status={project.status} currentLabel={isLive ? project.currentStage : null} />
           <div className="flex flex-col">
-            {stages.map((stage, i) => (
+            {stagesBeforeAssets.map((stage, i) => (
               <StageSection key={stage.id} stage={stage} index={i} />
             ))}
           </div>
-        </section>
-      )}
 
-      {assets.length > 0 && (
-        <section className="mt-12">
-          <h2 className="mb-4 font-heading text-xl font-semibold tracking-tight text-[#16181d]">Asset Sheet</h2>
-          <AssetSheet assets={assets} />
-        </section>
-      )}
+          {assets.length > 0 && (
+            <div className="border-b border-[#16181d]/8 py-5">
+              <p className="mb-4 font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">Asset Sheet</p>
+              <AssetSheet assets={assets} bare />
+            </div>
+          )}
 
-      {stages.length === 0 && (
-        <div className="mt-12 border-t border-[#16181d]/8 pt-6 text-base text-[#16181d]/60">
+          <div className="flex flex-col">
+            {stagesAfterAssets.map((stage, i) => (
+              <StageSection key={stage.id} stage={stage} index={stagesBeforeAssets.length + i} />
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="glass mt-8 rounded-[22px] p-6 text-base text-[#16181d]/60">
           No pipeline history recorded for this project yet.
         </div>
       )}
