@@ -173,23 +173,23 @@ body {
    Replaces the earlier pink/lavender wash; the purple/pink accent gradient
    below is kept as-is so it still reads as a distinct accent against this
    cooler background. */
-.oceanic-wash {
-  background:
-    radial-gradient(60% 48% at 14% -6%, rgba(230, 242, 255, 0.9), transparent 58%),
-    radial-gradient(55% 45% at 88% 0%, rgba(179, 217, 255, 0.75), transparent 60%),
-    radial-gradient(70% 55% at 82% 92%, rgba(102, 153, 230, 0.28), transparent 62%),
-    linear-gradient(180deg, #f3f8ff 0%, #e4f0ff 55%, #cfe4ff 100%);
-}
-
-/* Signed-out hero gets the full 4-stop composition -- matches the reference
-   gradient's own radial layout (lightest top-left, darkest bottom-right). */
+/* Full-strength port of the reference (feralui.dev Gradient Builder, "Blue
+   sky" Sky preset, exact computed values): the same 4 radial stops at the
+   same positions/sizes, at FULL color (not faded with low alpha -- that's
+   what made the first pass read as pale/washed-out), sitting on a matching
+   saturated linear base so there's no gap between radials, with only the
+   reference's own thin white haze on top for softness. Used identically on
+   the dashboard and the signed-out hero -- this is the gradient, not a
+   diluted variant of it. */
+.oceanic-wash,
 .oceanic-hero-wash {
   background:
-    radial-gradient(80% 70% at 15% 12%, rgba(230, 242, 255, 0.95), transparent 55%),
-    radial-gradient(80% 70% at 85% 16%, rgba(179, 217, 255, 0.85), transparent 55%),
-    radial-gradient(90% 80% at 24% 88%, rgba(128, 179, 255, 0.5), transparent 58%),
-    radial-gradient(100% 85% at 84% 84%, rgba(102, 153, 230, 0.55), transparent 60%),
-    linear-gradient(180deg, #f3f8ff 0%, #e4f0ff 55%, #cfe4ff 100%);
+    linear-gradient(rgba(255, 253, 250, 0.22), rgba(255, 253, 250, 0.22)),
+    radial-gradient(80% 70% at 15% 12%, #e6f2ff, transparent 55%),
+    radial-gradient(80% 70% at 85% 16%, #b3d9ff, transparent 55%),
+    radial-gradient(90% 80% at 24% 88%, #80b3ff, transparent 58%),
+    radial-gradient(100% 85% at 84% 84%, #6699e6, transparent 60%),
+    linear-gradient(160deg, #e6f2ff 0%, #b3d9ff 40%, #80b3ff 70%, #6699e6 100%);
 }
 
 .oceanic-accent-text {
