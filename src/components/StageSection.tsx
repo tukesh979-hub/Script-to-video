@@ -176,26 +176,45 @@ function StageBody({ stageType, data }: { stageType: string; data: unknown }) {
   }
 }
 
-export function StageSection({ stage, defaultOpen = false }: { stage: ProjectStage; defaultOpen?: boolean }) {
+/**
+ * Each stage gets a big numbered phase badge (01, 02, 03...) as the primary
+ * visual identifier -- borrowed from how the Netflix Vox reference reel
+ * breakdown presents its numbered scene phases, adapted to the Oceanic
+ * gradient/glass language instead of that reference's dark editorial one.
+ */
+export function StageSection({
+  stage,
+  index,
+  defaultOpen = false,
+}: {
+  stage: ProjectStage;
+  index: number;
+  defaultOpen?: boolean;
+}) {
   const data = parseStageData(stage.stageType, stage.dataJson);
+  const num = String(index + 1).padStart(2, "0");
   return (
     <details open={defaultOpen} className="group glass overflow-hidden rounded-2xl open:pb-4">
-      <summary className="flex cursor-pointer list-none items-center gap-3 px-4 py-3.5">
-        <span aria-hidden className="font-ui text-sm text-[#7c6ff0]">
-          {STAGE_GLYPH[stage.stageType] ?? "▶"}
+      <summary className="flex cursor-pointer list-none items-center gap-3.5 px-4 py-3.5">
+        <span
+          aria-hidden
+          className="oceanic-accent-gradient flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-ui text-[13px] font-bold text-white"
+        >
+          {num}
         </span>
-        <div className="flex-1">
-          <p className="font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">
+        <div className="min-w-0 flex-1">
+          <p className="flex items-center gap-1.5 font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">
+            <span aria-hidden>{STAGE_GLYPH[stage.stageType] ?? "▶"}</span>
             {STAGE_TYPE_LABEL[stage.stageType as keyof typeof STAGE_TYPE_LABEL] ?? stage.stageType}
           </p>
-          <p className="text-sm font-semibold text-[#16181d]">{stage.title}</p>
+          <p className="truncate text-sm font-semibold text-[#16181d]">{stage.title}</p>
         </div>
-        <span className="hidden text-xs text-[#16181d]/50 sm:block">{stage.summary}</span>
+        <span className="hidden max-w-70 truncate text-xs text-[#16181d]/50 sm:block">{stage.summary}</span>
         <span aria-hidden className="text-[#16181d]/40 transition-transform group-open:rotate-90">
           ›
         </span>
       </summary>
-      <div className="border-t border-white/40 px-4 pt-4">
+      <div className="border-t border-white/40 px-4 pt-4 pl-16.5">
         <p className="mb-3 text-sm text-[#16181d]/50 sm:hidden">{stage.summary}</p>
         <StageBody stageType={stage.stageType} data={data} />
       </div>

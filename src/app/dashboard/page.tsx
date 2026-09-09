@@ -53,7 +53,7 @@ export default async function DashboardHomePage() {
 
   return (
     <div className="oceanic-wash w-full">
-      <div className="px-6 pt-7 pb-10 sm:px-10">
+      <div className="px-6 pt-7 pb-16 sm:px-10 sm:pb-24">
         <OceanicNav
           variant="signed-in"
           creditsBalance={profile?.creditsBalance ?? 0}
@@ -74,7 +74,7 @@ export default async function DashboardHomePage() {
           <>
             <p className="mb-3.5 font-ui text-xs font-bold tracking-[0.08em] text-[#16181d]/40 uppercase">Latest Project</p>
             <LatestProjectBento project={latest} stages={latestStages} assetCount={assetCount ?? 0} latestRender={latestRender} />
-            <div className="mt-10">
+            <div className="mt-16 sm:mt-20">
               <FoldersGrid projects={folders} />
             </div>
           </>

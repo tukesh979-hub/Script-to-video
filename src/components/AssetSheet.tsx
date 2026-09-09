@@ -15,39 +15,62 @@ const TYPE_CLASS: Record<string, string> = {
   user_supplied: "text-[#16181d]/50 bg-[#16181d]/6",
 };
 
+// No thumbnailUrl on project_assets (see schema.ts) -- there's no real image
+// to show per asset, so each group gets a tinted icon tile instead of
+// fabricating a preview image. Mirrors the reference reel breakdown's
+// grouped-thumbnail-grid structure without inventing content the schema
+// doesn't produce.
+const TYPE_GLYPH: Record<string, string> = {
+  code_drawn: "</>",
+  ai_generated: "✨",
+  user_supplied: "📁",
+};
+
+const TYPE_ORDER = ["code_drawn", "ai_generated", "user_supplied"];
+
 /** First-class asset sheet — every asset used anywhere in the project, browsable
- * as one table (per 01-pipeline-transparency-prompt.md §4), not just referenced
- * inline per scene. */
+ * as one grouped grid (per 01-pipeline-transparency-prompt.md §4), not just
+ * referenced inline per scene. */
 export function AssetSheet({ assets }: { assets: ProjectAsset[] }) {
   if (assets.length === 0) return null;
+
+  const groups = TYPE_ORDER.map((type) => ({ type, items: assets.filter((a) => a.assetType === type) })).filter(
+    (g) => g.items.length > 0,
+  );
+  const otherTypes = [...new Set(assets.map((a) => a.assetType))].filter((t) => !TYPE_ORDER.includes(t));
+  for (const type of otherTypes) {
+    groups.push({ type, items: assets.filter((a) => a.assetType === type) });
+  }
+
   return (
-    <div className="glass overflow-x-auto rounded-2xl">
-      <table className="w-full min-w-[640px] text-left text-sm">
-        <thead>
-          <tr className="border-b border-white/50 font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">
-            <th className="px-4 py-3 font-normal">Asset</th>
-            <th className="px-4 py-3 font-normal">Type</th>
-            <th className="px-4 py-3 font-normal">Used in</th>
-            <th className="px-4 py-3 font-normal">Prompt / source</th>
-          </tr>
-        </thead>
-        <tbody>
-          {assets.map((a) => (
-            <tr key={a.id} className="border-b border-white/30 last:border-0">
-              <td className="px-4 py-3 font-medium text-[#16181d]">{a.name}</td>
-              <td className="px-4 py-3">
-                <span
-                  className={`rounded-full px-2 py-0.5 font-ui text-xs font-semibold uppercase ${TYPE_CLASS[a.assetType] ?? "text-[#16181d]/50 bg-[#16181d]/6"}`}
-                >
-                  {TYPE_LABEL[a.assetType] ?? a.assetType}
-                </span>
-              </td>
-              <td className="px-4 py-3 text-[#16181d]/60">{a.usedInScenes}</td>
-              <td className="px-4 py-3 font-ui text-xs text-[#16181d]/40">{a.prompt ?? a.sourcePath ?? "—"}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="flex flex-col gap-7">
+      {groups.map((group) => (
+        <div key={group.type}>
+          <p className="mb-3 font-ui text-[11px] font-bold tracking-[0.08em] text-[#16181d]/40 uppercase">
+            {TYPE_LABEL[group.type] ?? group.type} · {group.items.length}
+          </p>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {group.items.map((a) => (
+              <div key={a.id} className="glass flex flex-col gap-2.5 rounded-2xl p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <span
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] font-ui text-xs font-bold ${TYPE_CLASS[a.assetType] ?? "text-[#16181d]/50 bg-[#16181d]/6"}`}
+                  >
+                    {TYPE_GLYPH[a.assetType] ?? "•"}
+                  </span>
+                  <span className="truncate font-ui text-[10px] font-medium text-[#16181d]/40">{a.usedInScenes}</span>
+                </div>
+                <p className="truncate text-sm font-semibold text-[#16181d]" title={a.name}>
+                  {a.name}
+                </p>
+                <p className="line-clamp-2 font-ui text-xs text-[#16181d]/45" title={a.prompt ?? a.sourcePath ?? undefined}>
+                  {a.prompt ?? a.sourcePath ?? "—"}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

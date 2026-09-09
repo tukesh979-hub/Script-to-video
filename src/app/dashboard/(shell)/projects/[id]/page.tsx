@@ -105,8 +105,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         <section className="mt-12">
           <h2 className="mb-4 font-heading text-xl font-semibold tracking-tight text-[#16181d]">Production Pipeline</h2>
           <div className="flex flex-col gap-3">
-            {stages.map((stage) => (
-              <StageSection key={stage.id} stage={stage} />
+            {stages.map((stage, i) => (
+              <StageSection key={stage.id} stage={stage} index={i} />
             ))}
           </div>
         </section>
