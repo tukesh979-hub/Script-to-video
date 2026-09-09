@@ -78,8 +78,8 @@ function StageBody({ stageType, stageTitle, data }: { stageType: string; stageTi
     case "sfx": {
       const d = data as SfxData;
       return (
-        <div className="flex flex-col gap-3">
-          <div className="overflow-x-auto rounded-xl border border-white/50">
+        <div className="flex min-w-0 flex-col gap-3">
+          <div className="min-w-0 overflow-x-auto rounded-xl border border-white/50">
             <table className="w-full min-w-[520px] text-left text-sm">
               <thead>
                 <tr className="border-b border-white/50 font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logoutAction } from "@/app/(auth)/actions";
@@ -36,7 +37,7 @@ const TERTIARY: NavItem[] = [
   { label: "Profile", glyph: "◐", href: "/dashboard/account" },
 ];
 
-function NavRow({ item, active }: { item: NavItem; active: boolean }) {
+function NavRow({ item, active, onNavigate }: { item: NavItem; active: boolean; onNavigate?: () => void }) {
   const className = active
     ? "flex items-center gap-2.5 rounded-[10px] bg-white/55 px-2.5 py-2.5 font-ui text-[13.5px] font-medium text-[#16181d]"
     : "flex items-center gap-2.5 rounded-[10px] px-2.5 py-2.5 font-ui text-[13.5px] font-medium text-[#16181d]/60 transition-colors hover:bg-white/30 hover:text-[#16181d]";
@@ -51,23 +52,26 @@ function NavRow({ item, active }: { item: NavItem; active: boolean }) {
   }
 
   return (
-    <Link href={item.href} className={className}>
+    <Link href={item.href} className={className} onClick={onNavigate}>
       <span aria-hidden>{item.glyph}</span>
       {item.label}
     </Link>
   );
 }
 
-export function DashboardSidebar({
+function SidebarContent({
   displayName,
   email,
   creditsBalance,
+  pathname,
+  onNavigate,
 }: {
   displayName: string;
   email: string;
   creditsBalance: number;
+  pathname: string;
+  onNavigate?: () => void;
 }) {
-  const pathname = usePathname();
   const initials = displayName
     .split(" ")
     .map((p) => p[0])
@@ -77,26 +81,30 @@ export function DashboardSidebar({
     .toUpperCase();
 
   return (
-    <aside className="glass sticky top-5 ml-5 flex h-[calc(100vh-40px)] w-60 shrink-0 flex-col self-start rounded-[22px] p-4">
-      <Link href="/dashboard" className="block px-2.5 pt-1 pb-5 font-ui text-base font-semibold tracking-tight text-[#16181d]">
+    <>
+      <Link
+        href="/dashboard"
+        onClick={onNavigate}
+        className="block px-2.5 pt-1 pb-5 font-ui text-base font-semibold tracking-tight text-[#16181d]"
+      >
         Script <span className="text-[#c94fd6]">to</span> Video
       </Link>
 
       <nav className="flex flex-col gap-0.5">
         {PRIMARY.map((item) => (
-          <NavRow key={item.label} item={item} active={item.href ? pathname === item.href : false} />
+          <NavRow key={item.label} item={item} active={item.href ? pathname === item.href : false} onNavigate={onNavigate} />
         ))}
       </nav>
       <div className="my-3.5 h-px bg-[#16181d]/8" />
       <nav className="flex flex-col gap-0.5">
         {SECONDARY.map((item) => (
-          <NavRow key={item.label} item={item} active={false} />
+          <NavRow key={item.label} item={item} active={false} onNavigate={onNavigate} />
         ))}
       </nav>
       <div className="my-3.5 h-px bg-[#16181d]/8" />
       <nav className="flex flex-col gap-0.5">
         {TERTIARY.map((item) => (
-          <NavRow key={item.label} item={item} active={pathname.startsWith(item.href!)} />
+          <NavRow key={item.label} item={item} active={pathname.startsWith(item.href!)} onNavigate={onNavigate} />
         ))}
       </nav>
 
@@ -120,6 +128,70 @@ export function DashboardSidebar({
           </button>
         </form>
       </div>
-    </aside>
+    </>
+  );
+}
+
+/**
+ * Fixed-width (w-60) sidebar with no responsive collapse used to just sit
+ * there on mobile eating most of a 400px viewport (240px sidebar + the
+ * shell's own px-10 content padding left ~60px for actual content -- see
+ * the QA pass that caught this). Below `lg` it's now a slide-in drawer
+ * behind a compact top bar instead, same nav content either way.
+ */
+export function DashboardSidebar({
+  displayName,
+  email,
+  creditsBalance,
+}: {
+  displayName: string;
+  email: string;
+  creditsBalance: number;
+}) {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      {/* Mobile/tablet top bar */}
+      <div className="glass sticky top-3 z-30 mx-3 mt-3 flex items-center justify-between rounded-2xl px-4 py-3 lg:hidden">
+        <Link href="/dashboard" className="font-ui text-base font-semibold tracking-tight text-[#16181d]">
+          Script <span className="text-[#c94fd6]">to</span> Video
+        </Link>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-label="Open menu"
+          className="flex h-9 w-9 items-center justify-center rounded-full text-lg text-[#16181d]/70 hover:bg-white/40"
+        >
+          ☰
+        </button>
+      </div>
+
+      {open && (
+        <div className="fixed inset-0 z-40 lg:hidden">
+          <button
+            type="button"
+            aria-label="Close menu"
+            onClick={() => setOpen(false)}
+            className="absolute inset-0 bg-[#0a0d16]/30 backdrop-blur-sm"
+          />
+          <aside className="glass-strong absolute top-3 bottom-3 left-3 flex w-64 max-w-[80vw] flex-col rounded-[22px] p-4">
+            <SidebarContent
+              displayName={displayName}
+              email={email}
+              creditsBalance={creditsBalance}
+              pathname={pathname}
+              onNavigate={() => setOpen(false)}
+            />
+          </aside>
+        </div>
+      )}
+
+      {/* Desktop sidebar */}
+      <aside className="glass sticky top-5 ml-5 hidden h-[calc(100vh-40px)] w-60 shrink-0 flex-col self-start rounded-[22px] p-4 lg:flex">
+        <SidebarContent displayName={displayName} email={email} creditsBalance={creditsBalance} pathname={pathname} />
+      </aside>
+    </>
   );
 }
