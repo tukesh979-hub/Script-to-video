@@ -24,49 +24,57 @@ function AssetPreview({ asset }: { asset: ProjectAsset }) {
   const src = PREVIEW_IMAGE[asset.name];
   if (src) {
     return (
-      <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-[#16181d]/10">
-        <Image src={src} alt={asset.name} fill sizes="48px" className="object-cover" />
+      <div className="relative aspect-square w-full overflow-hidden rounded-lg border border-[#16181d]/10">
+        <Image src={src} alt={asset.name} fill sizes="140px" className="object-cover" />
       </div>
     );
   }
   return (
-    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-dashed border-[#16181d]/15 font-ui text-[9.5px] font-medium text-[#16181d]/35 uppercase">
+    <div className="flex aspect-square w-full items-center justify-center rounded-lg border border-dashed border-[#16181d]/15 font-ui text-[10px] font-medium text-[#16181d]/35 uppercase">
       {TYPE_LABEL[asset.assetType]?.split("-")[0] ?? asset.assetType}
     </div>
   );
 }
 
-/** First-class asset sheet — every asset used anywhere in the project, browsable
- * as one plain table (per 01-pipeline-transparency-prompt.md §4), not just
- * referenced inline per scene. A real preview photo where one genuinely
- * exists; otherwise a plain type label -- never the raw source-code path,
- * which read as "code", not as an asset. */
+/** First-class asset sheet — every asset used anywhere in the project,
+ * grouped by which beat/scene it's used in and shown as a grid per group
+ * (per 01-pipeline-transparency-prompt.md §4), matching how the reference
+ * reel breakdown groups its own asset thumbnails ("Scene 1" -> its assets,
+ * "Scene 2" -> its assets), rather than one flat undifferentiated list. A
+ * real preview photo where one genuinely exists; otherwise a plain type
+ * label -- never the raw source-code path, which read as "code", not as
+ * an asset. */
 export function AssetSheet({ assets, bare = false }: { assets: ProjectAsset[]; bare?: boolean }) {
   if (assets.length === 0) return null;
+
+  const groups: { usedIn: string; items: ProjectAsset[] }[] = [];
+  for (const asset of assets) {
+    const group = groups.find((g) => g.usedIn === asset.usedInScenes);
+    if (group) {
+      group.items.push(asset);
+    } else {
+      groups.push({ usedIn: asset.usedInScenes, items: [asset] });
+    }
+  }
+
   return (
-    <div className={`overflow-x-auto ${bare ? "" : "border-t border-[#16181d]/8"}`}>
-      <table className="w-full min-w-[640px] text-left text-sm">
-        <thead>
-          <tr className="border-b border-[#16181d]/8 font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">
-            <th className="py-3 pr-4 font-normal">Preview</th>
-            <th className="py-3 pr-4 font-normal">Asset</th>
-            <th className="py-3 pr-4 font-normal">Type</th>
-            <th className="py-3 pr-4 font-normal">Used in</th>
-          </tr>
-        </thead>
-        <tbody>
-          {assets.map((a) => (
-            <tr key={a.id} className="border-b border-[#16181d]/8 last:border-0">
-              <td className="py-3 pr-4">
+    <div className={`flex flex-col gap-6 ${bare ? "" : "border-t border-[#16181d]/8 pt-6"}`}>
+      {groups.map((group) => (
+        <div key={group.usedIn}>
+          <p className="mb-2.5 font-ui text-[11px] font-bold text-[#7c6ff0]">{group.usedIn}</p>
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6">
+            {group.items.map((a) => (
+              <div key={a.id}>
                 <AssetPreview asset={a} />
-              </td>
-              <td className="py-3 pr-4 font-medium text-[#16181d]">{a.name}</td>
-              <td className="py-3 pr-4 text-[#16181d]/55">{TYPE_LABEL[a.assetType] ?? a.assetType}</td>
-              <td className="py-3 pr-4 text-[#16181d]/55">{a.usedInScenes}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                <p className="mt-1.5 truncate font-ui text-xs font-semibold text-[#16181d]" title={a.name}>
+                  {a.name}
+                </p>
+                <p className="truncate text-[11px] text-[#16181d]/45">{TYPE_LABEL[a.assetType] ?? a.assetType}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

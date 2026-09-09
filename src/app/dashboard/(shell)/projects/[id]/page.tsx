@@ -54,7 +54,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       {/* One glass surface for the whole project header -- thumbnail, title,
           status, and stats/progress all inside it, separated only by a
           hairline divider, not stacked as separate floating panels. */}
-      <div className="glass mt-6 flex flex-col gap-8 rounded-[22px] p-6 sm:flex-row">
+      <div className="glass mt-6 flex flex-col gap-8 rounded-[22px] p-4 sm:p-5 sm:flex-row">
         <div className="relative aspect-9/16 w-full max-w-70 shrink-0 overflow-hidden rounded-xl">
           {project.thumbnailUrl ? (
             <Image src={project.thumbnailUrl} alt={project.name} fill sizes="280px" className="object-cover" />
@@ -114,7 +114,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           what's already finished; nothing here is presented as final while
           still rendering. */}
       {stages.length > 0 ? (
-        <div className="glass mt-8 rounded-[22px] p-6">
+        <div className="glass mt-8 rounded-[22px] p-4 sm:p-5">
           <h2 className="mb-4 font-heading text-xl font-semibold tracking-tight text-[#16181d]">Production Pipeline</h2>
           <PointerBar stages={stages} status={project.status} currentLabel={isLive ? project.currentStage : null} />
           <div className="flex flex-col">
@@ -137,7 +137,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           </div>
         </div>
       ) : (
-        <div className="glass mt-8 rounded-[22px] p-6 text-base text-[#16181d]/60">
+        <div className="glass mt-8 rounded-[22px] p-4 sm:p-5 text-base text-[#16181d]/60">
           No pipeline history recorded for this project yet.
         </div>
       )}
