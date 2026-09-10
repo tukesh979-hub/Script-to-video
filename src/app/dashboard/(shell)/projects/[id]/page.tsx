@@ -1,5 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowLeft } from "@phosphor-icons/react/ssr";
+import { GlassPanel } from "@/components/ui/glass-panel";
+import { Reveal } from "@/components/ui/reveal";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/dal";
@@ -47,62 +50,68 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
   return (
     <div className="mx-auto w-full max-w-4xl flex-1">
-      <Link href="/dashboard/projects" className="font-ui text-sm text-[#16181d]/60 transition-colors hover:text-[#7c6ff0]">
-        ← Projects
+      <Link
+        href="/dashboard/projects"
+        className="inline-flex items-center gap-1.5 font-ui text-sm text-[#16181d]/60 transition-colors hover:text-[#7c6ff0]"
+      >
+        <ArrowLeft weight="bold" size={13} aria-hidden />
+        Projects
       </Link>
 
       {/* One glass surface for the whole project header -- thumbnail, title,
           status, and stats/progress all inside it, separated only by a
           hairline divider, not stacked as separate floating panels. */}
-      <div className="glass mt-6 flex flex-col gap-8 rounded-[22px] p-4 sm:p-5 sm:flex-row">
-        <div className="relative aspect-9/16 w-full max-w-70 shrink-0 overflow-hidden rounded-xl">
-          {project.thumbnailUrl ? (
-            <Image src={project.thumbnailUrl} alt={project.name} fill sizes="280px" className="object-cover" />
-          ) : (
-            <div className="flex h-full items-center justify-center text-sm text-[#16181d]/40">No preview</div>
-          )}
-        </div>
-
-        <div className="flex flex-1 flex-col gap-4">
-          <div>
-            <StatusBadge status={project.status} />
-            <h1 className="mt-3 font-heading text-3xl font-semibold tracking-tight text-[#16181d]">{project.name}</h1>
-            {project.description && (
-              <p className="mt-2 text-base leading-relaxed text-[#16181d]/60">{project.description}</p>
+      <Reveal>
+        <GlassPanel className="mt-6" innerClassName="flex flex-col gap-8 p-4 sm:p-5 sm:flex-row">
+          <div className="relative aspect-9/16 w-full max-w-70 shrink-0 overflow-hidden rounded-xl">
+            {project.thumbnailUrl ? (
+              <Image src={project.thumbnailUrl} alt={project.name} fill sizes="280px" className="object-cover" />
+            ) : (
+              <div className="flex h-full items-center justify-center text-sm text-[#16181d]/40">No preview</div>
             )}
           </div>
 
-          {isLive ? (
-            <div className="flex max-w-sm flex-col gap-2 border-t border-[#16181d]/10 pt-4">
-              <p className="font-ui text-xs font-bold tracking-[0.06em] text-[#7c6ff0] uppercase">
-                {project.currentStage ?? "Working"}
-              </p>
-              <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#16181d]/10">
-                <div
-                  className="oceanic-accent-gradient h-full transition-[width] duration-500"
-                  style={{ width: `${project.progressPercent ?? 0}%` }}
-                />
-              </div>
-              <p className="text-sm text-[#16181d]/60">{project.progressPercent ?? 0}% complete</p>
+          <div className="flex flex-1 flex-col gap-4">
+            <div>
+              <StatusBadge status={project.status} />
+              <h1 className="mt-3 font-heading text-3xl font-semibold tracking-tight text-[#16181d]">{project.name}</h1>
+              {project.description && (
+                <p className="mt-2 text-base leading-relaxed text-[#16181d]/60">{project.description}</p>
+              )}
             </div>
-          ) : (
-            <dl className="grid max-w-sm grid-cols-2 gap-4 border-t border-[#16181d]/10 pt-4 text-base">
-              <div>
-                <dt className="font-ui text-xs font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">Created</dt>
-                <dd className="mt-1 text-[#16181d]">{project.createdAt.toLocaleDateString()}</dd>
-              </div>
-              <div>
-                <dt className="font-ui text-xs font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">Duration</dt>
-                <dd className="mt-1 text-[#16181d]">{project.durationSeconds ? `${project.durationSeconds}s` : "—"}</dd>
-              </div>
-            </dl>
-          )}
 
-          {project.status === "needs_review" && project.reviewNote && (
-            <p className="border-l-2 border-[#a4650f]/50 pl-3 text-sm text-[#a4650f]">{project.reviewNote}</p>
-          )}
-        </div>
-      </div>
+            {isLive ? (
+              <div className="flex max-w-sm flex-col gap-2 border-t border-[#16181d]/10 pt-4">
+                <p className="font-ui text-xs font-bold tracking-[0.06em] text-[#7c6ff0] uppercase">
+                  {project.currentStage ?? "Working"}
+                </p>
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#16181d]/10">
+                  <div
+                    className="oceanic-accent-gradient h-full transition-[width] duration-500"
+                    style={{ width: `${project.progressPercent ?? 0}%` }}
+                  />
+                </div>
+                <p className="text-sm text-[#16181d]/60">{project.progressPercent ?? 0}% complete</p>
+              </div>
+            ) : (
+              <dl className="grid max-w-sm grid-cols-2 gap-4 border-t border-[#16181d]/10 pt-4 text-base">
+                <div>
+                  <dt className="font-ui text-xs font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">Created</dt>
+                  <dd className="mt-1 text-[#16181d]">{project.createdAt.toLocaleDateString()}</dd>
+                </div>
+                <div>
+                  <dt className="font-ui text-xs font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">Duration</dt>
+                  <dd className="mt-1 text-[#16181d]">{project.durationSeconds ? `${project.durationSeconds}s` : "—"}</dd>
+                </div>
+              </dl>
+            )}
+
+            {project.status === "needs_review" && project.reviewNote && (
+              <p className="border-l-2 border-[#a4650f]/50 pl-3 text-sm text-[#a4650f]">{project.reviewNote}</p>
+            )}
+          </div>
+        </GlassPanel>
+      </Reveal>
 
       {/* One glass surface for the complete project build: pipeline progress,
           every stage in production order, and the Asset Sheet interleaved
@@ -114,32 +123,34 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           what's already finished; nothing here is presented as final while
           still rendering. */}
       {stages.length > 0 ? (
-        <div className="glass mt-8 rounded-[22px] p-4 sm:p-5">
-          <h2 className="mb-4 font-heading text-xl font-semibold tracking-tight text-[#16181d]">Production Pipeline</h2>
-          <PointerBar stages={stages} status={project.status} currentLabel={isLive ? project.currentStage : null} />
-          <div className="flex flex-col">
-            {stagesBeforeAssets.map((stage, i) => (
-              <StageSection key={stage.id} stage={stage} index={i} />
-            ))}
-          </div>
-
-          {assets.length > 0 && (
-            <div className="border-b border-[#16181d]/8 py-5">
-              <p className="mb-4 font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">Asset Sheet</p>
-              <AssetSheet assets={assets} bare />
+        <Reveal delay={100}>
+          <GlassPanel className="mt-8" innerClassName="p-4 sm:p-5">
+            <h2 className="mb-4 font-heading text-xl font-semibold tracking-tight text-[#16181d]">Production Pipeline</h2>
+            <PointerBar stages={stages} status={project.status} currentLabel={isLive ? project.currentStage : null} />
+            <div className="flex flex-col">
+              {stagesBeforeAssets.map((stage, i) => (
+                <StageSection key={stage.id} stage={stage} index={i} />
+              ))}
             </div>
-          )}
 
-          <div className="flex flex-col">
-            {stagesAfterAssets.map((stage, i) => (
-              <StageSection key={stage.id} stage={stage} index={stagesBeforeAssets.length + i} />
-            ))}
-          </div>
-        </div>
+            {assets.length > 0 && (
+              <div className="border-b border-[#16181d]/8 py-5">
+                <p className="mb-4 font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">Asset Sheet</p>
+                <AssetSheet assets={assets} bare />
+              </div>
+            )}
+
+            <div className="flex flex-col">
+              {stagesAfterAssets.map((stage, i) => (
+                <StageSection key={stage.id} stage={stage} index={stagesBeforeAssets.length + i} />
+              ))}
+            </div>
+          </GlassPanel>
+        </Reveal>
       ) : (
-        <div className="glass mt-8 rounded-[22px] p-4 sm:p-5 text-base text-[#16181d]/60">
+        <GlassPanel className="mt-8" innerClassName="p-4 sm:p-5 text-base text-[#16181d]/60">
           No pipeline history recorded for this project yet.
-        </div>
+        </GlassPanel>
       )}
     </div>
   );

@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Play, ArrowRight } from "@phosphor-icons/react/ssr";
+import { GlassPanel } from "@/components/ui/glass-panel";
 import type { Project, ProjectStage } from "@/db/schema";
 
 type RenderSummary = { status: string } | null;
@@ -57,14 +59,16 @@ export function LatestProjectBento({
   ];
 
   return (
-    <div className="glass rounded-[22px] p-5 sm:p-6">
+    <GlassPanel innerClassName="p-5 sm:p-6">
       <div className="grid grid-cols-1 sm:grid-cols-3">
         <div className="sm:col-span-1 sm:pr-6">
           <div className="relative mb-3.5 h-40 overflow-hidden rounded-xl bg-gradient-to-br from-[#1a1220] to-[#2a1a30]">
             {project.thumbnailUrl ? (
               <Image src={project.thumbnailUrl} alt={project.name} fill sizes="320px" className="object-cover" />
             ) : (
-              <div className="flex h-full items-center justify-center text-2xl text-white/60">▶</div>
+              <div className="flex h-full items-center justify-center text-white/60">
+                <Play weight="fill" size={28} aria-hidden />
+              </div>
             )}
           </div>
           <p className="font-ui text-[15px] font-semibold text-[#16181d]">{project.name}</p>
@@ -74,9 +78,12 @@ export function LatestProjectBento({
           </div>
           <Link
             href={`/dashboard/projects/${project.id}`}
-            className="mt-4 inline-block rounded-full bg-[#14171c] px-4 py-2 font-ui text-[12.5px] font-semibold text-white"
+            className="group mt-4 inline-flex items-center gap-2 rounded-full bg-[#14171c] py-2 pr-2 pl-4 font-ui text-[12.5px] font-semibold text-white transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:scale-[1.03] active:scale-[0.98]"
           >
-            Watch progress →
+            Watch progress
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/15 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5">
+              <ArrowRight weight="bold" size={12} aria-hidden />
+            </span>
           </Link>
         </div>
 
@@ -94,6 +101,6 @@ export function LatestProjectBento({
           ))}
         </div>
       </div>
-    </div>
+    </GlassPanel>
   );
 }

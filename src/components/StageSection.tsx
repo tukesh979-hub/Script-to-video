@@ -1,5 +1,6 @@
 import type { ProjectStage } from "@/db/schema";
-import { STAGE_GLYPH } from "@/lib/icons";
+import { STAGE_ICON } from "@/lib/icons";
+import { CaretRight, Play } from "@phosphor-icons/react/ssr";
 import {
   parseStageData,
   STAGE_TYPE_LABEL,
@@ -229,6 +230,7 @@ export function StageSection({
 }) {
   const data = parseStageData(stage.stageType, stage.dataJson);
   const num = String(index + 1).padStart(2, "0");
+  const StageIcon = STAGE_ICON[stage.stageType] ?? Play;
   return (
     <details open={defaultOpen} className="group border-b border-[#16181d]/8 py-5 last:border-b-0">
       <summary className="flex cursor-pointer list-none items-center gap-3.5">
@@ -237,14 +239,17 @@ export function StageSection({
         </span>
         <div className="min-w-0 flex-1">
           <p className="flex items-center gap-1.5 font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">
-            <span aria-hidden>{STAGE_GLYPH[stage.stageType] ?? "▶"}</span>
+            <StageIcon weight="light" size={12} aria-hidden />
             {STAGE_TYPE_LABEL[stage.stageType as keyof typeof STAGE_TYPE_LABEL] ?? stage.stageType}
           </p>
           <p className="truncate font-heading text-lg font-semibold text-[#16181d]">{stage.title}</p>
         </div>
-        <span aria-hidden className="shrink-0 text-[#16181d]/40 transition-transform group-open:rotate-90">
-          ›
-        </span>
+        <CaretRight
+          weight="bold"
+          size={14}
+          aria-hidden
+          className="shrink-0 text-[#16181d]/40 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-open:rotate-90"
+        />
       </summary>
       <div className="mt-3 pl-[3.25rem]">
         <p className="mb-3 text-sm text-[#16181d]/55">{stage.summary}</p>

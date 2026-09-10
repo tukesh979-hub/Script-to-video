@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CaretDown } from "@phosphor-icons/react/ssr";
 
 // "Platform" and "Community" have no destination anywhere in the app
 // (Community is explicitly out of scope per DESIGN-SYSTEM.md §4; "Platform"
@@ -25,8 +26,9 @@ export function OceanicNav(props: Props) {
       </Link>
       <div className="hidden items-center gap-5.5 font-ui text-sm font-medium text-[#16181d]/65 md:flex">
         <span>{STATIC_LINKS[0]}</span>
-        <Link href="/#features" className="transition-colors hover:text-[#16181d]">
-          Features ↓
+        <Link href="/#features" className="inline-flex items-center gap-1 transition-colors hover:text-[#16181d]">
+          Features
+          <CaretDown weight="bold" size={10} aria-hidden />
         </Link>
         <Link href="/#projects" className="transition-colors hover:text-[#16181d]">
           Projects

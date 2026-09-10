@@ -1,10 +1,18 @@
 import Image from "next/image";
+import { Code, Sparkle, User } from "@phosphor-icons/react/ssr";
+import type { Icon } from "@phosphor-icons/react";
 import type { ProjectAsset } from "@/db/schema";
 
 const TYPE_LABEL: Record<string, string> = {
   code_drawn: "Code-drawn",
   ai_generated: "AI-generated",
   user_supplied: "User-supplied",
+};
+
+const TYPE_PLACEHOLDER_ICON: Record<string, Icon> = {
+  code_drawn: Code,
+  ai_generated: Sparkle,
+  user_supplied: User,
 };
 
 // A real preview photo, by exact asset name, only where a real file for it
@@ -29,9 +37,10 @@ function AssetPreview({ asset }: { asset: ProjectAsset }) {
       </div>
     );
   }
+  const PlaceholderIcon = TYPE_PLACEHOLDER_ICON[asset.assetType] ?? Code;
   return (
-    <div className="flex aspect-square w-full items-center justify-center rounded-lg border border-dashed border-[#16181d]/15 font-ui text-[10px] font-medium text-[#16181d]/35 uppercase">
-      {TYPE_LABEL[asset.assetType]?.split("-")[0] ?? asset.assetType}
+    <div className="flex aspect-square w-full items-center justify-center rounded-lg border border-dashed border-[#16181d]/15 text-[#16181d]/30">
+      <PlaceholderIcon weight="light" size={20} aria-hidden />
     </div>
   );
 }

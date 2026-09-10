@@ -88,19 +88,22 @@ export function ParallaxCTA() {
       </Floating>
 
       <div className="relative z-10 text-center">
-        <h2 className="font-heading text-[40px] font-semibold tracking-tight text-white [text-shadow:0_4px_24px_rgba(0,0,0,0.6)] sm:text-[48px]">
+        <span className="inline-block rounded-full border border-white/20 bg-white/10 px-3 py-1 font-ui text-[10px] font-bold tracking-[0.2em] text-white/70 uppercase backdrop-blur-md">
+          Get started
+        </span>
+        <h2 className="mt-4 font-heading text-[40px] font-semibold tracking-tight text-white [text-shadow:0_4px_24px_rgba(0,0,0,0.6)] sm:text-[48px]">
           Create your next project.
         </h2>
-        <div className="mt-6 flex justify-center gap-2.5">
+        <div className="mt-7 flex justify-center gap-2.5">
           <Link
             href="/register"
-            className="rounded-full bg-white/85 px-7 py-3 font-ui text-[13.5px] font-semibold text-black backdrop-blur-md"
+            className="rounded-full bg-white/85 px-7 py-3 font-ui text-[13.5px] font-semibold text-black backdrop-blur-md transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:scale-105 active:scale-95"
           >
             Sign Up
           </Link>
           <Link
             href="/login"
-            className="rounded-full border border-white/25 bg-white/8 px-7 py-3 font-ui text-[13.5px] font-semibold text-white backdrop-blur-md"
+            className="rounded-full border border-white/25 bg-white/8 px-7 py-3 font-ui text-[13.5px] font-semibold text-white backdrop-blur-md transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:scale-105 active:scale-95"
           >
             Log In
           </Link>

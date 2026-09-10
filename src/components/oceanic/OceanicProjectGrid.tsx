@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Plus } from "@phosphor-icons/react/ssr";
+import { Reveal } from "@/components/ui/reveal";
 import type { Project } from "@/db/schema";
 import { OceanicStatusBadge } from "./OceanicStatusBadge";
 
@@ -64,9 +66,10 @@ export function OceanicProjectGrid({ projects }: { projects: Project[] }) {
         </div>
         <Link
           href="/dashboard/projects/new"
-          className="oceanic-accent-gradient rounded-[10px] px-4 py-2.5 font-ui text-[13px] font-semibold text-white"
+          className="oceanic-accent-gradient inline-flex items-center gap-1.5 rounded-[10px] px-4 py-2.5 font-ui text-[13px] font-semibold text-white"
         >
-          + New Project
+          <Plus weight="bold" size={14} aria-hidden />
+          New Project
         </Link>
       </div>
 
@@ -83,31 +86,36 @@ export function OceanicProjectGrid({ projects }: { projects: Project[] }) {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {visible.map((project) => (
-            <Link key={project.id} href={`/dashboard/projects/${project.id}`} className="glass group overflow-hidden rounded-2xl">
-              <div className="relative h-35 overflow-hidden bg-gradient-to-br from-[#1a1220] to-[#2a1a30]">
-                {project.thumbnailUrl && (
-                  <Image
-                    src={project.thumbnailUrl}
-                    alt={project.name}
-                    fill
-                    sizes="(max-width: 640px) 100vw, 33vw"
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                )}
-                <OceanicStatusBadge status={project.status} />
-              </div>
-              <div className="p-4">
-                <p className="truncate font-ui text-[13.5px] font-semibold text-[#16181d]">{project.name}</p>
-                <p className="mt-1 truncate text-[11.5px] text-[#16181d]/45">{cardMeta(project)}</p>
-                <div className="mt-2.5 h-[3px] overflow-hidden rounded-full bg-[#16181d]/8">
-                  <div
-                    className="oceanic-accent-gradient h-full transition-[width] duration-500"
-                    style={{ width: `${cardProgress(project)}%` }}
-                  />
+          {visible.map((project, i) => (
+            <Reveal key={project.id} delay={i * 60}>
+              <Link
+                href={`/dashboard/projects/${project.id}`}
+                className="glass group block overflow-hidden rounded-2xl transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1"
+              >
+                <div className="relative h-35 overflow-hidden bg-gradient-to-br from-[#1a1220] to-[#2a1a30]">
+                  {project.thumbnailUrl && (
+                    <Image
+                      src={project.thumbnailUrl}
+                      alt={project.name}
+                      fill
+                      sizes="(max-width: 640px) 100vw, 33vw"
+                      className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105"
+                    />
+                  )}
+                  <OceanicStatusBadge status={project.status} />
                 </div>
-              </div>
-            </Link>
+                <div className="p-4">
+                  <p className="truncate font-ui text-[13.5px] font-semibold text-[#16181d]">{project.name}</p>
+                  <p className="mt-1 truncate text-[11.5px] text-[#16181d]/45">{cardMeta(project)}</p>
+                  <div className="mt-2.5 h-[3px] overflow-hidden rounded-full bg-[#16181d]/8">
+                    <div
+                      className="oceanic-accent-gradient h-full transition-[width] duration-500"
+                      style={{ width: `${cardProgress(project)}%` }}
+                    />
+                  </div>
+                </div>
+              </Link>
+            </Reveal>
           ))}
         </div>
       )}

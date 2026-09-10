@@ -5,6 +5,7 @@ import { OceanicNav } from "@/components/oceanic/OceanicNav";
 import { OceanicTypeBar } from "@/components/oceanic/OceanicTypeBar";
 import { LatestProjectBento } from "@/components/oceanic/LatestProjectBento";
 import { FoldersGrid } from "@/components/oceanic/FoldersGrid";
+import { Reveal } from "@/components/ui/reveal";
 
 // Same reasoning as the signed-out landing page: the schema tracks only a
 // running balance, not a per-cycle plan ceiling, so this stays a display
@@ -72,11 +73,13 @@ export default async function DashboardHomePage() {
       <div className="mx-auto max-w-275 px-6 pb-16 sm:px-10">
         {latest ? (
           <>
-            <p className="mb-3.5 font-ui text-xs font-bold tracking-[0.08em] text-[#16181d]/40 uppercase">Latest Project</p>
-            <LatestProjectBento project={latest} stages={latestStages} assetCount={assetCount ?? 0} latestRender={latestRender} />
-            <div className="mt-16 sm:mt-20">
+            <Reveal>
+              <p className="mb-3.5 font-ui text-xs font-bold tracking-[0.08em] text-[#16181d]/40 uppercase">Latest Project</p>
+              <LatestProjectBento project={latest} stages={latestStages} assetCount={assetCount ?? 0} latestRender={latestRender} />
+            </Reveal>
+            <Reveal delay={100} className="mt-16 sm:mt-20">
               <FoldersGrid projects={folders} />
-            </div>
+            </Reveal>
           </>
         ) : (
           <div className="glass rounded-[18px] py-24 text-center">

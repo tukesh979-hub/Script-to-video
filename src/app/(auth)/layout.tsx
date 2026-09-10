@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { GlassPanel } from "@/components/ui/glass-panel";
 
 // Decorative, low-opacity floating photo fragments -- not interactive, per
 // DESIGN-SYSTEM.md's Sign In/Sign Up spec. Local thumbnails (real project
@@ -32,7 +33,9 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         </div>
       ))}
 
-      <div className="glass-strong relative z-10 w-full max-w-105 rounded-[26px] px-9 py-10">{children}</div>
+      <GlassPanel className="relative z-10 w-full max-w-105" innerClassName="px-9 py-10" radius={32}>
+        {children}
+      </GlassPanel>
     </div>
   );
 }

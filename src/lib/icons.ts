@@ -1,33 +1,37 @@
+import {
+  Play,
+  PenNib,
+  SquaresFour,
+  MusicNote,
+  Sparkle,
+  Stack,
+  ArrowsOutSimple,
+  CheckCircle,
+  XCircle,
+} from "@phosphor-icons/react/ssr";
+import type { Icon } from "@phosphor-icons/react";
+
 /**
- * The site's icon language — geometric/symbol glyphs, not an icon font or
- * emoji. Reuse these exact glyphs for these exact meanings (per
- * 03-brand-style.md); don't substitute or add new ones ad hoc.
+ * The site's icon language — real SVG icons (Phosphor, light weight), not
+ * unicode glyphs or emoji. Rendering unicode symbols like "✦"/"▣" depends on
+ * the viewer's system font and renders inconsistently across OS/browser;
+ * real icon components render identically everywhere. Reuse these exact
+ * icons for these exact meanings; don't substitute or add new ones ad hoc.
  */
-export const GLYPH = {
-  brief: "✦", // primary action / brief / new run
-  research: "◈",
-  script: "✎", // script / editing
-  storyboard: "▣", // storyboard / frames
-  voiceover: "♪", // voiceover / audio
-  animate: "▶", // animate / video / play
-  assemble: "⧉",
-  repurpose: "⇲", // repurpose / export
-  inProgress: "◐",
-  done: "✓",
-  cancelled: "✕",
-} as const;
-
-export type GlyphKey = keyof typeof GLYPH;
-
-/** Maps a pipeline stage type to its glyph — used by the stage list on the
- * project detail page so every stage carries the right established icon. */
-export const STAGE_GLYPH: Record<string, string> = {
-  raw_footage: GLYPH.animate,
-  captions: GLYPH.script,
-  voiceover: GLYPH.voiceover,
-  sfx: GLYPH.voiceover,
-  storyboard: GLYPH.storyboard,
-  beat_sheet: GLYPH.storyboard,
-  scene: GLYPH.animate,
-  assembly: GLYPH.assemble,
+export const STAGE_ICON: Record<string, Icon> = {
+  raw_footage: Play,
+  captions: PenNib,
+  voiceover: MusicNote,
+  sfx: MusicNote,
+  storyboard: SquaresFour,
+  beat_sheet: SquaresFour,
+  scene: Play,
+  assembly: ArrowsOutSimple,
 };
+
+export const STATUS_ICON = {
+  inProgress: Sparkle,
+  done: CheckCircle,
+  cancelled: XCircle,
+  stack: Stack,
+} as const;

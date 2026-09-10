@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
+import { Sparkle, Paperclip, X, Microphone, ArrowUp } from "@phosphor-icons/react/ssr";
+import { GlassPanel } from "@/components/ui/glass-panel";
 
 type Props =
   | { variant: "signed-out"; creditsBalance: number; creditsLimit: number }
@@ -124,12 +126,15 @@ export function OceanicTypeBar({ variant, creditsBalance, creditsLimit }: Props)
   }
 
   return (
-    <div className="glass mt-9 w-full max-w-175 rounded-[22px] px-5.5 py-5 text-left shadow-[0_30px_70px_rgba(60,30,90,0.10)] sm:px-6">
+    <GlassPanel className="mt-9 w-full max-w-175 shadow-[0_30px_70px_rgba(60,30,90,0.10)]" innerClassName="px-5.5 py-5 text-left sm:px-6">
       <div className="flex justify-between font-ui text-[11.5px] font-medium text-[#16181d]/45">
         <span>
           {creditsBalance}/{creditsLimit} credits
         </span>
-        <span>✦ GPT-4o</span>
+        <span className="inline-flex items-center gap-1">
+          <Sparkle weight="fill" size={11} aria-hidden />
+          GPT-4o
+        </span>
       </div>
       <textarea
         value={idea}
@@ -146,18 +151,19 @@ export function OceanicTypeBar({ variant, creditsBalance, creditsLimit }: Props)
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="rounded-full border border-white/50 bg-white/40 px-2.75 py-1.25 font-ui text-[11.5px] font-medium text-[#16181d]/60 transition-colors hover:bg-white/60 hover:text-[#16181d]"
+            className="inline-flex items-center gap-1.5 rounded-full border border-white/50 bg-white/40 px-2.75 py-1.25 font-ui text-[11.5px] font-medium text-[#16181d]/60 transition-colors hover:bg-white/60 hover:text-[#16181d]"
           >
-            📎 {attachedFile ? attachedFile.name.slice(0, 24) : "Attach"}
+            <Paperclip weight="light" size={13} aria-hidden />
+            {attachedFile ? attachedFile.name.slice(0, 24) : "Attach"}
           </button>
           {attachedFile && (
             <button
               type="button"
               onClick={() => setAttachedFile(null)}
               title="Remove attachment"
-              className="rounded-full border border-white/50 bg-white/40 px-2 py-1.25 font-ui text-[11.5px] font-medium text-[#16181d]/50 hover:text-[#16181d]"
+              className="rounded-full border border-white/50 bg-white/40 p-1.25 text-[#16181d]/50 hover:text-[#16181d]"
             >
-              ✕
+              <X weight="bold" size={11} aria-hidden />
             </button>
           )}
           <button
@@ -165,13 +171,17 @@ export function OceanicTypeBar({ variant, creditsBalance, creditsLimit }: Props)
             onClick={toggleVoice}
             disabled={!voiceSupported}
             title={voiceSupported ? (isListening ? "Stop dictation" : "Dictate your idea") : "Voice dictation isn't supported in this browser"}
-            className={`rounded-full border px-2.75 py-1.25 font-ui text-[11.5px] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+            className={`inline-flex items-center gap-1.5 rounded-full border px-2.75 py-1.25 font-ui text-[11.5px] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
               isListening
                 ? "border-[#c94fd6]/40 bg-[#c94fd6]/15 text-[#a6248f]"
                 : "border-white/50 bg-white/40 text-[#16181d]/60 hover:bg-white/60 hover:text-[#16181d]"
             }`}
           >
-            {isListening ? <span className="pulse-dot mr-1 inline-block h-1.5 w-1.5 rounded-full bg-current align-middle" /> : "🎙"}{" "}
+            {isListening ? (
+              <span className="pulse-dot inline-block h-1.5 w-1.5 rounded-full bg-current" />
+            ) : (
+              <Microphone weight="light" size={13} aria-hidden />
+            )}
             {isListening ? "Listening…" : "Voice"}
           </button>
         </div>
@@ -180,11 +190,11 @@ export function OceanicTypeBar({ variant, creditsBalance, creditsLimit }: Props)
           onClick={submit}
           disabled={!idea.trim()}
           title="Get started"
-          className="oceanic-accent-gradient flex h-9.5 w-9.5 shrink-0 items-center justify-center rounded-full text-[15px] text-white disabled:opacity-50"
+          className="oceanic-accent-gradient flex h-9.5 w-9.5 shrink-0 items-center justify-center rounded-full text-white transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:scale-110 active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
         >
-          ▶
+          <ArrowUp weight="bold" size={16} aria-hidden />
         </button>
       </div>
-    </div>
+    </GlassPanel>
   );
 }

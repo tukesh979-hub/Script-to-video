@@ -3,9 +3,26 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  Sparkle,
+  SquaresFour,
+  Image as ImageIcon,
+  FilmSlate,
+  MusicNotes,
+  Lightning,
+  SpeakerHigh,
+  DownloadSimple,
+  Stack,
+  UsersThree,
+  Gear,
+  UserCircle,
+  SignOut,
+} from "@phosphor-icons/react/ssr";
+import type { Icon } from "@phosphor-icons/react";
+import { GlassPanel } from "@/components/ui/glass-panel";
 import { logoutAction } from "@/app/(auth)/actions";
 
-type NavItem = { label: string; glyph: string; href?: string };
+type NavItem = { label: string; icon: Icon; href?: string };
 
 // Per DESIGN-SYSTEM.md §2: "Sidebar nav (per original brief, unchanged)".
 // Most of these items (Assets/Storyboards/Beat Sheets/Animations/Sound/
@@ -17,35 +34,36 @@ type NavItem = { label: string; glyph: string; href?: string };
 // on the Billing screen and "Profile" active on the Account screen, so that
 // pairing is carried over rather than invented.
 const PRIMARY: NavItem[] = [
-  { label: "Create", glyph: "✦", href: "/dashboard" },
-  { label: "Projects", glyph: "▦", href: "/dashboard/projects" },
-  { label: "Assets", glyph: "🖼" },
-  { label: "Storyboards", glyph: "🎬" },
-  { label: "Beat Sheets", glyph: "🎵" },
-  { label: "Animations", glyph: "✨" },
-  { label: "Sound", glyph: "🔊" },
-  { label: "Exports", glyph: "⬇" },
+  { label: "Create", icon: Sparkle, href: "/dashboard" },
+  { label: "Projects", icon: SquaresFour, href: "/dashboard/projects" },
+  { label: "Assets", icon: ImageIcon },
+  { label: "Storyboards", icon: FilmSlate },
+  { label: "Beat Sheets", icon: MusicNotes },
+  { label: "Animations", icon: Lightning },
+  { label: "Sound", icon: SpeakerHigh },
+  { label: "Exports", icon: DownloadSimple },
 ];
 
 const SECONDARY: NavItem[] = [
-  { label: "Templates", glyph: "▢" },
-  { label: "Community", glyph: "◔" },
+  { label: "Templates", icon: Stack },
+  { label: "Community", icon: UsersThree },
 ];
 
 const TERTIARY: NavItem[] = [
-  { label: "Settings", glyph: "⚙", href: "/dashboard/billing" },
-  { label: "Profile", glyph: "◐", href: "/dashboard/account" },
+  { label: "Settings", icon: Gear, href: "/dashboard/billing" },
+  { label: "Profile", icon: UserCircle, href: "/dashboard/account" },
 ];
 
 function NavRow({ item, active, onNavigate }: { item: NavItem; active: boolean; onNavigate?: () => void }) {
   const className = active
     ? "flex items-center gap-2.5 rounded-[10px] bg-white/55 px-2.5 py-2.5 font-ui text-[13.5px] font-medium text-[#16181d]"
     : "flex items-center gap-2.5 rounded-[10px] px-2.5 py-2.5 font-ui text-[13.5px] font-medium text-[#16181d]/60 transition-colors hover:bg-white/30 hover:text-[#16181d]";
+  const Icon = item.icon;
 
   if (!item.href) {
     return (
       <div className={`${className} cursor-default opacity-60 hover:bg-transparent hover:text-[#16181d]/60`}>
-        <span aria-hidden>{item.glyph}</span>
+        <Icon weight="light" size={17} aria-hidden />
         {item.label}
       </div>
     );
@@ -53,7 +71,7 @@ function NavRow({ item, active, onNavigate }: { item: NavItem; active: boolean; 
 
   return (
     <Link href={item.href} className={className} onClick={onNavigate}>
-      <span aria-hidden>{item.glyph}</span>
+      <Icon weight="light" size={17} aria-hidden />
       {item.label}
     </Link>
   );
@@ -122,13 +140,32 @@ function SidebarContent({
           <button
             type="submit"
             title="Sign out"
-            className="shrink-0 rounded-md px-1.5 py-1 text-[11px] text-[#16181d]/40 hover:text-[#16181d]"
+            className="shrink-0 rounded-md p-1.5 text-[#16181d]/40 transition-colors hover:text-[#16181d]"
           >
-            ⏻
+            <SignOut weight="light" size={15} aria-hidden />
           </button>
         </form>
       </div>
     </>
+  );
+}
+
+/** Two stacked bars that fluidly rotate/translate into a perfect X instead
+ * of the icon just swapping instantly. */
+function MenuGlyph({ open }: { open: boolean }) {
+  return (
+    <span className="relative flex h-3.5 w-4 flex-col justify-between">
+      <span
+        className={`h-[1.5px] w-full origin-center rounded-full bg-current transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+          open ? "translate-y-[6.5px] rotate-45" : ""
+        }`}
+      />
+      <span
+        className={`h-[1.5px] w-full origin-center rounded-full bg-current transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+          open ? "-translate-y-[6.5px] -rotate-45" : ""
+        }`}
+      />
+    </span>
   );
 }
 
@@ -160,38 +197,53 @@ export function DashboardSidebar({
         </Link>
         <button
           type="button"
-          onClick={() => setOpen(true)}
-          aria-label="Open menu"
-          className="flex h-9 w-9 items-center justify-center rounded-full text-lg text-[#16181d]/70 hover:bg-white/40"
+          onClick={() => setOpen((v) => !v)}
+          aria-label={open ? "Close menu" : "Open menu"}
+          className="flex h-9 w-9 items-center justify-center rounded-full text-[#16181d]/70 transition-colors hover:bg-white/40"
         >
-          ☰
+          <MenuGlyph open={open} />
         </button>
       </div>
 
-      {open && (
-        <div className="fixed inset-0 z-40 lg:hidden">
-          <button
-            type="button"
-            aria-label="Close menu"
-            onClick={() => setOpen(false)}
-            className="absolute inset-0 bg-[#0a0d16]/30 backdrop-blur-sm"
+      {/* Backdrop + drawer stay mounted so both fade/slide out, rather than
+          vanishing instantly when `open` flips false. */}
+      <div
+        className={`fixed inset-0 z-40 lg:hidden ${open ? "" : "pointer-events-none"}`}
+        aria-hidden={!open}
+      >
+        <button
+          type="button"
+          aria-label="Close menu"
+          onClick={() => setOpen(false)}
+          className={`absolute inset-0 bg-[#0a0d16]/30 backdrop-blur-sm transition-opacity duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+            open ? "opacity-100" : "opacity-0"
+          }`}
+        />
+        <GlassPanel
+          as="aside"
+          className={`absolute top-3 bottom-3 left-3 w-64 max-w-[80vw] transition-[transform,opacity] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+            open ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0"
+          }`}
+          innerClassName="flex h-full flex-col p-4"
+        >
+          <SidebarContent
+            displayName={displayName}
+            email={email}
+            creditsBalance={creditsBalance}
+            pathname={pathname}
+            onNavigate={() => setOpen(false)}
           />
-          <aside className="glass-strong absolute top-3 bottom-3 left-3 flex w-64 max-w-[80vw] flex-col rounded-[22px] p-4">
-            <SidebarContent
-              displayName={displayName}
-              email={email}
-              creditsBalance={creditsBalance}
-              pathname={pathname}
-              onNavigate={() => setOpen(false)}
-            />
-          </aside>
-        </div>
-      )}
+        </GlassPanel>
+      </div>
 
       {/* Desktop sidebar */}
-      <aside className="glass sticky top-5 ml-5 hidden h-[calc(100vh-40px)] w-60 shrink-0 flex-col self-start rounded-[22px] p-4 lg:flex">
+      <GlassPanel
+        as="aside"
+        className="sticky top-5 ml-5 hidden h-[calc(100vh-40px)] w-60 shrink-0 self-start lg:block"
+        innerClassName="flex h-full flex-col p-4"
+      >
         <SidebarContent displayName={displayName} email={email} creditsBalance={creditsBalance} pathname={pathname} />
-      </aside>
+      </GlassPanel>
     </>
   );
 }

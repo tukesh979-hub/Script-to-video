@@ -26,8 +26,9 @@ export function VideoReel() {
               preload="metadata"
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/45" />
-            <div className="absolute bottom-3.5 left-3.5 flex items-center gap-1.5 font-ui text-[12.5px] text-white">
-              ▶ live
+            <div className="absolute bottom-3.5 left-3.5 flex items-center gap-1.5 font-ui text-[12.5px] font-medium text-white">
+              <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[#ec4899]" />
+              Live
             </div>
           </div>
         ))}
