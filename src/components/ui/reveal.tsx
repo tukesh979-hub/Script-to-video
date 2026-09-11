@@ -25,6 +25,12 @@ export function Reveal({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    // threshold is a fraction of the TARGET's own area, not the viewport's --
+    // for a tall target (e.g. a pipeline panel whose height scales with the
+    // number of stages/assets) the visible fraction can mathematically never
+    // reach 15% on a normal-height viewport, so isIntersecting never fires
+    // and the section stays permanently at opacity-0. threshold: 0 fires as
+    // soon as any pixel is visible, which is height-independent.
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -34,7 +40,7 @@ export function Reveal({
           }
         });
       },
-      { threshold: 0.15 },
+      { threshold: 0, rootMargin: "0px 0px -10% 0px" },
     );
     io.observe(el);
     return () => io.disconnect();
