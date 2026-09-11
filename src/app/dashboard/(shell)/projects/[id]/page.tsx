@@ -49,7 +49,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   const stagesAfterAssets = splitIndex >= 0 ? stages.slice(splitIndex + 1) : [];
 
   return (
-    <div className="mx-auto w-full max-w-4xl flex-1">
+    <div className="mx-auto w-full max-w-7xl flex-1">
       <Link
         href="/dashboard/projects"
         className="inline-flex items-center gap-1.5 font-ui text-sm text-[#16181d]/60 transition-colors hover:text-[#7c6ff0]"
