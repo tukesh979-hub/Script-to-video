@@ -40,13 +40,36 @@ function Pill({ children }: { children: React.ReactNode }) {
   );
 }
 
-// A real isolated preview render, by exact stage title, only where one
-// actually exists on disk (copied from the source remotion-engine project's
-// generation-output/ -- most beats were only ever rendered as part of the
-// full concat, not in isolation, so this stays partial rather than faking
-// coverage for beats that were never rendered alone).
+// A real isolated preview render for every beat, by exact stage title --
+// copied from the source remotion-engine project's beat-breakdown doc
+// (docs/0Porsche 911_beat-breakdown/assets/), which has one clip + one
+// still per beat. The still doubles as the <video>'s poster so there's no
+// black frame before playback starts.
 const SCENE_VIDEO: Record<string, string> = {
-  "Beat 5 — HUD Card Stack": "/asset-previews/beat5-preview.mp4",
+  "Beat 1 — Card Grid Populate": "/asset-previews/beats/clips/beat1-grid-populate.mp4",
+  "Beat 2 — Card Flip Reveal": "/asset-previews/beats/clips/beat2-flip.mp4",
+  "Beat 3 — Magician Card Flourish (Hero Reveal)": "/asset-previews/beats/clips/beat3-flourish.mp4",
+  "Beat 4 — Raw Talking Head": "/asset-previews/beats/clips/beat4-raw.mp4",
+  "Beat 5 — HUD Card Stack": "/asset-previews/beats/clips/beat5-hud-stack.mp4",
+  "Beat 6 — 911 Road + 3D Title Sweep": "/asset-previews/beats/clips/beat6-title-sweep.mp4",
+  "Beat 7 — 911 Track + Pixel Impact": "/asset-previews/beats/clips/beat7-pixel-impact.mp4",
+  "Beat 8 — Exterior/Interior Detail (Letterboxed)": "/asset-previews/beats/clips/beat8-letterbox.mp4",
+  "Beat 9 — Full Car Reveal (Letterboxed)": "/asset-previews/beats/clips/beat9-reveal.mp4",
+  "Beat 10 — Raw Talking Head (Closing)": "/asset-previews/beats/clips/beat10-raw-closing.mp4",
+  "End Frame — Closing CTA Card": "/asset-previews/beats/clips/endframe-cta.mp4",
+};
+const SCENE_POSTER: Record<string, string> = {
+  "Beat 1 — Card Grid Populate": "/asset-previews/beats/stills/beat1-grid-populate.jpg",
+  "Beat 2 — Card Flip Reveal": "/asset-previews/beats/stills/beat2-flip.jpg",
+  "Beat 3 — Magician Card Flourish (Hero Reveal)": "/asset-previews/beats/stills/beat3-flourish.jpg",
+  "Beat 4 — Raw Talking Head": "/asset-previews/beats/stills/beat4-raw.jpg",
+  "Beat 5 — HUD Card Stack": "/asset-previews/beats/stills/beat5-hud-stack.jpg",
+  "Beat 6 — 911 Road + 3D Title Sweep": "/asset-previews/beats/stills/beat6-title-sweep.jpg",
+  "Beat 7 — 911 Track + Pixel Impact": "/asset-previews/beats/stills/beat7-pixel-impact.jpg",
+  "Beat 8 — Exterior/Interior Detail (Letterboxed)": "/asset-previews/beats/stills/beat8-letterbox.jpg",
+  "Beat 9 — Full Car Reveal (Letterboxed)": "/asset-previews/beats/stills/beat9-reveal.jpg",
+  "Beat 10 — Raw Talking Head (Closing)": "/asset-previews/beats/stills/beat10-raw-closing.jpg",
+  "End Frame — Closing CTA Card": "/asset-previews/beats/stills/endframe-cta.jpg",
 };
 
 // Shared by both the per-stage switch below (defensive fallback) and
@@ -54,11 +77,13 @@ const SCENE_VIDEO: Record<string, string> = {
 // retractable rather than routing each through StageBody individually.
 function SceneBody({ stageTitle, data }: { stageTitle: string; data: SceneData }) {
   const video = SCENE_VIDEO[stageTitle];
+  const poster = SCENE_POSTER[stageTitle];
   return (
     <div className="flex flex-col gap-3">
       {video && (
         <video
           src={video}
+          poster={poster}
           controls
           loop
           muted

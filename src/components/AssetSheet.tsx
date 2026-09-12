@@ -20,17 +20,31 @@ const TYPE_ACCENT: Record<string, { bg: string; icon: Icon }> = {
 };
 
 // A real preview photo, by exact asset name, only where a real file for it
-// actually exists on disk (copied from the source remotion-engine project or
-// re-using a frame already extracted from the real footage elsewhere in this
-// app) -- see the final report for provenance of each. No thumbnailUrl
-// column exists on project_assets (see schema.ts), so this is a lightweight,
-// name-keyed lookup rather than a schema migration. Assets without a real
-// file get a tinted type-icon tile (TYPE_ACCENT) instead -- never a
-// fabricated photo, and no more a blank/dashed placeholder.
+// actually exists on disk. For every code_drawn component (CardFlipGrid,
+// MagicianCardFlourish, ...) this is a still frame of the exact beat that
+// component renders -- copied from the source remotion-engine project's
+// beat-breakdown doc (docs/0Porsche 911_beat-breakdown/assets/stills/),
+// which has one still per beat, keyed by which beat(s) each component/
+// source file is used in (see navneetAssets in db/seed.ts). No
+// thumbnailUrl column exists on project_assets (see schema.ts), so this is
+// a lightweight, name-keyed lookup rather than a schema migration. Assets
+// without a real file get a tinted type-icon tile (TYPE_ACCENT) instead --
+// never a fabricated photo.
 const PREVIEW_IMAGE: Record<string, string> = {
+  CardFlipGrid: "/asset-previews/beats/stills/beat1-grid-populate.jpg",
+  MagicianCardFlourish: "/asset-previews/beats/stills/beat3-flourish.jpg",
+  HudCardStack: "/asset-previews/beats/stills/beat5-hud-stack.jpg",
+  Title3DLightSweep: "/asset-previews/beats/stills/beat6-title-sweep.jpg",
+  PixelImpactVideo: "/asset-previews/beats/stills/beat7-pixel-impact.jpg",
+  LetterboxVideoWithScanlineBg: "/asset-previews/beats/stills/beat8-letterbox.jpg",
+  EndFrameCTA: "/asset-previews/beats/stills/endframe-cta.jpg",
   "Porsche 911 hero card art": "/asset-previews/porsche-911-hero-card-art.png",
   "Ferrari / Rolls-Royce / Tesla card art": "/asset-previews/ferrari-rolls-tesla-card-art.png",
   "navneet-car-reel.mp4": "/thumbnails/navneet-porsche-reel.jpg",
+  "Porsche_911_Road.mp4": "/asset-previews/beats/stills/beat6-title-sweep.jpg",
+  "911_track.mp4 + 911_pixel_track.mp4": "/asset-previews/beats/stills/beat7-pixel-impact.jpg",
+  "Porsche exterior/interior 1080p source": "/asset-previews/beats/stills/beat8-letterbox.jpg",
+  "End-frame desert photograph": "/asset-previews/beats/stills/endframe-cta.jpg",
 };
 
 function AssetPreview({ asset }: { asset: ProjectAsset }) {
