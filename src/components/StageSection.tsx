@@ -49,6 +49,54 @@ const SCENE_VIDEO: Record<string, string> = {
   "Beat 5 — HUD Card Stack": "/asset-previews/beat5-preview.mp4",
 };
 
+// Shared by both the per-stage switch below (defensive fallback) and
+// SceneGroupSection, which renders every "scene" stage stacked inside one
+// retractable rather than routing each through StageBody individually.
+function SceneBody({ stageTitle, data }: { stageTitle: string; data: SceneData }) {
+  const video = SCENE_VIDEO[stageTitle];
+  return (
+    <div className="flex flex-col gap-3">
+      {video && (
+        <video
+          src={video}
+          controls
+          loop
+          muted
+          playsInline
+          className="aspect-9/16 w-full max-w-50 rounded-xl border border-[#16181d]/10"
+        />
+      )}
+      <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <Field label="Technique" value={data.technique} />
+        <Field label="Transition in" value={data.transitionIn} />
+        <Field label="SFX" value={data.sfx} />
+      </dl>
+      {data.assets.length > 0 && (
+        <div>
+          <p className="mb-1.5 font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">Assets</p>
+          <div className="flex flex-wrap gap-1.5">
+            {data.assets.map((a) => (
+              <Pill key={a.name}>
+                {a.name} <span className="text-[#16181d]/40">· {a.type.replace("_", " ")}</span>
+              </Pill>
+            ))}
+          </div>
+        </div>
+      )}
+      {data.overlays.length > 0 && (
+        <div>
+          <p className="mb-1.5 font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">Overlays</p>
+          <div className="flex flex-wrap gap-1.5">
+            {data.overlays.map((o) => (
+              <Pill key={o}>{o}</Pill>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function StageBody({ stageType, stageTitle, data }: { stageType: string; stageTitle: string; data: unknown }) {
   if (!data || typeof data !== "object") {
     return <p className="text-sm text-[#16181d]/40">No detail recorded for this stage.</p>;
@@ -146,49 +194,7 @@ function StageBody({ stageType, stageTitle, data }: { stageType: string; stageTi
       );
     }
     case "scene": {
-      const d = data as SceneData;
-      const video = SCENE_VIDEO[stageTitle];
-      return (
-        <div className="flex flex-col gap-3">
-          {video && (
-            <video
-              src={video}
-              controls
-              loop
-              muted
-              playsInline
-              className="aspect-9/16 w-full max-w-50 rounded-xl border border-[#16181d]/10"
-            />
-          )}
-          <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            <Field label="Technique" value={d.technique} />
-            <Field label="Transition in" value={d.transitionIn} />
-            <Field label="SFX" value={d.sfx} />
-          </dl>
-          {d.assets.length > 0 && (
-            <div>
-              <p className="mb-1.5 font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">Assets</p>
-              <div className="flex flex-wrap gap-1.5">
-                {d.assets.map((a) => (
-                  <Pill key={a.name}>
-                    {a.name} <span className="text-[#16181d]/40">· {a.type.replace("_", " ")}</span>
-                  </Pill>
-                ))}
-              </div>
-            </div>
-          )}
-          {d.overlays.length > 0 && (
-            <div>
-              <p className="mb-1.5 font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">Overlays</p>
-              <div className="flex flex-wrap gap-1.5">
-                {d.overlays.map((o) => (
-                  <Pill key={o}>{o}</Pill>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      );
+      return <SceneBody stageTitle={stageTitle} data={data as SceneData} />;
     }
     case "assembly": {
       const d = data as AssemblyData;
@@ -271,6 +277,72 @@ export function StageSection({
       <div className="mt-3 pl-[3.25rem]">
         <p className="mb-3 text-sm text-[#16181d]/55">{stage.summary}</p>
         <StageBody stageType={stage.stageType} stageTitle={stage.title} data={data} />
+      </div>
+    </details>
+  );
+}
+
+/**
+ * Every "scene" stage (Beat 1, Beat 2, ... End Frame) is one beat of the
+ * same video, not a separate pipeline phase -- so instead of each beat
+ * getting its own top-level numbered accordion, this rolls the whole run
+ * into ONE retractable. Beats inside are separated only by a thin divider
+ * (border-t between them), each keeping its own sub-heading + body (video
+ * where one actually exists on disk, technique/transition/SFX fields,
+ * asset/overlay pills).
+ */
+export function SceneGroupSection({
+  scenes,
+  index,
+  defaultOpen = true,
+  tone = "light",
+}: {
+  scenes: ProjectStage[];
+  index: number;
+  defaultOpen?: boolean;
+  tone?: "light" | "dark";
+}) {
+  const num = String(index + 1).padStart(2, "0");
+  return (
+    <details
+      open={defaultOpen}
+      className={`group -mx-4 border-b border-[#16181d]/8 px-4 py-5 last:border-b-0 sm:-mx-5 sm:px-5 ${TONE_BG[tone]}`}
+    >
+      <summary className="flex cursor-pointer list-none items-center gap-3.5">
+        <span aria-hidden className="oceanic-accent-text shrink-0 font-heading text-3xl font-bold">
+          {num}
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="flex items-center gap-1.5 font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">
+            <Play weight="light" size={12} aria-hidden />
+            Scenes
+          </p>
+          <p className="truncate font-heading text-lg font-semibold text-[#16181d]">
+            Beat-by-beat breakdown · {scenes.length} beats
+          </p>
+        </div>
+        <CaretRight
+          weight="bold"
+          size={14}
+          aria-hidden
+          className="shrink-0 text-[#16181d]/40 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-open:rotate-90"
+        />
+      </summary>
+      <div className="mt-3 flex flex-col pl-[3.25rem]">
+        {scenes.map((stage, i) => {
+          const data = parseStageData(stage.stageType, stage.dataJson) as SceneData | null;
+          return (
+            <div key={stage.id} className={`py-4 first:pt-0 ${i > 0 ? "border-t border-[#16181d]/8" : ""}`}>
+              <p className="font-heading text-base font-semibold text-[#16181d]">{stage.title}</p>
+              <p className="mt-1 mb-3 text-sm text-[#16181d]/55">{stage.summary}</p>
+              {data ? (
+                <SceneBody stageTitle={stage.title} data={data} />
+              ) : (
+                <p className="text-sm text-[#16181d]/40">No detail recorded for this stage.</p>
+              )}
+            </div>
+          );
+        })}
       </div>
     </details>
   );

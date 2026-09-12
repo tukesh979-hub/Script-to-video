@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/dal";
 import { rowToProject, rowToProjectStage, rowToProjectAsset } from "@/lib/db-rows";
 import { StatusBadge } from "@/components/StatusBadge";
-import { StageSection, TONE_BG } from "@/components/StageSection";
+import { StageSection, SceneGroupSection } from "@/components/StageSection";
 import { AssetSheet } from "@/components/AssetSheet";
 import { PointerBar } from "@/components/PointerBar";
 import type { ProjectStage } from "@/db/schema";
@@ -52,16 +52,42 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   // One flat, ordered list of every section in the pipeline -- stages before
   // the split, the Asset Sheet (if any), then stages after -- so alternating
   // light/dark bands (TONE_BG) run continuously across the whole surface
-  // instead of resetting within separate before/after blocks.
-  type PipelineSection = { kind: "stage"; stage: ProjectStage; stageIndex: number } | { kind: "assets" };
+  // instead of resetting within separate before/after blocks. Consecutive
+  // "scene" stages (Beat 1, Beat 2, ...) are collapsed into a single
+  // "scenes" group -- they're beats of the same video, not separate
+  // pipeline phases, so they get one retractable instead of one each.
+  type PipelineSection =
+    | { kind: "stage"; stage: ProjectStage; stageIndex: number }
+    | { kind: "scenes"; scenes: ProjectStage[]; stageIndex: number }
+    | { kind: "assets" };
+
+  function toSections(stagesSlice: ProjectStage[], numberOffset: number): PipelineSection[] {
+    const sections: PipelineSection[] = [];
+    let stageIndex = numberOffset;
+    let i = 0;
+    while (i < stagesSlice.length) {
+      const stage = stagesSlice[i];
+      if (stage.stageType === "scene") {
+        const group: ProjectStage[] = [];
+        while (i < stagesSlice.length && stagesSlice[i].stageType === "scene") {
+          group.push(stagesSlice[i]);
+          i++;
+        }
+        sections.push({ kind: "scenes", scenes: group, stageIndex });
+        stageIndex++;
+        continue;
+      }
+      sections.push({ kind: "stage", stage, stageIndex });
+      stageIndex++;
+      i++;
+    }
+    return sections;
+  }
+
   const pipelineSections: PipelineSection[] = [
-    ...stagesBeforeAssets.map((stage, i) => ({ kind: "stage" as const, stage, stageIndex: i })),
+    ...toSections(stagesBeforeAssets, 0),
     ...(assets.length > 0 ? [{ kind: "assets" as const }] : []),
-    ...stagesAfterAssets.map((stage, i) => ({
-      kind: "stage" as const,
-      stage,
-      stageIndex: stagesBeforeAssets.length + i,
-    })),
+    ...toSections(stagesAfterAssets, stagesBeforeAssets.length),
   ];
 
   return (
@@ -147,16 +173,11 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
               {pipelineSections.map((section, bandIndex) => {
                 const tone = bandIndex % 2 === 0 ? "light" : "dark";
                 if (section.kind === "assets") {
+                  return <AssetSheet key="assets" assets={assets} tone={tone} />;
+                }
+                if (section.kind === "scenes") {
                   return (
-                    <div
-                      key="assets"
-                      className={`-mx-4 border-b border-[#16181d]/8 px-4 py-5 last:border-b-0 sm:-mx-5 sm:px-5 ${TONE_BG[tone]}`}
-                    >
-                      <p className="mb-4 font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">
-                        Asset Sheet
-                      </p>
-                      <AssetSheet assets={assets} bare />
-                    </div>
+                    <SceneGroupSection key="scenes" scenes={section.scenes} index={section.stageIndex} tone={tone} />
                   );
                 }
                 return <StageSection key={section.stage.id} stage={section.stage} index={section.stageIndex} tone={tone} />;
