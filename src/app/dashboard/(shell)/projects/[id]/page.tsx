@@ -8,9 +8,10 @@ import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/dal";
 import { rowToProject, rowToProjectStage, rowToProjectAsset } from "@/lib/db-rows";
 import { StatusBadge } from "@/components/StatusBadge";
-import { StageSection } from "@/components/StageSection";
+import { StageSection, TONE_BG } from "@/components/StageSection";
 import { AssetSheet } from "@/components/AssetSheet";
 import { PointerBar } from "@/components/PointerBar";
+import type { ProjectStage } from "@/db/schema";
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -47,6 +48,21 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   );
   const stagesBeforeAssets = splitIndex >= 0 ? stages.slice(0, splitIndex + 1) : stages;
   const stagesAfterAssets = splitIndex >= 0 ? stages.slice(splitIndex + 1) : [];
+
+  // One flat, ordered list of every section in the pipeline -- stages before
+  // the split, the Asset Sheet (if any), then stages after -- so alternating
+  // light/dark bands (TONE_BG) run continuously across the whole surface
+  // instead of resetting within separate before/after blocks.
+  type PipelineSection = { kind: "stage"; stage: ProjectStage; stageIndex: number } | { kind: "assets" };
+  const pipelineSections: PipelineSection[] = [
+    ...stagesBeforeAssets.map((stage, i) => ({ kind: "stage" as const, stage, stageIndex: i })),
+    ...(assets.length > 0 ? [{ kind: "assets" as const }] : []),
+    ...stagesAfterAssets.map((stage, i) => ({
+      kind: "stage" as const,
+      stage,
+      stageIndex: stagesBeforeAssets.length + i,
+    })),
+  ];
 
   return (
     <div className="mx-auto w-full max-w-7xl flex-1">
@@ -128,22 +144,23 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             <h2 className="mb-4 font-heading text-xl font-semibold tracking-tight text-[#16181d]">Production Pipeline</h2>
             <PointerBar stages={stages} status={project.status} currentLabel={isLive ? project.currentStage : null} />
             <div className="flex flex-col">
-              {stagesBeforeAssets.map((stage, i) => (
-                <StageSection key={stage.id} stage={stage} index={i} />
-              ))}
-            </div>
-
-            {assets.length > 0 && (
-              <div className="border-b border-[#16181d]/8 py-5">
-                <p className="mb-4 font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">Asset Sheet</p>
-                <AssetSheet assets={assets} bare />
-              </div>
-            )}
-
-            <div className="flex flex-col">
-              {stagesAfterAssets.map((stage, i) => (
-                <StageSection key={stage.id} stage={stage} index={stagesBeforeAssets.length + i} />
-              ))}
+              {pipelineSections.map((section, bandIndex) => {
+                const tone = bandIndex % 2 === 0 ? "light" : "dark";
+                if (section.kind === "assets") {
+                  return (
+                    <div
+                      key="assets"
+                      className={`-mx-4 border-b border-[#16181d]/8 px-4 py-5 last:border-b-0 sm:-mx-5 sm:px-5 ${TONE_BG[tone]}`}
+                    >
+                      <p className="mb-4 font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">
+                        Asset Sheet
+                      </p>
+                      <AssetSheet assets={assets} bare />
+                    </div>
+                  );
+                }
+                return <StageSection key={section.stage.id} stage={section.stage} index={section.stageIndex} tone={tone} />;
+              })}
             </div>
           </GlassPanel>
         </Reveal>

@@ -12,9 +12,20 @@ import {
   type SfxData,
 } from "@/lib/stages";
 
+// Alternating section-band backgrounds so adjacent stages (and the Asset
+// Sheet, see page.tsx) read as distinct rows instead of one undifferentiated
+// wall of content -- "dark" is a subtle dark tint layered over the glass
+// panel's own translucent white, not a real dark-mode background.
+export const TONE_BG: Record<"light" | "dark", string> = {
+  light: "",
+  dark: "bg-[#16181d]/[0.035]",
+};
+
+// Each field gets its own bordered cell so a 2-up dl reads as a small grid
+// table, not just loose label/value pairs floating in whitespace.
 function Field({ label, value }: { label: string; value: string }) {
   return (
-    <div>
+    <div className="rounded-lg border border-[#16181d]/8 p-3">
       <dt className="font-ui text-[10px] font-bold tracking-[0.06em] text-[#16181d]/40 uppercase">{label}</dt>
       <dd className="mt-0.5 text-sm text-[#16181d]">{value}</dd>
     </div>
@@ -62,7 +73,7 @@ function StageBody({ stageType, stageTitle, data }: { stageType: string; stageTi
       const d = data as CaptionsData;
       return (
         <div className="flex flex-col gap-3">
-          <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             <Field label="Source" value={d.source} />
             <Field label="Timing source" value={d.timingSource} />
             <Field label="Rendering" value={d.rendering} />
@@ -149,7 +160,7 @@ function StageBody({ stageType, stageTitle, data }: { stageType: string; stageTi
               className="aspect-9/16 w-full max-w-50 rounded-xl border border-[#16181d]/10"
             />
           )}
-          <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             <Field label="Technique" value={d.technique} />
             <Field label="Transition in" value={d.transitionIn} />
             <Field label="SFX" value={d.sfx} />
@@ -223,16 +234,22 @@ export function StageSection({
   stage,
   index,
   defaultOpen = true,
+  tone = "light",
 }: {
   stage: ProjectStage;
   index: number;
   defaultOpen?: boolean;
+  /** Alternating band color so this stage reads as a distinct row -- see TONE_BG. */
+  tone?: "light" | "dark";
 }) {
   const data = parseStageData(stage.stageType, stage.dataJson);
   const num = String(index + 1).padStart(2, "0");
   const StageIcon = STAGE_ICON[stage.stageType] ?? Play;
   return (
-    <details open={defaultOpen} className="group border-b border-[#16181d]/8 py-5 last:border-b-0">
+    <details
+      open={defaultOpen}
+      className={`group -mx-4 border-b border-[#16181d]/8 px-4 py-5 last:border-b-0 sm:-mx-5 sm:px-5 ${TONE_BG[tone]}`}
+    >
       <summary className="flex cursor-pointer list-none items-center gap-3.5">
         <span aria-hidden className="oceanic-accent-text shrink-0 font-heading text-3xl font-bold">
           {num}

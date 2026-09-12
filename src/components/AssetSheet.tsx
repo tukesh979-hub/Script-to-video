@@ -71,9 +71,9 @@ export function AssetSheet({ assets, bare = false }: { assets: ProjectAsset[]; b
       {groups.map((group) => (
         <div key={group.usedIn}>
           <p className="mb-2.5 font-ui text-[11px] font-bold text-[#7c6ff0]">{group.usedIn}</p>
-          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6">
+          <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 md:grid-cols-6">
             {group.items.map((a) => (
-              <div key={a.id}>
+              <div key={a.id} className="rounded-lg border border-[#16181d]/8 p-2">
                 <AssetPreview asset={a} />
                 <p className="mt-1.5 truncate font-ui text-xs font-semibold text-[#16181d]" title={a.name}>
                   {a.name}
